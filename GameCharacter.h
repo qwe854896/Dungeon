@@ -20,6 +20,7 @@ private:
     int defense;
 
     /* Supplement */
+    /* Need to discuss about the balance of game */
     int expNeedToNextLV();
     int HPNextLV();
     int MPNextLV();

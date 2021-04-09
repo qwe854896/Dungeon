@@ -47,9 +47,6 @@ public:
     /* Deal with player's interaction with inventory */
     void handleInventory();
 
-    /* */
-//    bool handleRetreat();
-
     /* Deal with all game initial setting       */
     /* Including create player, create map etc  */
     void startGame();
@@ -66,9 +63,6 @@ public:
 
     /* Deal with the whole game process */
     void runDungeon();
-
-    /* According to player and room to generate actions*/
-//    vector<Object> generateActions(const vector<Object*>&);
 
     /* Check there is a monster or not in the current room */
     bool checkMonsterRoom(const vector<Object*>&);

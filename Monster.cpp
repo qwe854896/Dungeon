@@ -32,7 +32,7 @@ bool Monster::triggerEvent(Object* object) {
                 int damage;
                 cout << "Your attack!\n";
 
-                damage = player->getAttack() - getDefense();
+                damage = player->getAttack() - getDefense(); // calculateDamage
                 if (damage < 0) damage = 0;
                 cout << "You caused " << damage << " damages!\n\n";
 

@@ -23,6 +23,7 @@ int GameCharacter::takeDamage(int damage) {
 }
 
 /* Supplement */
+/* Need to discuss about the balance of game */
 int GameCharacter::expNeedToNextLV()
 {
     return 500 * LV * (LV + 1);
@@ -73,7 +74,7 @@ void GameCharacter::increaseLV()
     maxEXP = expNeedToNextLV();
     maxHP = currentHP = HPNextLV();
     maxMP = currentMP = MPNextLV();
-    maxFP = currentFP = FPNextLV();
+    maxFP = FPNextLV();
     attack = attackNextLV();
     defense = defenseNextLV();
 }

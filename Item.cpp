@@ -15,7 +15,6 @@ Item::Item(string name, string kind, string image, int HP, int MP, int FP, int a
 /* randomly pick a number by given probability */
 int Item::getRand(vector<long double> p)
 {
-    // random_device rd;
     uniform_real_distribution<long double> distribution(0, p.back());
     mt19937 engine( rand() );
 
@@ -143,7 +142,7 @@ ofstream& operator<<(ofstream& out, const Item& item)
     return out;
 }
 
-Item Item::randomItemGenerator(int LV, string kind)
+Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
 {
     Item item = Item();
     string kindList[2] = {
@@ -162,7 +161,7 @@ Item Item::randomItemGenerator(int LV, string kind)
     
     if (kind == "Weapon")
     {
-        item = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 100, 50);
+        item = Item("Rusty Sword", kind, "1", 0, 0, 0, 10, 0, 100, 50);
     }
 
     return item;

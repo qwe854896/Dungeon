@@ -29,7 +29,7 @@ void Record::loadRooms(vector<Room>& rooms, ifstream& in) {
             string tag = "";
             while (tag == "") getline(in, tag);
 
-            if (tag == "Item") objs[j] = new Item();
+            if (tag == "Item")          objs[j] = new Item();
             else if (tag == "Monster")  objs[j] = new Monster();
             else if (tag == "NPC")      objs[j] = new NPC();
 
@@ -130,11 +130,15 @@ void Record::initFileNames(int number)
     fout.close();
 }
 
+inline bool exists(const string& name) {
+    return ( access( name.c_str(), 0 ) != -1 );
+}
+
 Record::Record() {}
 Record::Record(int number)
 {
+    if (!exists("Record/file")) initFileNames(number);
     fileList.resize(number);
-//    initFileNames(number);
     loadFileNames();
 }
 

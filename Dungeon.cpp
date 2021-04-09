@@ -5,7 +5,6 @@ Dungeon::Dungeon(){
 /* randomly pick a number by given probability */
 int Dungeon::getRand(vector<long double> p)
 {
-    // random_device rd;
     uniform_real_distribution<long double> distribution(0, p.back());
     mt19937 engine( rand() );
 
@@ -290,9 +289,9 @@ void Dungeon::createRoom(int index)
     vis[index] = 1;
 
     long double prob = 75;
-
+    
     for (int i = 0; i < 4; ++i) {
-        switch (getRand(vector<long double>( {25, 50, 75, 100} ))) {
+        switch ( getRand(vector<long double>( {25, 50, 75, 100} ) ) ) {
             case 0:
                 if (rooms[index].getUpRoom() == nullptr)
                 {
