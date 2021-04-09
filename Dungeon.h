@@ -78,7 +78,6 @@ public:
 
     /* Random Generator*/
     Monster generateMonster(int);
-//    Item generateItem(int);
     NPC generateNPC(int, string);
     Room generateRoom(bool, int, int, string);
 };

@@ -1,8 +1,8 @@
 #include "Object.h"
 /* Constructor */
-Object::Object() {
+Object::Object() : name("empty"), tag("NULL"), image("") {
 }
-Object::Object(string name,string tag) : name(name), tag(tag){
+Object::Object(string name,string tag) : name(name), tag(tag), image("") {
 }
 Object::Object(string name,string tag, string image) : name(name), tag(tag), image(image) {
 }
@@ -46,7 +46,6 @@ void Object::outputObject(ofstream& out) const
 
     out << name << endl;
     out << image << "\nimage end.\n";
-
 }
 ifstream& operator>>(ifstream& in, Object& object)
 {

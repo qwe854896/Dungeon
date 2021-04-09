@@ -49,10 +49,7 @@ void Record::loadRooms(vector<Room>& rooms, ifstream& in) {
 void Record::saveVis(vector<bool>& vis, ofstream& out)
 {
     out << vis.size() << endl;
-    for (auto v : vis)
-    {
-        out << v << ' ';
-    }
+    for (auto v : vis) out << v << ' ';
     out << endl;
 }
 

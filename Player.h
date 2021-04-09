@@ -25,17 +25,18 @@ private:
     int gold;
 
     /* Supplement */
-    int getArmorIndex(string);
-    string getArmor(int);
+    static int getArmorIndex(string);
+    static string getArmor(int);
 public:
     Player();
     Player(string, string, string, int);
-    Player(string, string, int, int, int, int, int, int, int);
+    Player(string, string, string, int, int, int, int, int, int, int);
     void addItem(Item);
     void popItem(int);
     void useItem(int);
     void changeRoom(Room*);
     void increaseGold(int);
+    void decreaseGold(int);
 
     /* Virtual function that you need to complete   */
     /* In Player, this function should show the     */

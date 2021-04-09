@@ -28,12 +28,15 @@ class Record
 private:
     int CRIndex, PRIndex;
     vector < pair<pair<string, int>, string> > fileList;
+
     void savePlayer(Player*, ofstream&);
     void saveRooms(vector<Room>&, ofstream&);
     void saveVis(vector<bool>&, ofstream&);
+
     void loadPlayer(Player*, ifstream&);
     void loadRooms(vector<Room>&, ifstream&);
     void loadVis(vector<bool>&, ifstream&);
+
     void saveFileNames();
     void loadFileNames();
     void listFileNames();
@@ -44,7 +47,6 @@ public:
     Record(int);
     void saveToFile(Player*, vector<Room>&, vector<bool>&, int&);
     bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&);
-
 };
 
 #endif // RECORD_H_INCLUDED

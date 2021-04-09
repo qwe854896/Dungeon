@@ -1,35 +1,52 @@
 #include "Item.h"
-Item::Item() : Object(){
+Item::Item()
+: Object("empty", "Item", "")
+{
+    kind = "NULL";
+    HP = MP = FP = attack = defense = durability = price = 0;
 }
 Item::Item(string name, string kind, int HP, int MP, int FP, int attack, int defense, int durability, int price)
-: Object(name, "Item"), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
+: Object(name, "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
 {}
 Item::Item(string name, string kind, string image, int HP, int MP, int FP, int attack, int defense, int durability, int price)
 : Object(name, "Item", image), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
 {}
+
+/* randomly pick a number by given probability */
+int Item::getRand(vector<long double> p)
+{
+    // random_device rd;
+    uniform_real_distribution<long double> distribution(0, p.back());
+    mt19937 engine( rand() );
+
+    long double value = distribution(engine);
+    return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+}
 
 /* Virtual function that you need to complete    */
 /* In Item, this function should deal with the   */
 /* pick up action. You should add status to the  */
 /* player.                                       */
 bool Item::triggerEvent(Object* object) {
-    Player *player = dynamic_cast<Player*>(object);
-    if (player == nullptr) return false;
+    if (object->getTag() == "Player") {
+        Player *player = dynamic_cast<Player*>(object);
+        if (kind == "Chest")
+        {
+            cout << "You open the chest\n";
+            Item treasure = randomItemGenerator(player->getLV(), "RANDOM");
+            cout << "You obtain " << treasure.getName() << endl;
+            player->addItem(treasure);
 
-    if (kind == "Chest")
-    {
-        cout << "You open the chest\n";
-        Item treasure = randomItemGenerator(player->getLV(), "RANDOM");
-        cout << "You obtain " << treasure.getName() << endl;
-        player->addItem(treasure);
+            return true;
+        }
+
+        cout << "You pick up " << getName() << endl;
+        player->addItem(*this);
 
         return true;
     }
 
-    cout << "You pick up " << getName() << endl;
-    player->addItem(*this);
-
-	return true;
+	return false;
 }
 
 void Item::input(ifstream& in)
@@ -129,13 +146,23 @@ ofstream& operator<<(ofstream& out, const Item& item)
 Item Item::randomItemGenerator(int LV, string kind)
 {
     Item item = Item();
+    string kindList[2] = {
+        "Props",
+        "Weapon"
+    };
     if (kind == "RANDOM")
     {
-        item = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 100, 50);
+        kind = kindList[ getRand(vector<long double>({50, 100}) ) ];
     }
-    else if (kind == "Props")
+    
+    if (kind == "Props")
     {
-        item = Item("Strange Potion", kind, "O", -10, 0, 10, 0, 0, 0, 0);
+        item = Item("Strange Potion", kind, "O", -10, 0, 10, 0, 0, 1, 10);
+    }
+    
+    if (kind == "Weapon")
+    {
+        item = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 100, 50);
     }
 
     return item;

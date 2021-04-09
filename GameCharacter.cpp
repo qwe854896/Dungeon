@@ -1,11 +1,15 @@
 #include "GameCharacter.h"
-GameCharacter::GameCharacter() {
+GameCharacter::GameCharacter()
+: Object(), type("NULL")
+{
+    LV = maxEXP = currentEXP = maxHP = currentHP = maxMP = currentMP = maxFP = currentFP = attack = defense = 0;
 }
 GameCharacter::GameCharacter(string name, string tag, int HP, int LV) :
-Object(name, tag), type(tag), LV(LV), maxEXP(10), currentEXP(0), maxHP(HP), currentHP(HP), maxMP(10), currentMP(10), maxFP(10), currentFP(0), attack(10), defense(10)
+Object(name, tag, ""), type(tag), LV(LV), maxEXP(10), currentEXP(0), maxHP(HP), currentHP(HP), maxMP(10), currentMP(10), maxFP(10), currentFP(0), attack(10), defense(10)
 {}
 GameCharacter::GameCharacter(string name, string tag, string image, string type, int LV) :
 Object(name, tag, image), type(type), LV(LV) {
+    maxEXP = currentEXP = maxHP = currentHP = maxMP = currentMP = maxFP = currentFP = attack = defense = 0;
 }
 GameCharacter::GameCharacter(string name, string tag, string image, string type, int LV, int EXP, int HP, int MP, int FP, int attack, int defense) :
 Object(name, tag, image), type(type), LV(LV), maxEXP(EXP), currentEXP(0), maxHP(HP), currentHP(HP), maxMP(MP), currentMP(MP), maxFP(FP), currentFP(0), attack(attack), defense(defense) {

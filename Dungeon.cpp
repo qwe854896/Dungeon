@@ -5,8 +5,7 @@ Dungeon::Dungeon(){
 /* randomly pick a number by given probability */
 int Dungeon::getRand(vector<long double> p)
 {
-    random_device rd;
-    // hello
+    // random_device rd;
     uniform_real_distribution<long double> distribution(0, p.back());
     mt19937 engine( rand() );
 
@@ -19,7 +18,7 @@ void Dungeon::createPlayer() {
     string name = "";
     cout << "Please enter player's name: ";
     while (name == "") getline(cin, name);
-    player = Player(name, "Player", "^_^", 0);
+    player = Player(name, "^_^", "Player", 0);
     player.increaseLV();
 }
 
@@ -43,7 +42,7 @@ void Dungeon::createMap() {
     rooms[1].setLeftRoom(&rooms[0]);
     rooms[1].setRightRoom(&rooms[4]);
 
-    Monster *slime = new Monster("Slime", "Slime", 1, 10, 10, 10, 10, 10, 10);
+    Monster *slime = new Monster("Slime", "", "Slime", 1, 10, 10, 10, 10, 10, 10);
     rooms[1].pushObject(slime);
 
     rooms[2] = Room(0, 2); // NPC
@@ -57,7 +56,7 @@ void Dungeon::createMap() {
     goods.emplace_back(sword);
     goods.emplace_back(sticks);
     goods.emplace_back(shoes);
-    NPC *Chris = new NPC("Chris", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
+    NPC *Chris = new NPC("Chris", ">_>", "Shop", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
     rooms[2].pushObject(Chris);
 
     rooms[3] = Room(0, 3); // chest
@@ -71,7 +70,7 @@ void Dungeon::createMap() {
     vis[4] = 1;
     rooms[4].setLeftRoom(&rooms[1]);
 
-    Monster *boss = new Monster("Boss", "Boss", 10, 200, 200, 100, 100, 20, 20);
+    Monster *boss = new Monster("Boss", "", "Boss", 10, 200, 200, 100, 100, 20, 20);
     rooms[4].pushObject(boss);
 
     usedIndex = 4;
@@ -80,38 +79,42 @@ void Dungeon::createMap() {
 
 /* Deal with player's moveing action */
 void Dungeon::handleMovement() {
-    if (checkMonsterRoom(player.getCurrentRoom()->getObjects())) {
+    Room* room = player.getCurrentRoom();
+
+    if (checkMonsterRoom(room->getObjects())) {
         cout << "A. Go previous room\nB. Cancel\n";
+
         string ops; getline(cin, ops);
         while (ops[0] < 'A' || ops[0] > 'B') {
             cout << "Error, please enter operation again.\n";
             getline(cin, ops);
         }
+
         if (ops[0] == 'A') player.changeRoom(player.getPreviousRoom());
         return;
     }
 
     char option = 'A' - 1;
     vector <Room*> options;
-    if (player.getCurrentRoom()->getUpRoom() != nullptr)
+    if (room->getUpRoom() != nullptr)
     {
         cout << (++option) << ". Go up\n";
-        options.emplace_back(player.getCurrentRoom()->getUpRoom());
+        options.emplace_back(room->getUpRoom());
     }
-    if (player.getCurrentRoom()->getDownRoom() != nullptr)
+    if (room->getDownRoom() != nullptr)
     {
         cout << (++option) << ". Go down\n";
-        options.emplace_back(player.getCurrentRoom()->getDownRoom());
+        options.emplace_back(room->getDownRoom());
     }
-    if (player.getCurrentRoom()->getLeftRoom() != nullptr)
+    if (room->getLeftRoom() != nullptr)
     {
         cout << (++option) << ". Go left\n";
-        options.emplace_back(player.getCurrentRoom()->getLeftRoom());
+        options.emplace_back(room->getLeftRoom());
     }
-    if (player.getCurrentRoom()->getRightRoom() != nullptr)
+    if (room->getRightRoom() != nullptr)
     {
         cout << (++option) << ". Go right\n";
-        options.emplace_back(player.getCurrentRoom()->getRightRoom());
+        options.emplace_back(room->getRightRoom());
     }
     cout << (++option) << ". Cancel\n";
 
@@ -124,6 +127,7 @@ void Dungeon::handleMovement() {
 }
 
 /* Deal with player's interaction with objects in that room */
+/* If triggerEvent return true, pop this object */
 void Dungeon::handleEvent(Object* obj) {
     if (obj->triggerEvent(&player)) {
         player.getCurrentRoom()->popObject(obj);
@@ -152,6 +156,7 @@ void Dungeon::handleInventory()
 /* Including create player, create map etc  */
 void Dungeon::startGame() {
     cout << "Do you want to load previous data? (Y/N)\n";
+
     string ops; getline(cin, ops);
     while (ops[0] != 'Y' && ops[0] != 'N') {
         cout << "Error, please enter operation again.\n";
@@ -213,7 +218,6 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
         cout << "Error, please enter operation again.\n";
         getline(cin, ops);
     }
-    cout << endl;
 
     system("cls");
 
@@ -256,6 +260,7 @@ bool Dungeon::checkGameLogic() {
 /* Deal with the whole game process */
 void Dungeon::runDungeon() {
     startGame();
+
     cout << endl;
     system("pause"); system("cls");
 
@@ -263,7 +268,6 @@ void Dungeon::runDungeon() {
         createRoom(player.getCurrentRoom()->getIndex());
         system("cls");
         chooseAction(player.getCurrentRoom()->getObjects());
-//        cout << endl;
     }
 }
 
@@ -352,15 +356,11 @@ void Dungeon::createRoom(int index)
 /* Random Generator */
 Monster Dungeon::generateMonster(int LV)
 {
-    Monster monster = Monster("Slime's friend", "Monster", ">_<", LV - 2);
+    Monster monster = Monster("Slime's friend", ">_<", "Monster", LV - 2);
     monster.increaseLV();
 
     return monster;
 }
-//Item Dungeon::generateItem(int LV)
-//{
-//    return Item("poison", "Props", -10, 0, 10, 0, 0, 2, 40);
-//}
 NPC Dungeon::generateNPC(int LV, string kind)
 {
     NPC npc = NPC("Chris's mother", "~_~", kind, "Hello, I'm Chris's mother.\nI sell the following items: \n", LV - 1);
@@ -369,7 +369,6 @@ NPC Dungeon::generateNPC(int LV, string kind)
     if (kind == "Shop") {
         vector <Item> goods;
         goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
-
         npc.setCommodity(goods);
     }
 

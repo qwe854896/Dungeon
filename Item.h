@@ -5,6 +5,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cmath>
+#include <random>
+#include <algorithm>
 #include "Object.h"
 #include "Player.h"
 using namespace std;
@@ -16,6 +19,9 @@ class Item: public Object
 private:
     string kind;
     int HP, MP, FP, attack, defense, durability, price;
+
+    /* randomly pick a number by given probability */
+    static int getRand(vector<long double>);
 public:
     Item();
     Item(string, string, int, int, int, int, int, int, int);

@@ -12,11 +12,10 @@ using namespace std;
 class Monster: public GameCharacter
 {
 private:
-//    bool isDead;
 public:
     Monster();
     Monster(string, string, string, int);
-    Monster(string, string, int, int, int, int, int, int, int);
+    Monster(string, string, string, int, int, int, int, int, int, int);
 
     /* Virtual function that you need to complete   */
     /* In Monster, this function should deal with   */

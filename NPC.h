@@ -19,7 +19,7 @@ private:
 public:
     NPC();
     NPC(string, string, string, string, int);
-    NPC(string, string, vector<Item>, int);
+    NPC(string, string, string, string, vector<Item>, int);
     void listCommodity(); /*print all the Item in this NPC*/
     void pushCommodity(Item); /* push an item into commodity */
 

@@ -1,23 +1,21 @@
 #include "Player.h"
-Player::Player(){
+Player::Player() : GameCharacter() {
     armors.resize(5);
-    for (int i = 0; i < 5; ++i) armors[i] = Item("empty", "NULL", 0, 0, 0, 0, 0, 0, 0);
     gold = 0;
 }
-Player::Player(string name, string type, string image, int LV)
+Player::Player(string name, string image, string type, int LV)
 : GameCharacter(name, "Player", image, type, LV)
 {
     armors.resize(5);
-    for (int i = 0; i < 5; ++i) armors[i] = Item("empty", "NULL", 0, 0, 0, 0, 0, 0, 0);
     gold = 100;
 }
-Player::Player(string name, string type, int LV, int EXP, int HP, int MP, int FP, int attack, int defense)
-: GameCharacter(name, "Player", "", type, LV, EXP, HP, MP, FP, attack, defense)
+Player::Player(string name, string image, string type, int LV, int EXP, int HP, int MP, int FP, int attack, int defense)
+: GameCharacter(name, "Player", image, type, LV, EXP, HP, MP, FP, attack, defense)
 {
     armors.resize(5);
-    for (int i = 0; i < 5; ++i) armors[i] = Item("empty", "NULL", 0, 0, 0, 0, 0, 0, 0);
     gold = 0;
 }
+
 void Player::addItem(Item item){
     inventory.emplace_back(item);
 }
@@ -44,6 +42,11 @@ void Player::changeRoom(Room* room) {
 void Player::increaseGold(int gold)
 {
     this->gold += gold;
+}
+
+void Player::decreaseGold(int gold)
+{
+    this->gold -= gold;
 }
 
 /* Virtual function that you need to complete   */
