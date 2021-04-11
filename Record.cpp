@@ -131,7 +131,8 @@ void Record::initFileNames(int number)
 }
 
 inline bool exists(const string& name) {
-    return ( access( name.c_str(), 0 ) != -1 );
+    ifstream fin(name.c_str());
+    return fin.good();
 }
 
 Record::Record() {}
