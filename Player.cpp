@@ -22,8 +22,9 @@ void Player::addItem(Item item){
 
 void Player::popItem(int index) /*pop out the specific object, used when the interaction is done*/
 {
-    swap(inventory.back(), inventory[index]);
-    inventory.pop_back();
+    // swap(inventory.back(), inventory[index]);
+    // inventory.pop_back();
+    inventory.erase(inventory.begin() + index);
 }
 
 void Player::useItem(int index)
