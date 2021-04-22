@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <exception>
 #include <cmath>
 #include <random>
@@ -19,6 +20,8 @@
 
 using namespace std;
 
+using coord = pair<int, int>;
+
 class Dungeon{
 private:
     Player player;
@@ -26,11 +29,11 @@ private:
     int usedIndex;
     vector<Room> rooms;
     vector<bool> vis;
+
+    map <coord, int> coordToIndex;
 public:
     Dungeon();
-
-    /* randomly pick a number by given probability */
-    int getRand(vector<long double>);
+    ~Dungeon();
 
     /* Create a new player, and give him/her basic status */
     void createPlayer();
@@ -73,7 +76,8 @@ public:
     /* Random Generator*/
     Monster generateMonster(int);
     NPC generateNPC(int, string);
-    Room generateRoom(bool, int, int, string);
+    Room generateRoom(bool, int, int, int, int, string);
+    void generateDescription();
 };
 
 

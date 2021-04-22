@@ -32,12 +32,6 @@ public:
     GameCharacter(string,string,int,int); // name, tag, HP, LV
     GameCharacter(string,string,string,string,int); // name, tag, image, type, LV
     GameCharacter(string,string,string,string,int,int,int,int,int,int,int); // name, tag, image, type, LV, EXP, HP, MP, FP, attack, defense
-    bool checkIsDead();
-    int takeDamage(int);
-    void increaseStates(int,int,int,int,int);
-    void decreaseStates(int,int,int,int,int);
-    void increaseEXP(int);
-    void increaseLV();
 
     /* Set & Get function*/
     void setLV(int);
@@ -64,6 +58,16 @@ public:
     int getDefense() const;
 
     /* Supplement */
+    void increaseStates(int,int,int,int,int);
+    void decreaseStates(int,int,int,int,int);
+    void increaseFP(int);
+    void increaseEXP(int);
+    void increaseLV();
+
+    bool checkIsDead();
+    int takeDamage(int);
+    bool ultimateSkillAvailable();
+
     void inputGameCharacter(ifstream&);
     void outputGameCharacter(ofstream&) const;
 };

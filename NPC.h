@@ -20,8 +20,6 @@ public:
     NPC();
     NPC(string, string, string, string, int);
     NPC(string, string, string, string, vector<Item>, int);
-    void listCommodity(); /*print all the Item in this NPC*/
-    void pushCommodity(Item); /* push an item into commodity */
 
     /* Virtual function that you need to complete   */
     /* In NPC, this function should deal with the   */
@@ -37,6 +35,12 @@ public:
     vector<Item> getCommodity() const;
 
     /* Supplement */
+    void listCommodity(); /* print all the Item in this NPC */
+    void pushCommodity(Item); /* push an item into commodity */
+
+    bool handleBuy(Player*);
+    bool handleSell(Player*);
+    bool handleTalk();
 };
 
 

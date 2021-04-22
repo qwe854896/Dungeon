@@ -5,21 +5,25 @@ Item::Item()
     kind = "NULL";
     HP = MP = FP = attack = defense = durability = price = 0;
 }
+Item::Item(string kind, int HP, int MP, int FP, int attack, int defense)
+: Object("", "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(0), price(0)
+{}
 Item::Item(string name, string kind, int HP, int MP, int FP, int attack, int defense, int durability, int price)
 : Object(name, "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
 {}
 Item::Item(string name, string kind, string image, int HP, int MP, int FP, int attack, int defense, int durability, int price)
 : Object(name, "Item", image), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
 {}
+namespace {
+    /* randomly pick a number by given probability */
+    int getRand(vector<long double> p)
+    {
+        uniform_real_distribution<long double> distribution(0, p.back());
+        mt19937 engine( rand() );
 
-/* randomly pick a number by given probability */
-int Item::getRand(vector<long double> p)
-{
-    uniform_real_distribution<long double> distribution(0, p.back());
-    mt19937 engine( rand() );
-
-    long double value = distribution(engine);
-    return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        long double value = distribution(engine);
+        return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+    }
 }
 
 /* Virtual function that you need to complete    */
@@ -118,6 +122,18 @@ void Item::setKind(string kind) {
 }
 
 /* Supplement */
+
+void Item::increaseDurability(int delta)
+{
+    durability += delta;
+}
+
+bool Item::decreaseDurability(int delta)
+{
+    durability -= delta;
+    return durability <= 0;
+}
+
 ostream& operator<<(ostream& out, const Item& item) {
     out << item.getName() << endl;
     out << "> type: " << item.getKind() << endl;
@@ -161,7 +177,7 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
     
     if (kind == "Weapon")
     {
-        item = Item("Rusty Sword", kind, "1", 0, 0, 0, 10, 0, 100, 50);
+        item = Item("Rusty Sword", kind, "1", 0, 0, 0, 10, 0, 3, 50);
     }
 
     return item;

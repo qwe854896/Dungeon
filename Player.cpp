@@ -16,38 +16,12 @@ Player::Player(string name, string image, string type, int LV, int EXP, int HP, 
     gold = 0;
 }
 
-void Player::addItem(Item item){
-    inventory.emplace_back(item);
-}
-
-void Player::popItem(int index) /*pop out the specific object, used when the interaction is done*/
-{
-    // swap(inventory.back(), inventory[index]);
-    // inventory.pop_back();
-    inventory.erase(inventory.begin() + index);
-}
-
-void Player::useItem(int index)
-{
-    if (triggerEvent( &inventory[index] ))
-    {
-        popItem(index);
+namespace {
+    void showBar(int current, int max) {
+        const int nstars = 50;
+        const int per = current * nstars / max;
+        cout << "| " << string(per, '=') << string(nstars - per, ' ') << " | ";
     }
-}
-
-void Player::changeRoom(Room* room) {
-    previousRoom = currentRoom;
-    currentRoom = room;
-}
-
-void Player::increaseGold(int gold)
-{
-    this->gold += gold;
-}
-
-void Player::decreaseGold(int gold)
-{
-    this->gold -= gold;
 }
 
 /* Virtual function that you need to complete   */
@@ -83,7 +57,7 @@ bool Player::triggerEvent(Object* object)
         if (item->getKind() == "Props") {
             cout << "You use " << item->getName() << endl;
 
-            item->setDurability(item->getDurability() - 1);
+            item->decreaseDurability(1);
             increaseStates(item->getHP(), item->getMP(), item->getFP(), item->getAttack(), item->getDefense());
 
             if (item->getDurability() <= 0) return true;
@@ -184,6 +158,82 @@ int Player::getGold() const {
 }
 
 /* Supplement */
+
+void Player::addItem(Item item){
+    inventory.emplace_back(item);
+}
+
+void Player::popItem(int index) /*pop out the specific object, used when the interaction is done*/
+{
+    // swap(inventory.back(), inventory[index]);
+    // inventory.pop_back();
+    inventory.erase(inventory.begin() + index);
+}
+
+void Player::useItem(int index)
+{
+    if (triggerEvent( &inventory[index] ))
+    {
+        popItem(index);
+    }
+}
+
+void Player::sellItem(int index)
+{
+    gold += inventory[index].getPrice();
+    popItem(index);
+}
+
+void Player::changeRoom(Room* room) {
+    previousRoom = currentRoom;
+    currentRoom = room;
+}
+
+void Player::increaseGold(int gold)
+{
+    this->gold += gold;
+}
+
+void Player::decreaseGold(int gold)
+{
+    this->gold -= gold;
+}
+
+void Player::increaseArmorDurability(int delta)
+{
+    for (int i = 0; i < 5; ++i) {
+        if (armors[i].getKind() != "NULL") {
+            armors[i].increaseDurability(delta);
+        }
+    }
+}
+
+void Player::decreaseArmorDurability(int delta)
+{
+    for (int i = 0; i < 4; ++i) { // doesn't contain "Weapon"
+        if (armors[i].getKind() != "NULL") {
+            if ( armors[i].decreaseDurability(delta) ) {
+                cout << "Your " << armors[i].getName() << " is broken.\n" << endl;
+                decreaseStates(armors[i].getHP(), armors[i].getMP(), armors[i].getFP(), armors[i].getAttack(), armors[i].getDefense());
+
+                armors[i] = Item();
+            }
+        }
+    }
+}
+
+void Player::decreaseWeaponDurability(int delta)
+{
+    if (armors[4].getKind() != "NULL") {
+        if ( armors[4].decreaseDurability(delta) ) {
+            cout << "Your " << armors[4].getName() << " is broken.\n" << endl;
+            decreaseStates(armors[4].getHP(), armors[4].getMP(), armors[4].getFP(), armors[4].getAttack(), armors[4].getDefense());
+
+            armors[4] = Item();
+        }
+    }
+}
+
 bool Player::listInventory()
 {
     if (inventory.empty()) {
@@ -199,6 +249,68 @@ bool Player::listInventory()
     cout << (++option) << ". Cancel.\n";
 
     return true;
+}
+
+void Player::showStatusinFight() {
+    // cout << getName() << "   Lv. " << setw(2) << getLV() << endl;
+    cout << "Status: \n";
+    cout << left << setw(12) << "> HP "; showBar(getCurrentHP(), getMaxHP()); cout << getCurrentHP() << '/' << getMaxHP() << endl;
+    cout << left << setw(12) << "> MP "; showBar(getCurrentMP(), getMaxMP()); cout << getCurrentMP() << '/' << getMaxMP() << endl;
+    cout << left << setw(12) << "> FP "; showBar(getCurrentFP(), getMaxFP()); cout << getCurrentFP() << '/' << getMaxFP() << endl;
+    cout << left << setw(12) << "> Attack: " << getAttack() << endl;
+    cout << left << setw(12) << "> Defense: " << getDefense() << endl;
+}
+
+/* operation: use, sell */
+bool Player::handleInventory(string operation) {
+    if (listInventory())
+    {
+        string ops; getline(cin, ops);
+        while (ops[0] < 'A' || OPS > inventory.size()) {
+            cout << "Error, please enter operation again.\n";
+            getline(cin, ops);
+        }
+        if (OPS < inventory.size())
+        {
+            if (operation == "use") useItem(OPS);
+            else if (operation == "sell") sellItem(OPS);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Player::handleAct() {
+    return handleInventory("use");
+}
+
+Item Player::handleAttack()
+{
+    cout << "Choose the method to attack:\n";
+    cout << "A. Default Attack\nB. Skills\n";
+
+    char option = 'B';
+    if (ultimateSkillAvailable()) {
+        cout << ++option << ". Ultimate Skills\n";
+    }
+    cout << ++option << ". Cancel\n";
+
+    string ops; getline(cin, ops);
+    while (ops[0] < 'A' || ops[0] > option) {
+        cout << "Error, please enter operation again.\n";
+        getline(cin, ops);
+    }
+    if (ops[0] < option)
+    {
+        if (ops[0] == 'A') return Item("Skill", getAttack(), 0, 0, 0, 0);
+        else if (ops[0] == 'B') return handleSkills(0);
+        else if (ops[0] == 'C') return handleSkills(1);
+    }
+    return Item("NULL", 0, 0, 0, 0, 0);
+}
+
+Item Player::handleSkills(int ultimate) {
+    return Item("NULL", 0, 0, 0, 0, 0);
 }
 
 int Player::getArmorIndex(string kind)

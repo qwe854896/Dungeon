@@ -4,11 +4,11 @@ Hong Cheng
 image end.
 Player
 1
-1000 0
+9 0
 400 400
 400 400
-200 200
-100 100
+200 0
+1000000 100
 0
 5
 Item
@@ -52,6 +52,7 @@ NULL
 128
 0
 0
+0 0
 
 script end.
 
@@ -60,6 +61,7 @@ script end.
 
 1
 0
+1 0
 
 script end.
 
@@ -69,7 +71,7 @@ Slime
 
 image end.
 Slime
-1
+0
 10 0
 10 10
 10 10
@@ -80,6 +82,7 @@ Slime
 
 2
 0
+1 1
 
 script end.
 
@@ -106,27 +109,28 @@ Rusty Sword
 
 image end.
 Weapon
-0 0 0 10 0 100 50
+0 0 0 10 0 3 50
 
 Item
 Rusty Sticks
 
 image end.
 Weapon
-0 0 0 5 0 100 25
+0 0 0 5 0 3 25
 
 Item
 Old Shoes
 
 image end.
 Boots
-0 0 0 0 10 100 50
+0 0 0 0 10 3 50
 
 
 -1 1 -1 -1
 
 3
 0
+1 -1
 
 script end.
 
@@ -142,6 +146,7 @@ Chest
 
 4
 1
+2 0
 
 script end.
 
@@ -162,6 +167,7 @@ Boss
 
 0
 0
+0 0
 
 script end.
 
@@ -170,6 +176,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -178,6 +185,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -186,6 +194,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -194,6 +203,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -202,6 +212,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -210,6 +221,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -218,6 +230,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -226,6 +239,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -234,6 +248,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -242,6 +257,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -250,6 +266,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -258,6 +275,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -266,6 +284,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -274,6 +293,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -282,6 +302,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -290,6 +311,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -298,6 +320,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -306,6 +329,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -314,6 +338,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -322,6 +347,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -330,6 +356,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -338,6 +365,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -346,6 +374,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -354,6 +383,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -362,6 +392,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -370,6 +401,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -378,6 +410,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -386,6 +419,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -394,6 +428,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -402,6 +437,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -410,6 +446,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -418,6 +455,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -426,6 +464,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -434,6 +473,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -442,6 +482,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -450,6 +491,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -458,6 +500,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -466,6 +509,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -474,6 +518,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -482,6 +527,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -490,6 +536,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -498,6 +545,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -506,6 +554,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -514,6 +563,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -522,6 +572,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -530,6 +581,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -538,6 +590,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -546,6 +599,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -554,6 +608,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -562,6 +617,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -570,6 +626,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -578,6 +635,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -586,6 +644,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -594,6 +653,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -602,6 +662,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -610,6 +671,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -618,6 +680,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -626,6 +689,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -634,6 +698,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -642,6 +707,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -650,6 +716,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -658,6 +725,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -666,6 +734,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -674,6 +743,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -682,6 +752,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -690,6 +761,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -698,6 +770,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -706,6 +779,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -714,6 +788,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -722,6 +797,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -730,6 +806,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -738,6 +815,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -746,6 +824,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -754,6 +833,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -762,6 +842,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -770,6 +851,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -778,6 +860,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -786,6 +869,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -794,6 +878,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -802,6 +887,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -810,6 +896,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -818,6 +905,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -826,6 +914,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -834,6 +923,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -842,6 +932,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -850,6 +941,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -858,6 +950,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -866,6 +959,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -874,6 +968,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -882,6 +977,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -890,6 +986,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -898,6 +995,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -906,6 +1004,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -914,6 +1013,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -922,6 +1022,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -930,6 +1031,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -938,6 +1040,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -946,6 +1049,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -954,6 +1058,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -962,6 +1067,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -970,6 +1076,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -978,6 +1085,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -986,6 +1094,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -994,6 +1103,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1002,6 +1112,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1010,6 +1121,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1018,6 +1130,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1026,6 +1139,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1034,6 +1148,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1042,6 +1157,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1050,6 +1166,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1058,6 +1175,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1066,6 +1184,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1074,6 +1193,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1082,6 +1202,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1090,6 +1211,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1098,6 +1220,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1106,6 +1229,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1114,6 +1238,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1122,6 +1247,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1130,6 +1256,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1138,6 +1265,7 @@ script end.
 
 0
 0
+0 0
 
 script end.
 
@@ -1146,4 +1274,11 @@ script end.
 
 128
 1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+5
+0 0 0
+1 -1 3
+1 0 1
+1 1 2
+2 0 4
+
 4

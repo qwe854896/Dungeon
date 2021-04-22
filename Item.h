@@ -19,11 +19,9 @@ class Item: public Object
 private:
     string kind;
     int HP, MP, FP, attack, defense, durability, price;
-
-    /* randomly pick a number by given probability */
-    static int getRand(vector<long double>);
 public:
     Item();
+    Item(string, int, int, int, int, int);
     Item(string, string, int, int, int, int, int, int, int);
     Item(string, string, string, int, int, int, int, int, int, int);
 
@@ -54,6 +52,8 @@ public:
     void setKind(string);
 
     /* Supplement */
+    void increaseDurability(int);
+    bool decreaseDurability(int);
     static Item randomItemGenerator(int, string);
 };
 

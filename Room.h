@@ -19,13 +19,12 @@ private:
     Room* rightRoom;
     bool isExit;
     int index;
+    int X, Y;
     vector<Object*> objects; /*contain 1 or multiple objects, including monster, npc, etc*/
 public:
     Room();
-    Room(bool, int);
-    Room(bool, int, vector<Object*>, string);
-    bool popObject(Object*); /*pop out the specific object, used when the interaction is done*/
-    bool pushObject(Object*); /* push in the specific object, used when new item is added */
+    Room(bool, int, int, int);
+    Room(bool, int, int, int, vector<Object*>, string);
 
     /* Set & Get function*/
     void setScript(string);
@@ -35,10 +34,14 @@ public:
     void setRightRoom(Room*);
     void setIsExit(bool);
     void setIndex(int);
+    void setX(int);
+    void setY(int);
     void setObjects(const vector<Object*>&);
     string getScript() const;
     bool getIsExit() const;
     int getIndex() const;
+    int getX() const;
+    int getY() const;
     vector<Object*> getObjects() const;
     Room* getUpRoom() const;
     Room* getDownRoom() const;
@@ -46,6 +49,8 @@ public:
     Room* getRightRoom() const;
 
     /* Supplement */
+    bool popObject(Object*); /* pop out the specific object, used when the interaction is done */
+    bool pushObject(Object*); /* push in the specific object, used when new item is added */
 };
 
 ifstream& operator>>(ifstream&, Room&);

@@ -3,17 +3,20 @@
 void Record::savePlayer(Player* player, ofstream& out) {
     out << (*player) << endl;
 }
+
 void Record::loadPlayer(Player* player, ifstream& in) {
     string tag = ""; while (tag == "") getline(in, tag);
     in >> (*player);
     in >> CRIndex >> PRIndex;
 }
+
 void Record::saveRooms(vector<Room>& rooms, ofstream& out) {
     out << rooms.size() << endl;
     for (auto room : rooms) {
         out << room << endl;
     }
 }
+
 void Record::loadRooms(vector<Room>& rooms, ifstream& in) {
     int n;
     in >> n;
@@ -59,6 +62,25 @@ void Record::loadVis(vector<bool>& vis, ifstream& in)
     in >> n;
     vis.resize(n);
     for (int i = 0; i < n; ++i) in >> v, vis[i] = v;
+}
+
+void Record::saveCoord(map <coord, int>& coordToIndex, ofstream& out)
+{
+    out << coordToIndex.size() << endl;
+    for (auto& c : coordToIndex) {
+        out << c.first.first << ' ' << c.first.second << ' ' << c.second << endl;
+    }
+    out << endl;
+}
+
+void Record::loadCoord(map <coord, int>& coordToIndex, ifstream& in)
+{
+    int n, X, Y, index;
+    in >> n;
+    for (int i = 0; i < n; ++i) {
+        in >> X >> Y >> index;
+        coordToIndex[ coord(X, Y) ] = index;
+    }
 }
 
 void Record::saveFileNames()
@@ -143,7 +165,7 @@ Record::Record(int number)
     loadFileNames();
 }
 
-void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex) {
+void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
     cout << "Choose one file to save:\n";
     listFileNames();
 
@@ -166,13 +188,14 @@ void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, 
     savePlayer(player, fout);
     saveRooms(rooms, fout);
     saveVis(vis, fout);
+    saveCoord(coordToIndex, fout);
     fout << usedIndex << endl;
 
     cout << "Done.\n";
 
     fout.close();
 }
-bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex) {
+bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
     cout << "Choose one file to load:\n";
     listFileNames();
 
@@ -190,6 +213,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis
     loadPlayer(player, fin);
     loadRooms(rooms, fin);
     loadVis(vis, fin);
+    loadCoord(coordToIndex, fin);
     fin >> usedIndex;
 
     cout << "Done.\n";

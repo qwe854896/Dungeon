@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
 #include <sstream>
 #include <assert.h>
 #include <dirent.h>
@@ -18,6 +19,8 @@
 #include "Player.h"
 
 using namespace std;
+
+using coord = pair<int, int>;
 
 /* This is the record system. Get the information of the  */
 /* player and rooms then save them to (a) file(s). Notice */
@@ -33,10 +36,12 @@ private:
     void savePlayer(Player*, ofstream&);
     void saveRooms(vector<Room>&, ofstream&);
     void saveVis(vector<bool>&, ofstream&);
+    void saveCoord(map <coord, int>&, ofstream&);
 
     void loadPlayer(Player*, ifstream&);
     void loadRooms(vector<Room>&, ifstream&);
     void loadVis(vector<bool>&, ifstream&);
+    void loadCoord(map <coord, int>&, ifstream&);
 
     void saveFileNames();
     void loadFileNames();
@@ -46,8 +51,8 @@ private:
 public:
     Record();
     Record(int);
-    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&);
-    bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&);
+    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
+    bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
 };
 
 #endif // RECORD_H_INCLUDED

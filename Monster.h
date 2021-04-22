@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
+#include <random>
+#include <algorithm>
 #include "GameCharacter.h"
 #include "Player.h"
 
@@ -12,6 +15,7 @@ using namespace std;
 class Monster: public GameCharacter
 {
 private:
+    static int damageCalculate(int, int);
 public:
     Monster();
     Monster(string, string, string, int);
@@ -25,7 +29,9 @@ public:
     void output(ofstream&) const override;
 
     /* Supplement */
+    void showStatus();
 };
+
 
 
 #endif // ENEMY_H_INCLUDED

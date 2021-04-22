@@ -11,20 +11,6 @@ NPC::NPC(string name, string image, string type, string script, vector<Item> com
     this->commodity = commodity;
 }
 
-void NPC::listCommodity() /*print all the Item in this NPC*/
-{
-    char option = 'A' - 1;
-    for (auto good : commodity) {
-        cout << (++option) << ". " << good << endl;
-    }
-    cout << (++option) << ". Cancel\n";
-}
-
-void NPC::pushCommodity(Item item) /* push an item into commodity */
-{
-    commodity.emplace_back(item);
-}
-
 /* Virtual function that you need to complete   */
 /* In NPC, this function should deal with the   */
 /* transaction in easy implementation           */
@@ -32,28 +18,33 @@ bool NPC::triggerEvent(Object* object) {
     if (object->getTag() == "Player") {
         Player *player = dynamic_cast<Player*>(object);
         
-        cout << script << endl;
-        listCommodity();
-
-        string ops; getline(cin, ops);
         while (1) {
-            while (ops[0] < 'A' || OPS > commodity.size()) {
+            system("cls");
+
+            cout << script << endl;
+
+            cout << "A. BUY\nB. SELL\nC. TALK\nD. EXIT\n";
+            string ops; getline(cin, ops);
+            while (ops[0] < 'A' || ops[0] > 'D') {
                 cout << "Error, please enter operation again.\n";
                 getline(cin, ops);
             }
-            if (OPS == commodity.size() || commodity[OPS].getPrice() <= player->getGold()) break;
 
-            cout << "Sorry, you don't have enough money!\nPlease enter operation again.\n";
-            getline(cin, ops);
+            switch (ops[0]) {
+                case 'A':
+                    while ( handleBuy(player) );
+                    break;
+                case 'B':
+                    while ( handleSell(player) );
+                    cout << "Your bag is empty now!\n\n";
+                    break;
+                case 'C':
+                    while ( handleTalk() );
+                    break;
+                case 'D':
+                    return false;
+            }
         }
-
-        if (OPS == commodity.size()) return false;
-
-        cout << "You buy " << commodity[OPS].getName() << endl;
-        player->addItem(commodity[OPS]);
-        player->decreaseGold(commodity[OPS].getPrice());
-
-        return false;
     }
 
     return false;
@@ -109,4 +100,63 @@ vector<Item> NPC::getCommodity() const {
 }
 
 /* Supplement */
+
+void NPC::listCommodity() /* print all the Item in this NPC*/
+{
+    char option = 'A' - 1;
+    for (auto good : commodity) {
+        cout << (++option) << ". " << good << endl;
+    }
+    cout << (++option) << ". Cancel\n";
+}
+
+void NPC::pushCommodity(Item item) /* push an item into commodity */
+{
+    commodity.emplace_back(item);
+}
+
+bool NPC::handleBuy(Player *player) {
+    system("cls");
+    cout << "What do you want to buy?\n";
+
+    listCommodity();
+
+    string ops; getline(cin, ops);
+    while (1) {
+        while (ops[0] < 'A' || OPS > commodity.size()) {
+            cout << "Error, please enter operation again.\n";
+            getline(cin, ops);
+        }
+        if (OPS == commodity.size() || commodity[OPS].getPrice() <= player->getGold()) break;
+
+        cout << "Sorry, you don't have enough money!\nPlease enter operation again.\n";
+        getline(cin, ops);
+    }
+
+    if (OPS == commodity.size()) return false;
+
+    cout << "You buy " << commodity[OPS].getName() << endl;
+    player->addItem(commodity[OPS]);
+    player->decreaseGold(commodity[OPS].getPrice());
+
+    cout << endl;
+    system("pause");
+
+    return true;
+}
+
+bool NPC::handleSell(Player *player) {
+    system("cls");
+
+    cout << "What do you want to sell?\n";
+
+    return player->handleInventory("sell");
+}
+
+bool NPC::handleTalk() {
+    system("cls");
+    cout << "I am shy!\n\n";
+    system("pause");
+    return false;
+}
 
