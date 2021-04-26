@@ -24,6 +24,7 @@ private:
 
     vector<Item> inventory;
     vector<Item> armors; // Helmet, Chestplate, Leggings, Boots, Weapon;
+    vector<Item> skills; // skills
     int gold;
 
     /* Supplement */

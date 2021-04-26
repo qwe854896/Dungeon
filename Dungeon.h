@@ -4,6 +4,8 @@
 #define OPS (unsigned int)(ops[0] - 'A')
 
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 #include <map>
@@ -19,6 +21,7 @@
 #include "Object.h"
 
 using namespace std;
+using namespace sf;
 
 using coord = pair<int, int>;
 
@@ -31,6 +34,19 @@ private:
     vector<bool> vis;
 
     map <coord, int> coordToIndex;
+
+    /* SFML */
+    RenderWindow *_window;
+    CircleShape _player;
+    Event sfEvent;
+    Clock dtClock;
+    float dt;
+
+    void processEvents();
+    void updateDt();
+    void updateSFMLEvents();
+    void update();
+    void render();
 public:
     Dungeon();
     ~Dungeon();
@@ -65,7 +81,7 @@ public:
     bool checkGameLogic();
 
     /* Deal with the whole game process */
-    void runDungeon();
+    void runDungeon(int);
 
     /* Check there is a monster or not in the current room */
     bool checkMonsterRoom(const vector<Object*>&);

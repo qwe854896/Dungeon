@@ -89,30 +89,40 @@ int GameCharacter::getDefense() const {
 int GameCharacter::expNeedToNextLV()
 {
     if (LV <= 5) return 2 * LV + 7;
-    else if (LV <= 10) return 5 * LV - 38;
-    else return 9 * LV - 158;
+    else if (LV <= 10) return 5 * LV - 12;
+    else return 9 * LV - 52;
 
     return 10000;
 }
 int GameCharacter::HPNextLV()
 {
-    return 200 * LV * (LV + 1);
+    int HP = 200 * LV * (LV + 1);
+    if (getTag() == "Monster") HP *= 0.8;
+    return HP;
 }
 int GameCharacter::MPNextLV()
 {
-    return 200 * LV * (LV + 1);
+    int MP = 200 * LV * (LV + 1);
+    if (getTag() == "Monster") MP *= 0.8;
+    return MP;
 }
 int GameCharacter::FPNextLV()
 {
-    return 100 * LV * (LV + 1);
+    int FP = 100 * LV * (LV + 1);
+    if (getTag() == "Monster") FP *= 1;
+    return FP;
 }
 int GameCharacter::attackNextLV()
 {
-    return 20 * LV * (LV + 1);
+    int attack = 20 * LV * (LV + 1);
+    if (getTag() == "Monster") attack *= 1;
+    return attack;
 }
 int GameCharacter::defenseNextLV()
 {
-    return 20 * LV * (LV + 1);
+    int defense = 20 * LV * (LV + 1);
+    if (getTag() == "Monster") defense *= 0.8;
+    return defense;
 }
 
 void GameCharacter::increaseStates(int HP, int MP, int FP, int attack, int defense) {

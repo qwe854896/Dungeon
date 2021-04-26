@@ -131,7 +131,29 @@ void Monster::output(ofstream& out) const
 /* Supplement */
 
 int Monster::damageCalculate(int attack, int defense) {
-    return attack * 4 - defense * 2;
+    int damage = attack * 4 - defense * 2;
+
+    int event = getRand(vector<long double>( {1, 2, 12, 92} )); // 1 1 10 80
+    switch (event) {
+        case 0:
+            cout << "MISS!\n";
+            damage = 0;
+            break;
+        case 1:
+            cout << "Critical Hit!\n";
+            damage *= 2;
+            break;
+        case 2:
+            cout << "Defensed!\n";
+            damage *= 0.9;
+            break;
+        case 3:
+            cout << "Attack!\n";
+            damage *= 1;
+            break;
+    }
+
+    return damage;
 }
 
 

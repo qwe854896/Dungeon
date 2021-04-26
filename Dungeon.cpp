@@ -1,7 +1,12 @@
 #include "Dungeon.h"
-Dungeon::Dungeon(){
+Dungeon::Dungeon() : _player(150) {
+    _window = new RenderWindow(VideoMode(800, 600), "Dungeon!");
+
+    _player.setFillColor(Color::Blue);
+    _player.setPosition(10, 20);
 }
 Dungeon::~Dungeon(){
+    delete _window;
     for (auto& room : rooms) {
         for (auto &object : room.getObjects()) {
             delete object;
@@ -39,55 +44,55 @@ void Dungeon::createMap() {
     vis.resize(128);
 
     rooms[0] = Room(0, 0, 0, 0); // init
-    vis[0] = 1;
+    vis[0] = 0;
     coordToIndex[ coord(0, 0) ] = 0;
-    rooms[0].setRightRoom(&rooms[1]);
+    // rooms[0].setRightRoom(&rooms[1]);
     player.setCurrentRoom(&rooms[0]);
     player.setPreviousRoom(&rooms[0]);
 
-    rooms[1] = Room(0, 1, 1, 0); // monster
-    vis[1] = 1;
-    coordToIndex[ coord(1, 0) ] = 1;
-    rooms[1].setUpRoom(&rooms[2]);
-    rooms[1].setDownRoom(&rooms[3]);
-    rooms[1].setLeftRoom(&rooms[0]);
-    rooms[1].setRightRoom(&rooms[4]);
+    // rooms[1] = Room(0, 1, 1, 0); // monster
+    // vis[1] = 1;
+    // coordToIndex[ coord(1, 0) ] = 1;
+    // rooms[1].setUpRoom(&rooms[2]);
+    // rooms[1].setDownRoom(&rooms[3]);
+    // rooms[1].setLeftRoom(&rooms[0]);
+    // rooms[1].setRightRoom(&rooms[4]);
 
-    Monster *slime = new Monster("Slime", ">_<", "Slime", 0, 10, 10, 10, 10, 10, 10);
-    rooms[1].pushObject(slime);
+    // Monster *slime = new Monster("Slime", ">_<", "Slime", 0, 10, 10, 10, 10, 10, 10);
+    // rooms[1].pushObject(slime);
 
-    rooms[2] = Room(0, 2, 1, 1); // NPC
-    vis[2] = 0;
-    coordToIndex[ coord(1, 1) ] = 2;
-    rooms[2].setDownRoom(&rooms[1]);
+    // rooms[2] = Room(0, 2, 1, 1); // NPC
+    // vis[2] = 0;
+    // coordToIndex[ coord(1, 1) ] = 2;
+    // rooms[2].setDownRoom(&rooms[1]);
 
-    Item sword = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 3, 50);
-    Item sticks = Item("Rusty Sticks", "Weapon", 0, 0, 0, 5, 0, 3, 25);
-    Item shoes = Item("Old Shoes", "Boots", 0, 0, 0, 0, 10, 3, 50);
-    vector <Item> goods;
-    goods.emplace_back(sword);
-    goods.emplace_back(sticks);
-    goods.emplace_back(shoes);
-    NPC *Chris = new NPC("Chris", ">_>", "Shop", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
-    rooms[2].pushObject(Chris);
+    // Item sword = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 3, 50);
+    // Item sticks = Item("Rusty Sticks", "Weapon", 0, 0, 0, 5, 0, 3, 25);
+    // Item shoes = Item("Old Shoes", "Boots", 0, 0, 0, 0, 10, 3, 50);
+    // vector <Item> goods;
+    // goods.emplace_back(sword);
+    // goods.emplace_back(sticks);
+    // goods.emplace_back(shoes);
+    // NPC *Chris = new NPC("Chris", ">_>", "Shop", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
+    // rooms[2].pushObject(Chris);
 
-    rooms[3] = Room(0, 3, 1, -1); // chest
-    vis[3] = 0;
-    coordToIndex[ coord(1, -1) ] = 3;
-    rooms[3].setUpRoom(&rooms[1]);
+    // rooms[3] = Room(0, 3, 1, -1); // chest
+    // vis[3] = 0;
+    // coordToIndex[ coord(1, -1) ] = 3;
+    // rooms[3].setUpRoom(&rooms[1]);
 
-    Item *chest = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
-    rooms[3].pushObject(chest);
+    // Item *chest = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
+    // rooms[3].pushObject(chest);
 
-    rooms[4] = Room(1, 4, 2, 0); // Boss
-    vis[4] = 1;
-    coordToIndex[ coord(2, 0) ] = 4;
-    rooms[4].setLeftRoom(&rooms[1]);
+    // rooms[4] = Room(1, 4, 2, 0); // Boss
+    // vis[4] = 1;
+    // coordToIndex[ coord(2, 0) ] = 4;
+    // rooms[4].setLeftRoom(&rooms[1]);
 
-    Monster *boss = new Monster("Boss", "~_~", "Boss", 10, 20, 1000, 1000, 600, 100, 100);
-    rooms[4].pushObject(boss);
+    // Monster *boss = new Monster("Boss", "~_~", "Boss", 10, 20, 1000, 1000, 600, 100, 100);
+    // rooms[4].pushObject(boss);
 
-    usedIndex = 4;
+    usedIndex = 0;
     cout << "Done.\n";
 }
 
@@ -143,7 +148,7 @@ void Dungeon::handleMovement() {
 /* Deal with player's interaction with objects in that room */
 /* If triggerEvent return true, pop this object */
 void Dungeon::handleEvent(Object* obj) {
-    system("cls");
+    // system("cls");
     if (obj->triggerEvent(&player)) {
         player.getCurrentRoom()->popObject(obj);
         delete obj;
@@ -265,18 +270,122 @@ bool Dungeon::checkGameLogic() {
 }
 
 /* Deal with the whole game process */
-void Dungeon::runDungeon() {
-    startGame();
+void Dungeon::runDungeon(int minimum_frame_per_seconds) {
+    bool isStarted = 0, isChecked = 1, isCreated = 1, isChose = 1;
 
-    cout << "\n";
-    system("pause");
+    while (_window->isOpen()) {
+        if (!isStarted) {
+            isStarted = 1;
+            startGame();
+        }
 
-    while (!checkGameLogic()) {
         createRoom(player.getCurrentRoom()->getIndex());
-        chooseAction(player.getCurrentRoom()->getObjects());
+        chooseAction(player.getCurrentRoom()->getObjects());    
+        
+        updateDt();
+        update();
+        render();
     }
-    cout << endl;
-    system("pause");
+
+    // startGame();
+
+    // cout << "\n";
+    // system("pause");
+
+    // while (!checkGameLogic()) {
+    //     createRoom(player.getCurrentRoom()->getIndex());
+    //     chooseAction(player.getCurrentRoom()->getObjects());
+    // }
+    // cout << endl;
+    // system("pause");
+
+    // while (_window->isOpen()) {
+    //     updateDt();
+    //     update();
+    //     render();
+    // }
+}
+
+void Dungeon::updateDt() {
+    /* updates the dt variable with the time it takes to update and render one frame. */
+    this->dt = this->dtClock.restart().asSeconds();
+    // system("cls");
+    // cout << this->dt << endl;
+}
+
+void Dungeon::updateSFMLEvents() {
+    while (_window->pollEvent(sfEvent)) {
+        if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+            _window->close();
+        }
+        switch (sfEvent.type) {
+            case Event::Closed:
+                _window->close();
+                break;
+            case Event::LostFocus:
+                cout << "Player leaves the app\n";
+                break;
+            case Event::GainedFocus:
+                cout << "Player is looking at the app\n";
+                break;
+            case Event::TextEntered:
+                if (sfEvent.text.unicode < 128)
+                    cout << char(sfEvent.text.unicode) << endl;
+                break;
+            case Event::Resized:
+                cout << "new width: " << sfEvent.size.width << endl;
+                cout << "new height: " << sfEvent.size.height << endl;
+                break;
+            case Event::KeyPressed:
+                if (sfEvent.key.code == Keyboard::Escape) {
+                    cout << "escape key pressed" << endl;
+                    cout << "control: " << sfEvent.key.control << endl;
+                    cout << "alt: " << sfEvent.key.alt << endl;
+                    cout << "shift: " << sfEvent.key.shift << endl;
+                    cout << "system: " << sfEvent.key.system << endl;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
+            // left key is pressed: move our character
+            cout << "UP" << endl;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            // left key is pressed: move our character
+            cout << "LEFT" << endl;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            // left key is pressed: move our character
+            cout << "DOWN" << endl;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        {
+            // left key is pressed: move our character
+            cout << "RIGHT" << endl;
+        }
+    }
+}
+
+void Dungeon::update() {
+    updateSFMLEvents();
+}
+
+void Dungeon::render() {
+    _window->clear();
+
+    // Render Items
+    _window->draw(_player);
+
+    _window->display();
 }
 
 
@@ -401,7 +510,15 @@ void Dungeon::createRoom(int index)
 /* Random Generator */
 Monster Dungeon::generateMonster(int LV)
 {
-    Monster monster = Monster("Slime's friend", ">_<", "Monster", LV - 2);
+    vector<Monster> monster_list {
+    Monster("Orc", "", "Monster", LV - 1), Monster("Dwarf", "", "Monster", LV - 1), 
+    Monster("Elf", "", "Monster", LV - 1), Monster("Dragon", "", "Monster", LV - 1), 
+    Monster("Wizard", "", "Monster", LV - 1), Monster("Troll", "", "Monster", LV - 1), 
+    Monster("Basilisk", "", "Monster", LV - 1), Monster("CaveMan", "", "Monster", LV - 1), 
+    Monster("Phoenix", "", "Monster", LV - 1), Monster("Cerberus", "", "Monster", LV - 1), 
+    Monster("Danny", "", "Monster", LV - 1)};
+
+    Monster monster = Monster("Slime's friend", ">_<", "Monster", LV - 1);
     monster.increaseLV();
 
     return monster;
@@ -430,7 +547,10 @@ Room Dungeon::generateRoom(bool isExit, int index, int X, int Y, int LV, string 
         "Chest",
         "Boss"
     };
-    if (kind == "RANDOM") kind = kindList[ getRand(vector<long double>( {30, 60, 90, 100} )) ];
+
+    long double condition = player.getLV() >= 5 ? 200 : 90;
+
+    if (kind == "RANDOM") kind = kindList[ getRand(vector<long double>( {30, 60, 90, condition} )) ];
 
     if (kind == "Monster")
     {

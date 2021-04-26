@@ -12,7 +12,8 @@ using namespace std;
 
 int main(){
     srand(clock());
-    Dungeon dungeon = Dungeon();
-    dungeon.runDungeon();
+    
+    Dungeon dungeon;
+    dungeon.runDungeon(1);
     return 0;
 }
