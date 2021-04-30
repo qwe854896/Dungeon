@@ -139,6 +139,43 @@ void Record::listFileNames()
         }
     }
     cout << "\n" << (++ops) << ": Cancel.\n";
+
+    // Font font; font.loadFromFile("../fonts/Dosis-Light.ttf");
+
+    // Button probs(160, 100, 1600, 200, 60, &font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    // cout << "Do you want to load previous data? (Y/N)\n";
+    // Menu YN(270, 700, 500, 200, 60, false, &font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    // YN.push_back("Yes");
+    // YN.push_back("NO");
+
+    // int ops;
+    // while (_window->isOpen()) {
+    //     updateDt();
+    //     while (_window->pollEvent(sfEvent)) {
+    //         if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+    //             _window->close();
+    //         }
+    //         switch (sfEvent.type) {
+    //             case Event::Closed:
+    //                 _window->close();
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    //     if (Keyboard::isKeyPressed(Keyboard::Enter)) {
+    //         ops = YN.getIsSelected();
+    //         break;
+    //     }
+    //     YN.update();
+
+    //     _window->clear();
+
+    //     probs.render(_window);
+    //     YN.render(_window);
+
+    //     _window->display();
+    // }
 }
 
 void Record::initFileNames(int number)
@@ -158,7 +195,7 @@ inline bool exists(const string& name) {
 }
 
 Record::Record() {}
-Record::Record(int number)
+Record::Record(int number, RenderWindow* _window)
 {
     if (!exists("Record/file")) initFileNames(number);
     fileList.resize(number);

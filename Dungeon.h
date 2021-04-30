@@ -19,6 +19,8 @@
 #include "Room.h"
 #include "Record.h"
 #include "Object.h"
+#include "Button.h"
+#include "Menu.h"
 
 using namespace std;
 using namespace sf;
@@ -94,6 +96,8 @@ public:
     NPC generateNPC(int, string);
     Room generateRoom(bool, int, int, int, int, string);
     void generateDescription();
+
+    void encounterDanny();
 };
 
 

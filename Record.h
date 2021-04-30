@@ -3,6 +3,8 @@
 
 #define OPS (unsigned int)(ops[0] - 'A')
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <fstream>
 #include <vector>
 #include <map>
@@ -19,6 +21,7 @@
 #include "Player.h"
 
 using namespace std;
+using namespace sf;
 
 using coord = pair<int, int>;
 
@@ -48,9 +51,11 @@ private:
     void listFileNames();
     void initFileNames(int);
 
+    RenderWindow *_window;
+
 public:
     Record();
-    Record(int);
+    Record(int, RenderWindow* _window);
     void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
     bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
 };

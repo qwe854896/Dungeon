@@ -1,6 +1,6 @@
 #include"Button.h"
 
-Button::Button(float x, float y, float width, float height, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor)
+Button::Button(float x, float y, float width, float height, int size, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor)
 : font(font), idleColor(idleColor), hoverColor(hoverColor), activeColor(activeColor)
 {
     this->shape.setPosition(Vector2f(x, y));
@@ -9,13 +9,17 @@ Button::Button(float x, float y, float width, float height, Font* font, string t
     this->text.setFont(*this->font);
     this->text.setString(text);
     this->text.setFillColor(Color::White);
-    this->text.setCharacterSize(int(width / 10));
+    this->text.setCharacterSize(size);
     this->text.setPosition(
         this->shape.getPosition().x + (this->shape.getGlobalBounds().width - this->text.getGlobalBounds().width) / 2.f,
         this->shape.getPosition().y + (this->shape.getGlobalBounds().height - this->text.getGlobalBounds().height) / 2.f
     );
 
     this->shape.setFillColor(this->idleColor);
+}
+
+Button::~Button() {
+
 }
 
 

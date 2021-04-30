@@ -160,6 +160,40 @@ ofstream& operator<<(ofstream& out, const Item& item)
 
 Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
 {
+    int LevelArg= LV * (LV + 1);
+    vector<Item> Booty //This is for items that monster drops.
+    {
+        Item("Orc's armor", "Armor", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg), 
+        Item("Dwarf's diamond", "Treasure", 0, 0, 0, 0, 0, 0, 0, 1000 * LevelArg),
+        Item("Dragon's cloak", "Armor", 0, 0, 10*LevelArg, 0, 20 * LevelArg, 0, 0, 0),
+        Item("Elf's sword", "Weapon", 0, 0, 10*LevelArg, 20 * LevelArg, 0, 0, 0, 0),
+        Item("Wizard's potion", "Potion", 10 * LevelArg, 10 * LevelArg, 10 * LevelArg, 1 * LevelArg, 1 * LevelArg, 0, 0),
+        Item("Troll's stick", "Weapon", 0, 0, 0, 3 * LevelArg, 1 * LevelArg, 10 * LevelArg, 0),
+        Item("Basilisk's fang", "Treasure", 0, 0, 0, 0, 0, 0, 0, 800 * LevelArg),
+        Item("Caveman's bow", "Weapon", 0, 0, 0, 5 * LevelArg, 0, 0, 0, 100 * LevelArg),
+        Item("Phoenix's Tear", "Treasure", 100 * LevelArg , 100 * LevelArg , 100 * LevelArg, 0, 0, 0, 0),
+        Item("Cerberus's fur", "Armor", 0, 0, 0, 0, 20 * LevelArg, 100 * LevelArg, 100 * LevelArg),
+        Item("Danny's cheese", "Food", 1000 * LevelArg, 0, 0, 0, 0, 0, 109 * LevelArg)
+    };
+
+    vector<Item> ItemsforSale //This is for npc to sell them.
+    {
+        Item("Sword", "Weapon", 0, 0, 0, 5 * LevelArg, 0, 10 * LevelArg, 10 * LevelArg),
+        Item("Shield", "Weapon", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 10 * LevelArg),
+        Item("Bow and Arrow", "Weapon", 0, 0, 0, 5 * LevelArg, 2 * LevelArg, 10 * LevelArg, 15 * LevelArg),
+        Item("Wand", "Weapon", 0, 0, 3 * LevelArg, 7 * LevelArg, 3 * LevelArg, 15 * LevelArg, 25 * LevelArg),
+        Item("HP potion", "Potion", 10 * LevelArg, 0, 0, 0, 0, 0, 5 * LevelArg),
+        Item("MP potion", "Potion", 0, 10 * LevelArg, 0, 0, 0, 0, 5 * LevelArg),
+        Item("FP potion", "Potion", 0, 0, 10 * LevelArg, 0, 0, 0, 5 * LevelArg),
+        Item("Attack potion", "Potion", 0, 0, 0, 3 * LevelArg, 0, 0, 10 * LevelArg),
+        Item("Defense potion", "Potion", 0, 0, 0, 0, 3 * LevelArg, 0, 10 * LevelArg),
+        Item("Helmet", "Armor", 0, 0, 0, 0, 3 * LevelArg, 10 * LevelArg, 12 * LevelArg),
+        Item("Chest Armor", "Armor", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 20 * LevelArg),
+        Item("Armor Pants", "Armor", 0, 0, 0, 0, 4 * LevelArg, 10 * LevelArg, 16 * LevelArg),
+        Item("Boots", "Armor", 0, 0, 0, 0, 2 * LevelArg, 10 * LevelArg, 8 * LevelArg),
+        Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg)
+    };
+
     Item item = Item();
     string kindList[2] = {
         "Props",
@@ -170,14 +204,24 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
         kind = kindList[ getRand(vector<long double>({50, 100}) ) ];
     }
     
-    if (kind == "Props")
-    {
-        item = Item("Strange Potion", kind, "O", -10, 0, 10, 0, 0, 1, 10);
-    }
-    
     if (kind == "Weapon")
     {
-        item = Item("Rusty Sword", kind, "1", 0, 0, 0, 10, 0, 3, 50);
+        //have to be done
+    }
+
+    if (kind == "Armor")
+    {
+        //have to be done
+    }
+
+    if (kind == "Food")
+    {
+        //have to be done
+    }
+
+    if (kind == "Treasure")
+    {
+        //have to be done
     }
 
     return item;

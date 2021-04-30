@@ -23,7 +23,7 @@ class Button{
         Color activeColor;
 
     public:
-        Button(float x, float y, float width, float height, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor);
+        Button(float x, float y, float width, float height, int size, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor);
         ~Button();
         
         void update(bool isSelected);

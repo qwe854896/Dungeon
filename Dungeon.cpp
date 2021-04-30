@@ -1,6 +1,6 @@
 #include "Dungeon.h"
 Dungeon::Dungeon() : _player(150) {
-    _window = new RenderWindow(VideoMode(800, 600), "Dungeon!");
+    _window = new RenderWindow(VideoMode(1920, 1080), "Dungeon!");
 
     _player.setFillColor(Color::Blue);
     _player.setPosition(10, 20);
@@ -164,17 +164,56 @@ void Dungeon::handleInventory()
 /* Deal with all game initial setting       */
 /* Including create player, create map etc  */
 void Dungeon::startGame() {
+    Font font; font.loadFromFile("../fonts/Dosis-Light.ttf");
+
+    Button probs(160, 100, 1600, 200, 60, &font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     cout << "Do you want to load previous data? (Y/N)\n";
+    Menu YN(380, 670, 500, 200, 60, false, &font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    YN.push_back("Yes");
+    YN.push_back("NO");
 
-    string ops; getline(cin, ops);
-    while (ops[0] != 'Y' && ops[0] != 'N') {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
+    int ops;
+    while (_window->isOpen()) {
+        updateDt();
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Enter)) {
+            ops = YN.getIsSelected();
+            break;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+        YN.update();
+
+        _window->clear();
+
+        probs.render(_window);
+        YN.render(_window);
+
+        _window->display();
     }
+    
 
-    if (ops[0] == 'Y') {
+    // string ops; getline(cin, ops);
+    // while (ops[0] != 'Y' && ops[0] != 'N') {
+    //     cout << "Error, please enter operation again.\n";
+    //     getline(cin, ops);
+    // }
+
+    if (ops == 0) {
         system("cls");
-        Record agent(6);
+        Record agent(6, _window);
         if (agent.loadFromFile(&player, rooms, vis, usedIndex, coordToIndex)) return;
     }
 
@@ -184,6 +223,21 @@ void Dungeon::startGame() {
     createMap();
 }
 
+void Dungeon::encounterDanny()
+{
+    cout << "Worst Nightmare! You encounter Danny,Food King in this Dungeon!\n";
+    cout << "Danny : I am going to rob all of your food :D\n";
+    vector<Item> inv = player.getInventory();
+    for(int i=0; i<inv.size(); ++i)
+    {
+        if(inv[i].getKind() == "Food")
+        {
+            player.popItem(i);
+            --i;
+        }
+    }
+    cout << "All of your food has eaten by Danny!\n";
+}
 /* Deal with the player's action     */
 /* including showing the action list */
 /* that player can do at that room   */
@@ -202,6 +256,10 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
     {
         for (auto obj : objects) {
             if (obj->getTag() == "Monster") {
+                if(obj->getName() == "Danny")
+                {
+                    encounterDanny();
+                }
                 cout << (++option) << ". Fight the monster: " << obj->getName() << "\n";
                 options.emplace_back(obj);
             }
@@ -241,7 +299,7 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
         player.triggerEvent(&player);
     }
     else if (ops[0] == 'C') {
-        Record agent(6);
+        Record agent(6, _window);
         agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex);
     }
     else if (ops[0] == 'D') {
@@ -510,13 +568,20 @@ void Dungeon::createRoom(int index)
 /* Random Generator */
 Monster Dungeon::generateMonster(int LV)
 {
-    vector<Monster> monster_list {
-    Monster("Orc", "", "Monster", LV - 1), Monster("Dwarf", "", "Monster", LV - 1), 
-    Monster("Elf", "", "Monster", LV - 1), Monster("Dragon", "", "Monster", LV - 1), 
-    Monster("Wizard", "", "Monster", LV - 1), Monster("Troll", "", "Monster", LV - 1), 
-    Monster("Basilisk", "", "Monster", LV - 1), Monster("CaveMan", "", "Monster", LV - 1), 
-    Monster("Phoenix", "", "Monster", LV - 1), Monster("Cerberus", "", "Monster", LV - 1), 
-    Monster("Danny", "", "Monster", LV - 1)};
+    vector<Monster> monster_list 
+    {
+        Monster("Orc", "", "Monster", LV - 1), 
+        Monster("Dwarf", "", "Monster", LV - 1), 
+        Monster("Elf", "", "Monster", LV - 1), 
+        Monster("Dragon", "", "Monster", LV - 1), 
+        Monster("Wizard", "", "Monster", LV - 1), 
+        Monster("Troll", "", "Monster", LV - 1), 
+        Monster("Basilisk", "", "Monster", LV - 1), 
+        Monster("CaveMan", "", "Monster", LV - 1), 
+        Monster("Phoenix", "", "Monster", LV - 1), 
+        Monster("Cerberus", "", "Monster", LV - 1), 
+        Monster("Danny", "", "Monster", LV - 1)
+        };
 
     Monster monster = Monster("Slime's friend", ">_<", "Monster", LV - 1);
     monster.increaseLV();
