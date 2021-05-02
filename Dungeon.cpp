@@ -1,12 +1,18 @@
 #include "Dungeon.h"
-Dungeon::Dungeon() : _player(150) {
-    _window = new RenderWindow(VideoMode(1920, 1080), "Dungeon!");
 
-    _player.setFillColor(Color::Blue);
-    _player.setPosition(10, 20);
+Dungeon::Dungeon() /*: _player(150)*/ {
+    _window = new RenderWindow(VideoMode(1920, 1080), "Dungeon!", Style::Default | Style::Fullscreen);
+    font = new Font();
+    font->loadFromFile("../fonts/Dosis-Light.ttf");
+    // _player.setFillColor(Color::Blue);
+    // _player.setPosition(10, 20);
 }
 Dungeon::~Dungeon(){
+    Record agent(6, _window);
+    ofstream fout("../error");
+    agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex, fout);
     delete _window;
+    delete font;
     for (auto& room : rooms) {
         for (auto &object : room.getObjects()) {
             delete object;
@@ -30,7 +36,70 @@ namespace {
 void Dungeon::createPlayer() {
     string name = "";
     cout << "Please enter player's name: ";
-    while (name == "") getline(cin, name);
+    Button *button = new Button(540, 340, 840, 100, 1, 60, font, "Please enter player's name", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *inputName = new Button(540, 450, 840, 100, 1, 60, font, "", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+
+    gainedFocus = 1;
+    holdKey = 0;
+    holdEnter = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                case Event::TextEntered:
+                    if (sfEvent.text.unicode < 128) {
+                        char tmp = static_cast<char>(sfEvent.text.unicode);
+                        name += string(1, tmp);
+                        inputName->updateText(name);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            if (name != "") break;
+            holdEnter = 1;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (!holdKey && Keyboard::isKeyPressed(Keyboard::Backspace)) {
+            holdKey = 1;
+            if (!name.empty()) name.pop_back();
+            if (!name.empty()) name.pop_back();
+            inputName->updateText(name);
+        }
+        if (holdKey && !Keyboard::isKeyPressed(Keyboard::Backspace)) {
+            holdKey = 0;
+        }
+        
+        _window->clear();
+
+        button->render(_window);
+        inputName->render(_window);
+
+        _window->display();
+    }
+    delete button;
+    delete inputName;
+
+    // while (name == "") getline(cin, name);
     player = Player(name, "^_^", "Player", 0);
     player.increaseLV();
     // player.setAttack(1000000);
@@ -44,112 +113,313 @@ void Dungeon::createMap() {
     vis.resize(128);
 
     rooms[0] = Room(0, 0, 0, 0); // init
-    vis[0] = 0;
+    vis[0] = 1;
     coordToIndex[ coord(0, 0) ] = 0;
-    // rooms[0].setRightRoom(&rooms[1]);
+    rooms[0].setRightRoom(&rooms[1]);
+
     player.setCurrentRoom(&rooms[0]);
     player.setPreviousRoom(&rooms[0]);
 
-    // rooms[1] = Room(0, 1, 1, 0); // monster
-    // vis[1] = 1;
-    // coordToIndex[ coord(1, 0) ] = 1;
-    // rooms[1].setUpRoom(&rooms[2]);
-    // rooms[1].setDownRoom(&rooms[3]);
-    // rooms[1].setLeftRoom(&rooms[0]);
-    // rooms[1].setRightRoom(&rooms[4]);
+    rooms[1] = Room(0, 1, 1, 0); // monster
+    vis[1] = 1;
+    coordToIndex[ coord(1, 0) ] = 1;
+    rooms[1].setUpRoom(&rooms[2]);
+    rooms[1].setDownRoom(&rooms[3]);
+    rooms[1].setLeftRoom(&rooms[0]);
+    rooms[1].setRightRoom(&rooms[4]);
 
-    // Monster *slime = new Monster("Slime", ">_<", "Slime", 0, 10, 10, 10, 10, 10, 10);
-    // rooms[1].pushObject(slime);
+    Monster *slime = new Monster("Slime", ">_<", "Slime", 0, 10, 10, 10, 10, 10, 10);
+    rooms[1].pushObject(slime);
 
-    // rooms[2] = Room(0, 2, 1, 1); // NPC
-    // vis[2] = 0;
-    // coordToIndex[ coord(1, 1) ] = 2;
-    // rooms[2].setDownRoom(&rooms[1]);
+    rooms[2] = Room(0, 2, 1, 1); // NPC
+    vis[2] = 0;
+    coordToIndex[ coord(1, 1) ] = 2;
+    rooms[2].setDownRoom(&rooms[1]);
 
-    // Item sword = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 3, 50);
-    // Item sticks = Item("Rusty Sticks", "Weapon", 0, 0, 0, 5, 0, 3, 25);
-    // Item shoes = Item("Old Shoes", "Boots", 0, 0, 0, 0, 10, 3, 50);
-    // vector <Item> goods;
-    // goods.emplace_back(sword);
-    // goods.emplace_back(sticks);
-    // goods.emplace_back(shoes);
-    // NPC *Chris = new NPC("Chris", ">_>", "Shop", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
-    // rooms[2].pushObject(Chris);
+    Item sword = Item("Rusty Sword", "Weapon", 0, 0, 0, 10, 0, 3, 50);
+    Item sticks = Item("Rusty Sticks", "Weapon", 0, 0, 0, 5, 0, 3, 25);
+    Item shoes = Item("Old Shoes", "Boots", 0, 0, 0, 0, 10, 3, 50);
+    vector <Item> goods;
+    goods.emplace_back(sword);
+    goods.emplace_back(sticks);
+    goods.emplace_back(shoes);
+    NPC *Chris = new NPC("Chris", ">_>", "Shop", "Hello, I'm Chris.\nI sell the following items: \n", goods, 10);
+    rooms[2].pushObject(Chris);
 
-    // rooms[3] = Room(0, 3, 1, -1); // chest
-    // vis[3] = 0;
-    // coordToIndex[ coord(1, -1) ] = 3;
-    // rooms[3].setUpRoom(&rooms[1]);
+    rooms[3] = Room(0, 3, 1, -1); // chest
+    vis[3] = 0;
+    coordToIndex[ coord(1, -1) ] = 3;
+    rooms[3].setUpRoom(&rooms[1]);
 
-    // Item *chest = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
-    // rooms[3].pushObject(chest);
+    Item *chest = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
+    Item *chest1 = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
+    Item *chest2 = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
+    rooms[3].pushObject(chest);
+    rooms[3].pushObject(chest1);
+    rooms[3].pushObject(chest2);
 
-    // rooms[4] = Room(1, 4, 2, 0); // Boss
-    // vis[4] = 1;
-    // coordToIndex[ coord(2, 0) ] = 4;
-    // rooms[4].setLeftRoom(&rooms[1]);
+    rooms[4] = Room(1, 4, 2, 0); // Boss
+    vis[4] = 1;
+    coordToIndex[ coord(2, 0) ] = 4;
+    rooms[4].setLeftRoom(&rooms[1]);
 
-    // Monster *boss = new Monster("Boss", "~_~", "Boss", 10, 20, 1000, 1000, 600, 100, 100);
-    // rooms[4].pushObject(boss);
+    Monster *boss = new Monster("Boss", "~_~", "Boss", 10, 20, 1000, 1000, 600, 100, 100);
+    rooms[4].pushObject(boss);
 
-    usedIndex = 0;
+    usedIndex = 4;
     cout << "Done.\n";
 }
 
 /* Deal with player's moveing action */
 void Dungeon::handleMovement() {
     Room* room = player.getCurrentRoom();
+    // vector <Room*> options;
+
+    // menu = new Menu(380, 670, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    
+    
+
+    bool isAvailable[5] = {0};
+    Button buttons[5] = {
+        Button(710, 75, 500, 180, 1, 60, font, "Go up", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
+        Button(710, 825, 500, 180, 1, 60, font, "Go Down", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
+        Button(710, 450, 500, 180, 1, 60, font, "Cancel", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
+        Button(40, 450, 500, 180, 1, 60, font, "Go Left", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
+        Button(1380, 450, 500, 180, 1, 60, font, "Go right", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
+    };
 
     if (checkMonsterRoom(room->getObjects())) {
-        cout << "A. Go previous room\nB. Cancel\n";
+        if (player.getPreviousRoom() == room->getUpRoom()) isAvailable[0] = 1;
+        if (player.getPreviousRoom() == room->getDownRoom()) isAvailable[1] = 1;
+        if (player.getPreviousRoom() == room->getLeftRoom()) isAvailable[3] = 1;
+        if (player.getPreviousRoom() == room->getRightRoom()) isAvailable[4] = 1;
 
-        string ops; getline(cin, ops);
-        while (ops[0] < 'A' || ops[0] > 'B') {
-            cout << "Error, please enter operation again.\n";
-            getline(cin, ops);
+        // cout << "A. Go previous room\nB. Cancel\n";
+        // menu->push_back("Go previous room");
+
+        // string ops; getline(cin, ops);
+        // while (ops[0] < 'A' || ops[0] > 'B') {
+        //     cout << "Error, please enter operation again.\n";
+        //     getline(cin, ops);
+        // }
+
+        // options.emplace_back(player.getPreviousRoom());
+    }
+    else {
+        char option = 'A' - 1;
+        
+        if (room->getUpRoom() != nullptr)
+        {
+            cout << (++option) << ". Go up\n";
+            isAvailable[0] = 1;
+            // menu->push_back("Go up");
+            // options.emplace_back(room->getUpRoom());
+        }
+        if (room->getDownRoom() != nullptr)
+        {
+            cout << (++option) << ". Go down\n";
+            isAvailable[1] = 1;
+            // menu->push_back("Go down");
+            // options.emplace_back(room->getDownRoom());
+        }
+        if (room->getLeftRoom() != nullptr)
+        {
+            cout << (++option) << ". Go left\n";
+            isAvailable[3] = 1;
+            // menu->push_back("Go left");
+            // options.emplace_back(room->getLeftRoom());
+        }
+        if (room->getRightRoom() != nullptr)
+        {
+            cout << (++option) << ". Go right\n";
+            isAvailable[4] = 1;
+            // menu->push_back("Go right");
+            // options.emplace_back(room->getRightRoom());
+        }
+        cout << (++option) << ". Cancel\n";
+    }
+
+    isAvailable[2] = 1;
+    // menu->push_back("Cancel");
+
+    
+    bool pressUp = false, pressDown = false, pressLeft = false, pressRight = false;
+    gainedFocus = 1;
+    holdEnter = 1;
+    
+    int isSelected = 2;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        
+
+        if (!pressUp && Keyboard::isKeyPressed(Keyboard::Up) ) {
+            pressUp = 1;
+            buttons[isSelected].update(0);
+            switch (isSelected) {
+                case 3:
+                case 4:
+                    if (isAvailable[0]) isSelected = 0;
+                    else isSelected = 2;
+                    break;
+                case 2:
+                    if (isAvailable[0]) isSelected = 0;
+                    else if (isAvailable[1]) isSelected = 1;
+                    break;
+                case 0:
+                    if (isAvailable[1]) isSelected = 1;
+                    else isSelected = 2;
+                    break;
+                case 1:
+                    isSelected = 2;
+                    break;
+            }
+        }
+        if (pressUp && !Keyboard::isKeyPressed(Keyboard::Up) ) {
+            pressUp = 0;
+        }
+        
+
+        if (!pressDown && Keyboard::isKeyPressed(Keyboard::Down) ) {
+            pressDown = 1;
+            buttons[isSelected].update(0);
+            switch (isSelected) {
+                case 3:
+                case 4:
+                    if (isAvailable[1]) isSelected = 1;
+                    else isSelected = 2;
+                    break;
+                case 2:
+                    if (isAvailable[1]) isSelected = 1;
+                    else if (isAvailable[0]) isSelected = 0;
+                    break;
+                case 1:
+                    if (isAvailable[0]) isSelected = 0;
+                    else isSelected = 2;
+                    break;
+                case 0:
+                    isSelected = 2;
+                    break;
+            }
+        }
+        if (pressDown && !Keyboard::isKeyPressed(Keyboard::Down) ) {
+            pressDown = 0;
+        }
+        
+
+        if (!pressLeft && Keyboard::isKeyPressed(Keyboard::Left) ) {
+            pressLeft = 1;
+            buttons[isSelected].update(0);
+            switch (isSelected) {
+                case 0:
+                case 1:
+                    if (isAvailable[3]) isSelected = 3;
+                    else isSelected = 2;
+                    break;
+                case 2:
+                    if (isAvailable[3]) isSelected = 3;
+                    else if (isAvailable[4]) isSelected = 4;
+                    break;
+                case 3:
+                    if (isAvailable[4]) isSelected = 4;
+                    else isSelected = 2;
+                    break;
+                case 4:
+                    isSelected = 2;
+                    break;
+            }
+        }
+        if (pressLeft && !Keyboard::isKeyPressed(Keyboard::Left) ) {
+            pressLeft = 0;
+        }
+        
+
+        if (!pressRight && Keyboard::isKeyPressed(Keyboard::Right) ) {
+            pressRight = 1;
+            buttons[isSelected].update(0);
+            switch (isSelected) {
+                case 0:
+                case 1:
+                    if (isAvailable[4]) isSelected = 4;
+                    else isSelected = 2;
+                    break;
+                case 2:
+                    if (isAvailable[4]) isSelected = 4;
+                    else if (isAvailable[3]) isSelected = 3;
+                    break;
+                case 4:
+                    if (isAvailable[3]) isSelected = 3;
+                    else isSelected = 2;
+                    break;
+                case 3:
+                    isSelected = 2;
+                    break;
+            }
+        }
+        if (pressRight && !Keyboard::isKeyPressed(Keyboard::Right) ) {
+            pressRight = 0;
         }
 
-        if (ops[0] == 'A') player.changeRoom(player.getPreviousRoom());
-        return;
+        buttons[isSelected].update(1);
+
+        _window->clear();
+
+        for (int i = 0; i < 5; ++i) {
+            if (isAvailable[i]) {
+                buttons[i].render(_window);
+            }
+        }
+
+        _window->display();
     }
 
-    char option = 'A' - 1;
-    vector <Room*> options;
-    if (room->getUpRoom() != nullptr)
-    {
-        cout << (++option) << ". Go up\n";
-        options.emplace_back(room->getUpRoom());
-    }
-    if (room->getDownRoom() != nullptr)
-    {
-        cout << (++option) << ". Go down\n";
-        options.emplace_back(room->getDownRoom());
-    }
-    if (room->getLeftRoom() != nullptr)
-    {
-        cout << (++option) << ". Go left\n";
-        options.emplace_back(room->getLeftRoom());
-    }
-    if (room->getRightRoom() != nullptr)
-    {
-        cout << (++option) << ". Go right\n";
-        options.emplace_back(room->getRightRoom());
-    }
-    cout << (++option) << ". Cancel\n";
 
-    string ops; getline(cin, ops);
-    while (ops[0] < 'A' || OPS > options.size()) {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
-    }
-    if (OPS < options.size()) player.changeRoom(options[OPS]);
+    // string ops; getline(cin, ops);
+    // while (ops[0] < 'A' || OPS > options.size()) {
+    //     cout << "Error, please enter operation again.\n";
+    //     getline(cin, ops);
+    // }
+    // if (ops < options.size()) player.changeRoom(options[ops]);
+
+    // cout << "before change room" ;
+    if (isSelected == 0) player.changeRoom(room->getUpRoom());
+    if (isSelected == 1) player.changeRoom(room->getDownRoom());
+    if (isSelected == 3) player.changeRoom(room->getLeftRoom());
+    if (isSelected == 4) player.changeRoom(room->getRightRoom());
+    // cout << "after change room";
 }
 
 /* Deal with player's interaction with objects in that room */
 /* If triggerEvent return true, pop this object */
 void Dungeon::handleEvent(Object* obj) {
     // system("cls");
-    if (obj->triggerEvent(&player)) {
+    if (obj->triggerEvent(&player, _window)) {
         player.getCurrentRoom()->popObject(obj);
         delete obj;
     }
@@ -158,21 +428,20 @@ void Dungeon::handleEvent(Object* obj) {
 /* Deal with player's interaction with inventory */
 void Dungeon::handleInventory()
 {
-    player.handleInventory("use");
+    player.handleInventory("use", _window);
 }
 
 /* Deal with all game initial setting       */
 /* Including create player, create map etc  */
 void Dungeon::startGame() {
-    Font font; font.loadFromFile("../fonts/Dosis-Light.ttf");
-
-    Button probs(160, 100, 1600, 200, 60, &font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     cout << "Do you want to load previous data? (Y/N)\n";
-    Menu YN(380, 670, 500, 200, 60, false, &font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    YN.push_back("Yes");
-    YN.push_back("NO");
 
-    int ops;
+    Menu *menu = new Menu(380, 670, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    menu->push_back("Yes");
+    menu->push_back("NO");
+
+    gainedFocus = 1;
     while (_window->isOpen()) {
         updateDt();
         while (_window->pollEvent(sfEvent)) {
@@ -183,26 +452,41 @@ void Dungeon::startGame() {
                 case Event::Closed:
                     _window->close();
                     break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
                 default:
                     break;
             }
         }
-        if (Keyboard::isKeyPressed(Keyboard::Enter)) {
-            ops = YN.getIsSelected();
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            ops = menu->getIsSelected();
             break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
         }
         if (Keyboard::isKeyPressed(Keyboard::K)) {
             cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
         }
-        YN.update();
+        menu->update();
 
         _window->clear();
 
-        probs.render(_window);
-        YN.render(_window);
+        button->render(_window);
+        menu->render(_window);
 
         _window->display();
     }
+    delete button;
+    delete menu;
     
 
     // string ops; getline(cin, ops);
@@ -212,12 +496,12 @@ void Dungeon::startGame() {
     // }
 
     if (ops == 0) {
-        system("cls");
+        // system("cls");
         Record agent(6, _window);
         if (agent.loadFromFile(&player, rooms, vis, usedIndex, coordToIndex)) return;
     }
 
-    system("cls");
+    // system("cls");
 
     createPlayer();
     createMap();
@@ -225,32 +509,84 @@ void Dungeon::startGame() {
 
 void Dungeon::encounterDanny()
 {
-    cout << "Worst Nightmare! You encounter Danny,Food King in this Dungeon!\n";
+    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\nDanny : I am going to rob all of your food :D\nAll of your food has eaten by Danny!\n\nPress enter to continue...", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    cout << "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\n";
     cout << "Danny : I am going to rob all of your food :D\n";
+
     vector<Item> inv = player.getInventory();
-    for(int i=0; i<inv.size(); ++i)
+    for(int i = inv.size() - 1; i >= 0; --i)
     {
         if(inv[i].getKind() == "Food")
         {
             player.popItem(i);
-            --i;
         }
     }
     cout << "All of your food has eaten by Danny!\n";
+
+    holdEnter = 1;
+    gainedFocus = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+
+        _window->clear();
+		
+        button->render(_window);
+
+        _window->display();
+    }
+    delete button;
 }
+
 /* Deal with the player's action     */
 /* including showing the action list */
 /* that player can do at that room   */
 /* and dealing with player's input   */
 void Dungeon::chooseAction(const vector<Object*>& objects) {
-    system("cls");
-    generateDescription();
+    // system("cls");
+    Button *button = new Button(10, 20, 1900, 100, 1, 60, font, generateDescription() + "   What do you want to do?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
 
     cout << "What do you want to do?\n";
+
+    Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    
     cout << "A. MOVE\nB. STAT\nC. SAVE\nD. ITEM\n";
+    menu->push_back("MOVE");
+    menu->push_back("STAT");
+    menu->push_back("SAVE");
+    menu->push_back("ITEM");
 
     char option = 'D';
     vector<Object*> options;
+
+    Texture texture;
+    if (!texture.loadFromFile("../Images/monster.png")) cout << "Oops!";
 
     if (checkMonsterRoom(objects))
     {
@@ -261,6 +597,7 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
                     encounterDanny();
                 }
                 cout << (++option) << ". Fight the monster: " << obj->getName() << "\n";
+                menu->push_back("Fight the monster: " + obj->getName(), &texture);
                 options.emplace_back(obj);
             }
         }
@@ -271,97 +608,182 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
         for (auto obj : objects) {
             if (obj->getTag() == "NPC") {
                 cout << (++option) << ". Talk to Shopkeeper: " << obj->getName() << "\n";
+                menu->push_back("Talk to Shopkeeper: " + obj->getName());
                 options.emplace_back(obj);
             }
             else if (obj->getTag() == "Item") {
                 Item *item = dynamic_cast<Item*>(obj);
                 cout << (++option);
-                if (item->getKind() == "Chest") cout << ". Open the chest\n";
-                else cout << ". Pick up Item: " << obj->getName() << "\n";
+                if (item->getKind() == "Chest") {
+                    cout << ". Open the chest\n";
+                    menu->push_back("Open the chest");
+                }
+                else {
+                    cout << ". Pick up Item: " << obj->getName() << "\n";
+                    menu->push_back("Pick up Item: " + obj->getName());
+                }
                 options.emplace_back(obj);
             }
         }
     }
 
-    string ops; getline(cin, ops);
-    while (ops[0] < 'A' || OPS >= options.size() + 4) {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
+    // string ops; getline(cin, ops);
+    // while (ops[0] < 'A' || OPS >= options.size() + 4) {
+    //     cout << "Error, please enter operation again.\n";
+    //     getline(cin, ops);
+    // }
+
+    // system("cls");
+
+    holdEnter = 1;
+    gainedFocus = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            ops = menu->getIsSelected();
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        menu->update();
+
+        _window->clear();
+		
+        button->render(_window);
+        menu->render(_window);
+
+        _window->display();
     }
+    delete menu;
+    delete button;
 
-    system("cls");
-
-    if (ops[0] == 'A') {
+    if (ops == 0) {
+        cout << "debug" << endl;
         handleMovement();
         return;
     }
-    else if (ops[0] == 'B') {
-        player.triggerEvent(&player);
+    else if (ops == 1) {
+        player.triggerEvent(&player, _window);
     }
-    else if (ops[0] == 'C') {
+    else if (ops == 2) {
         Record agent(6, _window);
         agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex);
     }
-    else if (ops[0] == 'D') {
+    else if (ops == 3) {
         handleInventory();
     }
     else {
-        handleEvent(options[OPS - 4]);
+        handleEvent(options[ops - 4]);
     }
     cout << endl;
-    system("pause");
+    // system("pause");
 }
 
 /* Check whether the game should end or not */
 /* Including player victory, or he/she dead */
 bool Dungeon::checkGameLogic() {
-    system("cls");
+    // system("cls");
+    string gameIsEnd = "";
     if (player.checkIsDead()) {
-        cout << "Game Over!\n";
-        return true;
+        gameIsEnd = "Game Over!";
     }
     if (player.getCurrentRoom()->getIsExit() && !checkMonsterRoom(player.getCurrentRoom()->getObjects())) {
-        cout << "Victory!\n";
-        return true;
+        gameIsEnd = "Victory!";
     }
-    return false;
+    if (gameIsEnd == "") return false;
+
+    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, gameIsEnd, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+
+    gainedFocus = 1;
+	holdEnter = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+        button->update(0);
+
+        _window->clear();
+
+        button->render(_window);
+
+        _window->display();
+    }
+    return true;
 }
 
 /* Deal with the whole game process */
 void Dungeon::runDungeon(int minimum_frame_per_seconds) {
-    bool isStarted = 0, isChecked = 1, isCreated = 1, isChose = 1;
+    bool isStarted = 0;
 
     while (_window->isOpen()) {
         if (!isStarted) {
             isStarted = 1;
             startGame();
         }
-
+        // cout << "startGame" << endl;
+        if (checkGameLogic()) {
+            _window->close();
+            break;
+        }
         createRoom(player.getCurrentRoom()->getIndex());
+        // cout << "createRoom" << endl;
         chooseAction(player.getCurrentRoom()->getObjects());    
+        // cout << "chooseAction" << endl;
         
-        updateDt();
-        update();
-        render();
+        // updateDt();
+        // update();
+        // render();
     }
-
-    // startGame();
-
-    // cout << "\n";
-    // system("pause");
-
-    // while (!checkGameLogic()) {
-    //     createRoom(player.getCurrentRoom()->getIndex());
-    //     chooseAction(player.getCurrentRoom()->getObjects());
-    // }
-    // cout << endl;
-    // system("pause");
-
-    // while (_window->isOpen()) {
-    //     updateDt();
-    //     update();
-    //     render();
-    // }
 }
 
 void Dungeon::updateDt() {
@@ -372,65 +794,7 @@ void Dungeon::updateDt() {
 }
 
 void Dungeon::updateSFMLEvents() {
-    while (_window->pollEvent(sfEvent)) {
-        if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
-            _window->close();
-        }
-        switch (sfEvent.type) {
-            case Event::Closed:
-                _window->close();
-                break;
-            case Event::LostFocus:
-                cout << "Player leaves the app\n";
-                break;
-            case Event::GainedFocus:
-                cout << "Player is looking at the app\n";
-                break;
-            case Event::TextEntered:
-                if (sfEvent.text.unicode < 128)
-                    cout << char(sfEvent.text.unicode) << endl;
-                break;
-            case Event::Resized:
-                cout << "new width: " << sfEvent.size.width << endl;
-                cout << "new height: " << sfEvent.size.height << endl;
-                break;
-            case Event::KeyPressed:
-                if (sfEvent.key.code == Keyboard::Escape) {
-                    cout << "escape key pressed" << endl;
-                    cout << "control: " << sfEvent.key.control << endl;
-                    cout << "alt: " << sfEvent.key.alt << endl;
-                    cout << "shift: " << sfEvent.key.shift << endl;
-                    cout << "system: " << sfEvent.key.system << endl;
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
-            // left key is pressed: move our character
-            cout << "UP" << endl;
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            // left key is pressed: move our character
-            cout << "LEFT" << endl;
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            // left key is pressed: move our character
-            cout << "DOWN" << endl;
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
-            // left key is pressed: move our character
-            cout << "RIGHT" << endl;
-        }
-    }
+    
 }
 
 void Dungeon::update() {
@@ -438,12 +802,7 @@ void Dungeon::update() {
 }
 
 void Dungeon::render() {
-    _window->clear();
 
-    // Render Items
-    _window->draw(_player);
-
-    _window->display();
 }
 
 
@@ -467,10 +826,10 @@ void Dungeon::createRoom(int index)
     int x = rooms[index].getX(), y = rooms[index].getY();
     int X, Y;
 
-    bool flag = 0;
     long double prob = 75;
     
-    system("cls");
+    // system("cls");
+    string info = "";
     for (int i = 0; i < 4; ++i) {
         switch ( getRand(vector<long double>( {25, 50, 75, 100} ) ) ) {
             case 0:
@@ -478,7 +837,7 @@ void Dungeon::createRoom(int index)
                 if (rooms[index].getUpRoom() == nullptr)
                 {
                     if ( coordToIndex.find( coord(X, Y) ) != coordToIndex.end() ) {
-                        if (vis[ coordToIndex[ coord(X, Y) ] ]) cout << "A path to the past room appeared!!!(Up room)\n"; flag = 1;
+                        if (vis[ coordToIndex[ coord(X, Y) ] ]) info += "A path to the past room appeared!!!(Up room)\n";
                         rooms[index].setUpRoom(&rooms[ coordToIndex[ coord(X, Y) ] ]);
                         rooms[ coordToIndex[ coord(X, Y) ] ].setDownRoom(&rooms[index]);
                         continue;
@@ -499,7 +858,7 @@ void Dungeon::createRoom(int index)
                 if (rooms[index].getDownRoom() == nullptr)
                 {
                     if ( coordToIndex.find( coord(X, Y) ) != coordToIndex.end() ) {
-                        if (vis[ coordToIndex[ coord(X, Y) ] ]) cout << "A path to the past room appeared!!!(Down room)\n"; flag = 1;
+                        if (vis[ coordToIndex[ coord(X, Y) ] ]) info += "A path to the past room appeared!!!(Down room)\n";
                         rooms[index].setDownRoom(&rooms[ coordToIndex[ coord(X, Y) ] ]);
                         rooms[ coordToIndex[ coord(X, Y) ] ].setUpRoom(&rooms[index]);
                         continue;
@@ -520,7 +879,7 @@ void Dungeon::createRoom(int index)
                 if (rooms[index].getLeftRoom() == nullptr)
                 {
                     if ( coordToIndex.find( coord(X, Y) ) != coordToIndex.end() ) {
-                        if (vis[ coordToIndex[ coord(X, Y) ] ]) cout << "A path to the past room appeared!!!(Left room)\n"; flag = 1;
+                        if (vis[ coordToIndex[ coord(X, Y) ] ]) info += "A path to the past room appeared!!!(Left room)\n";
                         rooms[index].setLeftRoom(&rooms[ coordToIndex[ coord(X, Y) ] ]);
                         rooms[ coordToIndex[ coord(X, Y) ] ].setRightRoom(&rooms[index]);
                         continue;
@@ -541,7 +900,7 @@ void Dungeon::createRoom(int index)
                 if (rooms[index].getRightRoom() == nullptr)
                 {
                     if ( coordToIndex.find( coord(X, Y) ) != coordToIndex.end() ) {
-                        if (vis[ coordToIndex[ coord(X, Y) ] ]) cout << "A path to the past room appeared!!!(Right room)\n"; flag = 1;
+                        if (vis[ coordToIndex[ coord(X, Y) ] ]) info += "A path to the past room appeared!!!(Right room)\n";
                         rooms[index].setRightRoom(&rooms[ coordToIndex[ coord(X, Y) ] ]);
                         rooms[ coordToIndex[ coord(X, Y) ] ].setLeftRoom(&rooms[index]);
                         continue;
@@ -559,31 +918,76 @@ void Dungeon::createRoom(int index)
                 break;
         }
     }
-    if (flag) {
-        cout << "\n";
-        system("pause");
+    if (info == "") return;
+    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, info, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+
+    gainedFocus = 1;
+	holdEnter = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+        button->update(0);
+
+        _window->clear();
+
+        button->render(_window);
+
+        _window->display();
     }
 }
 
 /* Random Generator */
 Monster Dungeon::generateMonster(int LV)
 {
+    int LevelArg = LV * (LV + 1);
     vector<Monster> monster_list 
     {
-        Monster("Orc", "", "Monster", LV - 1), 
-        Monster("Dwarf", "", "Monster", LV - 1), 
-        Monster("Elf", "", "Monster", LV - 1), 
-        Monster("Dragon", "", "Monster", LV - 1), 
-        Monster("Wizard", "", "Monster", LV - 1), 
-        Monster("Troll", "", "Monster", LV - 1), 
-        Monster("Basilisk", "", "Monster", LV - 1), 
-        Monster("CaveMan", "", "Monster", LV - 1), 
-        Monster("Phoenix", "", "Monster", LV - 1), 
-        Monster("Cerberus", "", "Monster", LV - 1), 
-        Monster("Danny", "", "Monster", LV - 1)
-        };
+        Monster("Slime's friend", ">_<", "Monster", LV - 1, Item()),
+        Monster("Orc", "", "Monster", LV - 1, Item("Orc's Chestplate", "Chestplate", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg)), 
+        Monster("Dwarf", "", "Monster", LV - 1, Item("Dwarf's diamond", "Treasure", 0, 0, 0, 0, 0, 0, 1000 * LevelArg)), 
+        Monster("Elf", "", "Monster", LV - 1, Item("Elf's sword", "Weapon", 0, 0, 10*LevelArg, 20 * LevelArg, 0, 0, 0)), 
+        Monster("Dragon", "", "Monster", LV - 1, Item("Dragon's cloak", "cloak", 0, 0, 10*LevelArg, 0, 20 * LevelArg, 0, 0)), 
+        Monster("Wizard", "", "Monster", LV - 1, Item("Wizard's potion", "Potion", 10 * LevelArg, 10 * LevelArg, 10 * LevelArg, 1 * LevelArg, 1 * LevelArg, 0, 0)), 
+        Monster("Troll", "", "Monster", LV - 1, Item("Troll's stick", "Weapon", 0, 0, 0, 3 * LevelArg, 1 * LevelArg, 10 * LevelArg, 0)), 
+        Monster("Basilisk", "", "Monster", LV - 1, Item("Basilisk's fang", "Treasure", 0, 0, 0, 0, 0, 0, 800 * LevelArg)), 
+        Monster("CaveMan", "", "Monster", LV - 1, Item("Caveman's bow", "Weapon", 0, 0, 5 * LevelArg, 0, 0, 0, 100 * LevelArg)), 
+        Monster("Phoenix", "", "Monster", LV - 1, Item("Phoenix's Tear", "Treasure", 100 * LevelArg , 100 * LevelArg , 100 * LevelArg, 0, 0, 0, 0)), 
+        Monster("Cerberus", "", "Monster", LV - 1, Item("Cerberus's fur", "Leggings", 0, 0, 0, 0, 20 * LevelArg, 100 * LevelArg, 100 * LevelArg)), 
+        Monster("Danny", "", "Monster", LV - 1, Item("Danny's cheese", "Food", 1000 * LevelArg, 0, 0, 0, 0, 0, 109 * LevelArg))
+    };
+    vector<long double> prob;
+    for (int i = 0; i < monster_list.size(); ++i) prob.emplace_back(i + 1);
+    Monster monster = monster_list[ getRand( prob ) ];
 
-    Monster monster = Monster("Slime's friend", ">_<", "Monster", LV - 1);
     monster.increaseLV();
 
     return monster;
@@ -595,6 +999,8 @@ NPC Dungeon::generateNPC(int LV, string kind)
 
     if (kind == "Shop") {
         vector <Item> goods;
+        goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
+        goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
         goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
         npc.setCommodity(goods);
     }
@@ -613,9 +1019,9 @@ Room Dungeon::generateRoom(bool isExit, int index, int X, int Y, int LV, string 
         "Boss"
     };
 
-    long double condition = player.getLV() >= 5 ? 200 : 90;
-
-    if (kind == "RANDOM") kind = kindList[ getRand(vector<long double>( {30, 60, 90, condition} )) ];
+    long double condition = player.getLV() >= 5 ? 11 : 11;
+    int id = getRand(vector<long double>( {6, 9, 11, condition} ));
+    if (kind == "RANDOM") kind = kindList[ id ];
 
     if (kind == "Monster")
     {
@@ -645,8 +1051,22 @@ Room Dungeon::generateRoom(bool isExit, int index, int X, int Y, int LV, string 
 
     return room;
 }
-void Dungeon::generateDescription() {
+string Dungeon::generateDescription() {
+    stringstream ss; ss.clear();
+
     cout << "It's beautiful outside.\n";
+    ss << "It's beautiful outside.   ";
+
     cout << "You are at (" << player.getCurrentRoom()->getX() << ", " << player.getCurrentRoom()->getY() << ").\n";
-    cout << "\n";
+    ss << "You are at (" << player.getCurrentRoom()->getX() << ", " << player.getCurrentRoom()->getY() << ").\n";
+    
+    string description = "", tmp;
+
+    getline(ss, tmp);
+    description += tmp;
+
+    getline(ss, tmp);
+    description += tmp;
+
+    return description;
 } 

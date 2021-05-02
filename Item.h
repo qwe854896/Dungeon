@@ -2,6 +2,8 @@
 #define ITEM_H_INCLUDED
 
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -10,6 +12,8 @@
 #include <algorithm>
 #include "Object.h"
 #include "Player.h"
+#include "Button.h"
+#include "menu.h"
 using namespace std;
 
 class Player;
@@ -29,7 +33,7 @@ public:
     /* In Item, this function should deal with the   */
     /* pick up action. You should add status to the  */
     /* player.                                       */
-    bool triggerEvent(Object*) override;
+    bool triggerEvent(Object*, RenderWindow*) override;
     void input(ifstream& in) override;
     void output(ofstream& out) const override;
 
@@ -55,6 +59,7 @@ public:
     void increaseDurability(int);
     bool decreaseDurability(int);
     static Item randomItemGenerator(int, string);
+    void renderOnWindow(float x, float y, float width, float height, RenderWindow* window, Color color);
 };
 
 ifstream& operator>>(ifstream&, Item&);

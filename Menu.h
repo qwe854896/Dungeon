@@ -20,17 +20,18 @@ class Menu {
         vector<Button> buttons;
 
         float x, y, width, height;
-        int size;
+        int align, size;
 
         Color idleColor;
         Color hoverColor;
         Color activeColor;
     public:
-        Menu(float x, float y, float width, float height, int size, bool isUpDown, Font* font, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor);
-        Menu(float x, float y, float width, float height, int size, bool isUpDown, Font* font, vector<string> texts, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor);
+        Menu(float x, float y, float width, float height, int align, int size, bool isUpDown, Font* font, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor);
+        Menu(float x, float y, float width, float height, int align, int size, bool isUpDown, Font* font, vector<string> texts, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor);
         ~Menu();
 
         void push_back(string text);
+        void push_back(string text, Texture *texture);
         void pop_back();
 
         void update();

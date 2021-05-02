@@ -1,15 +1,36 @@
 Player
-Honvg Ceng
+Hong Cheng
 ^_^
 image end.
 Player
 3
-13 0
+13 10
 2400 2400
 2400 2400
-1200 66
-360 244
-0
+1200 3
+240 240
+3
+Item
+Rusty Sword
+
+image end.
+Weapon
+0 0 0 10 0 3 50
+
+Item
+Old Shoes
+
+image end.
+Boots
+0 0 0 0 10 3 50
+
+Item
+Boots
+
+image end.
+Boots
+0 0 0 0 12 60 48
+
 5
 Item
 empty
@@ -33,21 +54,21 @@ NULL
 0 0 0 0 0 0 0
 
 Item
-Boots
+empty
 
 image end.
-Boots
-0 0 0 0 4 20 16
+NULL
+0 0 0 0 0 0 0
 
 Item
-Elf's sword
+empty
 
 image end.
-Weapon
-0 0 60 120 0 0 0
+NULL
+0 0 0 0 0 0 0
 
-100
-10 8
+0
+4 1
 
 128
 0
@@ -57,7 +78,7 @@ Weapon
 script end.
 
 0
-5 -1 6 1
+-1 -1 -1 1
 
 1
 0
@@ -65,19 +86,7 @@ script end.
 
 script end.
 
-1
-Monster
-Slime
->_<
-image end.
-Slime
 0
-10 0
-10 10
-10 10
-10 0
-10 10
-
 2 3 0 4
 
 2
@@ -126,7 +135,7 @@ Boots
 0 0 0 0 10 3 50
 
 
--1 1 -1 -1
+-1 1 -1 5
 
 3
 0
@@ -134,7 +143,7 @@ Boots
 
 script end.
 
-1
+2
 Item
 chest
 
@@ -142,7 +151,14 @@ image end.
 Chest
 0 0 0 0 0 100 0
 
-1 -1 -1 -1
+Item
+chest
+
+image end.
+Chest
+0 0 0 0 0 100 0
+
+1 -1 7 6
 
 4
 1
@@ -150,189 +166,111 @@ Chest
 
 script end.
 
-1
-Monster
-Boss
-~_~
-image end.
-Boss
-10
-20 0
-1000 1000
-1000 1000
-600 0
-100 100
-
+0
 -1 -1 1 -1
 
 5
 0
-0 1
+2 1
 
 script end.
 
 1
 Monster
-Dwarf
+CaveMan
 
 image end.
 Monster
-1
-9 0
-320 320
-320 320
-200 0
-40 32
+2
+11 0
+960 960
+960 960
+600 0
+120 96
 
--1 0 -1 -1
+-1 -1 2 -1
 
 6
 0
--1 0
+2 -1
 
 script end.
 
-0
--1 -1 7 0
+1
+Monster
+CaveMan
+
+image end.
+Monster
+2
+11 0
+960 960
+960 960
+600 0
+120 96
+
+-1 -1 3 -1
 
 7
 0
--2 0
-
-script end.
-
-0
--1 8 9 6
-
-8
-0
--2 -1
-
-script end.
-
-1
-NPC
-Chris's mother
-~_~
-image end.
-Shop
-1
-9 0
-400 400
-400 400
-200 0
-40 40
-Hello, I'm Chris's mother.
-I sell the following items: 
-
-script end.
-
-3
-Item
-HP potion
-
-image end.
-Potion
-20 0 0 0 0 0 10
-
-Item
-Armor Pants
-
-image end.
-Leggings
-0 0 0 0 8 20 32
-
-Item
-Helmet
-
-image end.
-Helmet
-0 0 0 0 6 20 24
-
-
-7 -1 10 11
-
-9
-0
--3 0
+0 -1
 
 script end.
 
 1
 Monster
-Wizard
+CaveMan
 
 image end.
 Monster
-1
-9 0
-320 320
-320 320
-200 0
-40 32
-
--1 -1 -1 7
-
-10
-0
--3 -1
-
-script end.
-
-0
--1 -1 -1 8
-
-11
-0
--1 -1
-
-script end.
-
-1
-NPC
-Chris's mother
-~_~
-image end.
-Shop
 2
 11 0
-1200 1200
-1200 1200
+960 960
+960 960
 600 0
-120 120
-Hello, I'm Chris's mother.
-I sell the following items: 
+120 96
 
+-1 -1 -1 3
+
+0
+0
+1065353216 0
+
 script end.
+
+0
+-1 -1 -1 -1
+
+0
+0
+5 1122500608
 
-3
-Item
-Armor Pants
+script end.
 
-image end.
-Leggings
-0 0 0 0 24 60 96
+0
+-1 -1 -1 -1
 
-Item
-Sword
+0
+0
+1722157640 0
 
-image end.
-Weapon
-0 0 0 30 0 60 60
+script end.
 
-Item
-Bread
+0
+-1 -1 -1 -1
 
-image end.
-Food
-18 18 6 0 0 0 12
+0
+0
+1065353216 0
 
+script end.
 
--1 -1 8 -1
+0
+-1 -1 -1 -1
 
 0
 0
-0 0
+39765568 0
 
 script end.
 
@@ -350,7 +288,7 @@ script end.
 
 0
 0
-0 0
+0 1065353216
 
 script end.
 
@@ -368,7 +306,7 @@ script end.
 
 0
 0
-0 0
+39786184 0
 
 script end.
 
@@ -377,7 +315,7 @@ script end.
 
 0
 0
-0 0
+39765568 0
 
 script end.
 
@@ -395,7 +333,7 @@ script end.
 
 0
 0
-0 0
+47 0
 
 script end.
 
@@ -431,7 +369,7 @@ script end.
 
 0
 0
-0 0
+1722157168 0
 
 script end.
 
@@ -440,7 +378,7 @@ script end.
 
 0
 0
-0 0
+1156251648 1120403456
 
 script end.
 
@@ -449,7 +387,7 @@ script end.
 
 0
 0
-0 0
+0 1065353216
 
 script end.
 
@@ -458,7 +396,7 @@ script end.
 
 0
 0
-0 0
+39858752 0
 
 script end.
 
@@ -467,7 +405,7 @@ script end.
 
 0
 0
-0 0
+3 1097859072
 
 script end.
 
@@ -476,7 +414,7 @@ script end.
 
 0
 0
-0 0
+1963000181 268776554
 
 script end.
 
@@ -485,7 +423,7 @@ script end.
 
 0
 0
-0 0
+0 1101004800
 
 script end.
 
@@ -503,7 +441,7 @@ script end.
 
 0
 0
-0 0
+4 1146732544
 
 script end.
 
@@ -521,7 +459,7 @@ script end.
 
 0
 0
-0 0
+1065353216 0
 
 script end.
 
@@ -530,7 +468,7 @@ script end.
 
 0
 0
-0 0
+1722158048 0
 
 script end.
 
@@ -539,7 +477,7 @@ script end.
 
 0
 0
-0 0
+72 0
 
 script end.
 
@@ -557,7 +495,7 @@ script end.
 
 0
 0
-0 0
+1149173761 1097859072
 
 script end.
 
@@ -575,7 +513,7 @@ script end.
 
 0
 0
-0 0
+0 1065353216
 
 script end.
 
@@ -593,7 +531,7 @@ script end.
 
 0
 0
-0 0
+-1 -16777216
 
 script end.
 
@@ -602,7 +540,7 @@ script end.
 
 0
 0
-0 0
+1149345792 1114112000
 
 script end.
 
@@ -611,7 +549,7 @@ script end.
 
 0
 0
-0 0
+0 -2147483648
 
 script end.
 
@@ -629,7 +567,7 @@ script end.
 
 0
 0
-0 0
+1722157168 0
 
 script end.
 
@@ -656,7 +594,7 @@ script end.
 
 0
 0
-0 0
+60 1065353216
 
 script end.
 
@@ -665,7 +603,7 @@ script end.
 
 0
 0
-0 0
+3 1123155968
 
 script end.
 
@@ -674,7 +612,7 @@ script end.
 
 0
 0
-0 0
+1065353216 1065353216
 
 script end.
 
@@ -692,7 +630,7 @@ script end.
 
 0
 0
-0 0
+39947656 0
 
 script end.
 
@@ -701,7 +639,7 @@ script end.
 
 0
 0
-0 0
+1722158048 0
 
 script end.
 
@@ -710,7 +648,7 @@ script end.
 
 0
 0
-0 0
+1065353216 1118306304
 
 script end.
 
@@ -719,7 +657,7 @@ script end.
 
 0
 0
-0 0
+1118175232 1126039552
 
 script end.
 
@@ -737,7 +675,7 @@ script end.
 
 0
 0
-0 0
+1101004800 1142128640
 
 script end.
 
@@ -746,7 +684,7 @@ script end.
 
 0
 0
-0 0
+0 1065353216
 
 script end.
 
@@ -755,7 +693,7 @@ script end.
 
 0
 0
-0 0
+39785776 0
 
 script end.
 
@@ -764,7 +702,7 @@ script end.
 
 0
 0
-0 0
+1156251648 1120403456
 
 script end.
 
@@ -773,7 +711,7 @@ script end.
 
 0
 0
-0 0
+0 1129316352
 
 script end.
 
@@ -782,7 +720,7 @@ script end.
 
 0
 0
-0 0
+46 0
 
 script end.
 
@@ -791,7 +729,7 @@ script end.
 
 0
 0
-0 0
+1722158048 0
 
 script end.
 
@@ -800,7 +738,7 @@ script end.
 
 0
 0
-0 0
+1722157928 0
 
 script end.
 
@@ -809,7 +747,7 @@ script end.
 
 0
 0
-0 0
+1065353216 0
 
 script end.
 
@@ -818,7 +756,7 @@ script end.
 
 0
 0
-0 0
+0 1106247680
 
 script end.
 
@@ -845,7 +783,7 @@ script end.
 
 0
 0
-0 0
+1 1122762752
 
 script end.
 
@@ -854,7 +792,7 @@ script end.
 
 0
 0
-0 0
+39876528 0
 
 script end.
 
@@ -863,7 +801,7 @@ script end.
 
 0
 0
-0 0
+1143324673 1114898432
 
 script end.
 
@@ -872,7 +810,7 @@ script end.
 
 0
 0
-0 0
+1145733120 0
 
 script end.
 
@@ -899,7 +837,7 @@ script end.
 
 0
 0
-0 0
+0 -2147483648
 
 script end.
 
@@ -917,7 +855,7 @@ script end.
 
 0
 0
-0 0
+39902688 0
 
 script end.
 
@@ -926,7 +864,7 @@ script end.
 
 0
 0
-0 0
+0 -938208236
 
 script end.
 
@@ -935,7 +873,7 @@ script end.
 
 0
 0
-0 0
+1126825984 1077936128
 
 script end.
 
@@ -944,7 +882,7 @@ script end.
 
 0
 0
-0 0
+1123155968 1147273216
 
 script end.
 
@@ -953,7 +891,7 @@ script end.
 
 0
 0
-0 0
+1147305984 1097859072
 
 script end.
 
@@ -962,7 +900,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -971,7 +909,7 @@ script end.
 
 0
 0
-0 0
+-1 1124466688
 
 script end.
 
@@ -980,7 +918,7 @@ script end.
 
 0
 0
-0 0
+1118044160 1126629376
 
 script end.
 
@@ -989,7 +927,7 @@ script end.
 
 0
 0
-0 0
+1126629376 1148944384
 
 script end.
 
@@ -998,7 +936,7 @@ script end.
 
 0
 0
-0 0
+1149313024 1114898432
 
 script end.
 
@@ -1106,7 +1044,7 @@ script end.
 
 0
 0
-0 0
+-1593835359 406806
 
 script end.
 
@@ -1115,7 +1053,7 @@ script end.
 
 0
 0
-0 0
+1123155968 1106247680
 
 script end.
 
@@ -1124,7 +1062,7 @@ script end.
 
 0
 0
-0 0
+1114636288 1106247680
 
 script end.
 
@@ -1133,7 +1071,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -1142,7 +1080,7 @@ script end.
 
 0
 0
-0 0
+-1 1122369536
 
 script end.
 
@@ -1151,7 +1089,7 @@ script end.
 
 0
 0
-0 0
+1125056512 1108606976
 
 script end.
 
@@ -1160,7 +1098,7 @@ script end.
 
 0
 0
-0 0
+1108606976 1127743488
 
 script end.
 
@@ -1169,7 +1107,7 @@ script end.
 
 0
 0
-0 0
+1128005632 1106247680
 
 script end.
 
@@ -1178,7 +1116,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -1187,7 +1125,7 @@ script end.
 
 0
 0
-0 0
+-1 1122369536
 
 script end.
 
@@ -1196,7 +1134,7 @@ script end.
 
 0
 0
-0 0
+1122500608 1118306304
 
 script end.
 
@@ -1205,7 +1143,7 @@ script end.
 
 0
 0
-0 0
+1118175232 1134231552
 
 script end.
 
@@ -1214,7 +1152,7 @@ script end.
 
 0
 0
-0 0
+1134854144 1114898432
 
 script end.
 
@@ -1223,7 +1161,7 @@ script end.
 
 0
 0
-0 0
+1113063424 -1
 
 script end.
 
@@ -1232,7 +1170,7 @@ script end.
 
 0
 0
-0 0
+-1 1128529920
 
 script end.
 
@@ -1241,7 +1179,7 @@ script end.
 
 0
 0
-0 0
+1130233856 1126629376
 
 script end.
 
@@ -1250,7 +1188,7 @@ script end.
 
 0
 0
-0 0
+1108606976 1139900416
 
 script end.
 
@@ -1259,7 +1197,7 @@ script end.
 
 0
 0
-0 0
+1140850688 1106247680
 
 script end.
 
@@ -1268,7 +1206,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -1277,7 +1215,7 @@ script end.
 
 0
 0
-0 0
+-1 1104150528
 
 script end.
 
@@ -1286,7 +1224,7 @@ script end.
 
 0
 0
-0 0
+1102053376 1118699520
 
 script end.
 
@@ -1295,7 +1233,7 @@ script end.
 
 0
 0
-0 0
+1123155968 1143062528
 
 script end.
 
@@ -1304,7 +1242,7 @@ script end.
 
 0
 0
-0 0
+1143308288 1097859072
 
 script end.
 
@@ -1313,7 +1251,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -1322,7 +1260,7 @@ script end.
 
 0
 0
-0 0
+-1 1124466688
 
 script end.
 
@@ -1331,7 +1269,7 @@ script end.
 
 0
 0
-0 0
+1123155968 1106247680
 
 script end.
 
@@ -1340,7 +1278,7 @@ script end.
 
 0
 0
-0 0
+1108344832 1106247680
 
 script end.
 
@@ -1349,7 +1287,7 @@ script end.
 
 0
 0
-0 0
+1114898432 -1
 
 script end.
 
@@ -1358,7 +1296,7 @@ script end.
 
 0
 0
-0 0
+-1 1122369536
 
 script end.
 
@@ -1367,7 +1305,7 @@ script end.
 
 0
 0
-0 0
+1122369536 1107820544
 
 script end.
 
@@ -1375,19 +1313,15 @@ script end.
 -1 -1 -1 -1
 
 128
-1 1 0 0 1 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-12
--3 -1 10
--3 0 9
--2 -1 8
--2 0 7
--1 -1 11
--1 0 6
+1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+8
+0 -1 7
 0 0 0
-0 1 5
 1 -1 3
 1 0 1
 1 1 2
+2 -1 6
 2 0 4
+2 1 5
 
-11
+7

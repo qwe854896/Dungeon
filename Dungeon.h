@@ -24,6 +24,7 @@
 
 using namespace std;
 using namespace sf;
+using std::cout;
 
 using coord = pair<int, int>;
 
@@ -39,10 +40,16 @@ private:
 
     /* SFML */
     RenderWindow *_window;
-    CircleShape _player;
+    // CircleShape _player;
     Event sfEvent;
     Clock dtClock;
     float dt;
+
+    int ops;
+    bool holdKey;
+    bool holdEnter;
+    bool gainedFocus;
+    Font *font;
 
     void processEvents();
     void updateDt();
@@ -95,7 +102,7 @@ public:
     Monster generateMonster(int);
     NPC generateNPC(int, string);
     Room generateRoom(bool, int, int, int, int, string);
-    void generateDescription();
+    string generateDescription();
 
     void encounterDanny();
 };

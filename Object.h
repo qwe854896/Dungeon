@@ -2,10 +2,13 @@
 #define OBJECT_H_INCLUDED
 
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 #include <fstream>
 using namespace std;
+using namespace sf;
 
 class Object
 {
@@ -20,7 +23,7 @@ public:
     virtual ~Object() = default;
 
     /* pure virtual function */
-    virtual bool triggerEvent(Object*) = 0;
+    virtual bool triggerEvent(Object*, RenderWindow*) = 0;
     virtual void input(ifstream&) = 0;
     virtual void output(ofstream&) const = 0;
 

@@ -4,8 +4,11 @@
 #define OPS (unsigned int)(ops[0] - 'A')
 
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "GameCharacter.h"
@@ -13,6 +16,9 @@
 #include "Item.h"
 
 using namespace std;
+using namespace sf;
+
+using std::cout;
 
 class Item;
 
@@ -38,7 +44,7 @@ public:
     /* Virtual function that you need to complete   */
     /* In Player, this function should show the     */
     /* status of player.                            */
-    bool triggerEvent(Object*) override;
+    bool triggerEvent(Object*, RenderWindow*) override;
     void input(ifstream&) override;
     void output(ofstream&) const override;
 
@@ -55,7 +61,7 @@ public:
     /* Supplement */
     void addItem(Item);
     void popItem(int);
-    void useItem(int);
+    void useItem(int, RenderWindow*);
     void sellItem(int);
 
     void changeRoom(Room*);
@@ -63,16 +69,16 @@ public:
     void increaseGold(int);
     void decreaseGold(int);
     void increaseArmorDurability(int);
-    void decreaseArmorDurability(int);
-    void decreaseWeaponDurability(int);
+    string decreaseArmorDurability(int);
+    string decreaseWeaponDurability(int);
 
-    bool listInventory();
-    void showStatusinFight();
+    int listInventory(string, RenderWindow*);
+    string showStatusinFight();
     
-    bool handleInventory(string);
-    bool handleAct();
-    Item handleAttack();
-    Item handleSkills(int);
+    bool handleInventory(string, RenderWindow*);
+    bool handleAct(RenderWindow*);
+    Item handleAttack(RenderWindow*);
+    Item handleSkills(int, RenderWindow*);
 };
 
 ifstream& operator>>(ifstream&, Player&);

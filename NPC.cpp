@@ -11,40 +11,94 @@ NPC::NPC(string name, string image, string type, string script, vector<Item> com
     this->commodity = commodity;
 }
 
+namespace {
+    stringstream ss;
+};
+
 /* Virtual function that you need to complete   */
 /* In NPC, this function should deal with the   */
 /* transaction in easy implementation           */
-bool NPC::triggerEvent(Object* object) {
+bool NPC::triggerEvent(Object* object, RenderWindow* window) {
     if (object->getTag() == "Player") {
         Player *player = dynamic_cast<Player*>(object);
-        
-        while (1) {
-            system("cls");
 
-            cout << script << endl;
+        int ops;
+        bool gainedFocus = 1;
+	    bool holdEnter = 1;
+        bool bag = 0;
+        Event sfEvent;
+        Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+        Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, script, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        Button *yourBagIsempty = new Button(10, 20, 1900, 100, 1, 60, &font, "Your bag is empty now!", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	    Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        menu->push_back("BUY");
+        menu->push_back("SELL");
+        menu->push_back("TALK");
+        menu->push_back("EXIT");
 
-            cout << "A. BUY\nB. SELL\nC. TALK\nD. EXIT\n";
-            string ops; getline(cin, ops);
-            while (ops[0] < 'A' || ops[0] > 'D') {
-                cout << "Error, please enter operation again.\n";
-                getline(cin, ops);
+        while (window->isOpen()) {
+            // system("cls");
+            while (window->pollEvent(sfEvent)) {
+                if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                    window->close();
+                }
+                switch (sfEvent.type) {
+                    case Event::Closed:
+                        window->close();
+                        break;
+                    case Event::GainedFocus:
+                        gainedFocus = 1;
+                        break;
+                    case Event::LostFocus:
+                        gainedFocus = 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (!gainedFocus) {
+                sleep(milliseconds(10));
+                continue;
+            }
+            if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+                if (bag) {
+                    bag = 0;
+                    holdEnter = 1;
+                    continue;
+                }
+                ops = menu->getIsSelected();
+                switch (ops) {
+                    case 0:
+                        while ( handleBuy(player, window) );
+                        break;
+                    case 1:
+                        while ( handleSell(player, window) );
+                        if (player->getInventory().empty()) bag = 1;
+                        break;
+                    case 2:
+                        while ( handleTalk(window) );
+                        break;
+                    case 3:
+                        return false;
+                }
+                holdEnter = 1;
+            }
+            if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+                holdEnter = 0;
             }
 
-            switch (ops[0]) {
-                case 'A':
-                    while ( handleBuy(player) );
-                    break;
-                case 'B':
-                    while ( handleSell(player) );
-                    cout << "Your bag is empty now!\n\n";
-                    break;
-                case 'C':
-                    while ( handleTalk() );
-                    break;
-                case 'D':
-                    return false;
-            }
+            menu->update();
+
+            window->clear();
+
+            if (bag) yourBagIsempty->render(window);
+            else button->render(window), menu->render(window);
+
+            window->display();
         }
+        delete menu;
+        delete button;
+        delete yourBagIsempty;
     }
 
     return false;
@@ -101,13 +155,99 @@ vector<Item> NPC::getCommodity() const {
 
 /* Supplement */
 
-void NPC::listCommodity() /* print all the Item in this NPC*/
+int NPC::listCommodity(RenderWindow* window, int gold) /* print all the Item in this NPC*/
 {
+    int ops;
+    string info, tmp;
+    Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+
+    bool isError = 0;
+    Button *title = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose one item you want to buy: ", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *error = new Button(10, 20, 1900, 100, 1, 60, &font, "Sorry, you don't have enough money!\nPlease enter operation again.", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Menu *menu = new Menu(60, 200, 400, 380, 0, 60, false, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    
     char option = 'A' - 1;
-    for (auto good : commodity) {
-        cout << (++option) << ". " << good << endl;
+    for (auto& item : commodity) {
+        cout << (++option) << ". " << item << endl;
+
+        ss.clear();
+        ss << item.getName() << endl;
+        ss << "> type: " << item.getKind() << endl;
+        if (item.getHP())         ss << "> HP: " << item.getHP() << endl;
+        if (item.getMP())         ss << "> MP: " << item.getMP() << endl;
+        if (item.getFP())         ss << "> FP: " << item.getFP() << endl;
+        if (item.getAttack())     ss << "> Attack: " << item.getAttack() << endl;
+        if (item.getDefense())    ss << "> Defense: " << item.getDefense() << endl;
+        if (item.getDurability()) ss << "> Durability: " << item.getDurability() << endl;
+        if (item.getPrice())      ss << "> Price: " << item.getPrice() << endl;
+
+        info = "";
+        while (getline(ss, tmp)) info += tmp + "\n";
+        info.pop_back();
+
+        menu->push_back(info);
     }
-    cout << (++option) << ". Cancel\n";
+    cout << (++option) << ". Cancel.\n";
+    menu->push_back("Cancel");
+
+    bool gainedFocus = 1;
+	bool holdEnter = 1;
+
+    Event sfEvent;
+    while (window->isOpen()) {
+        while (window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            if (!isError) {
+                ops = menu->getIsSelected();
+                if (ops == commodity.size() || commodity[ops].getPrice() <= gold) break;
+                isError = 1;
+            }
+            else isError = 0;
+            holdEnter = 1;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+        menu->update();
+
+        window->clear();
+		
+        menu->render(window);
+        
+        if (!isError) title->render(window);
+        else error->render(window);
+
+        window->display();
+    }
+    delete menu;
+    delete title;
+    delete error;
+
+    return ops;
 }
 
 void NPC::pushCommodity(Item item) /* push an item into commodity */
@@ -115,48 +255,101 @@ void NPC::pushCommodity(Item item) /* push an item into commodity */
     commodity.emplace_back(item);
 }
 
-bool NPC::handleBuy(Player *player) {
-    system("cls");
-    cout << "What do you want to buy?\n";
+bool NPC::handleBuy(Player *player, RenderWindow* window) {
+    int ops = listCommodity(window, player->getGold());
+    if (ops == commodity.size() || ops == -1) return false;
 
-    listCommodity();
-
-    string ops; getline(cin, ops);
-    while (1) {
-        while (ops[0] < 'A' || OPS > commodity.size()) {
-            cout << "Error, please enter operation again.\n";
-            getline(cin, ops);
+	bool gainedFocus = 1;
+	bool holdEnter = 1;
+	Event sfEvent;
+	Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+	Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "You buy " + commodity[ops].getName(), Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	while (window->isOpen()) {
+		while (window->pollEvent(sfEvent)) {
+			if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+				window->close();
+			}
+			switch (sfEvent.type) {
+				case Event::Closed:
+					window->close();
+					break;
+				case Event::GainedFocus:
+					gainedFocus = 1;
+					break;
+				case Event::LostFocus:
+					gainedFocus = 0;
+					break;
+				default:
+					break;
+			}
+		}
+		if (!gainedFocus) {
+			sleep(milliseconds(10));
+			continue;
+		}
+		if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+			break;
+			holdEnter = 1;
+		}
+		if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+			holdEnter = 0;
         }
-        if (OPS == commodity.size() || commodity[OPS].getPrice() <= player->getGold()) break;
-
-        cout << "Sorry, you don't have enough money!\nPlease enter operation again.\n";
-        getline(cin, ops);
-    }
-
-    if (OPS == commodity.size()) return false;
-
-    cout << "You buy " << commodity[OPS].getName() << endl;
-    player->addItem(commodity[OPS]);
-    player->decreaseGold(commodity[OPS].getPrice());
-
-    cout << endl;
-    system("pause");
+		window->clear();
+		button->render(window);
+		window->display();
+	}
+	delete button;
+    player->addItem(commodity[ops]);
+    player->decreaseGold(commodity[ops].getPrice());
 
     return true;
 }
 
-bool NPC::handleSell(Player *player) {
-    system("cls");
-
-    cout << "What do you want to sell?\n";
-
-    return player->handleInventory("sell");
+bool NPC::handleSell(Player *player, RenderWindow* window) {
+    return player->handleInventory("sell", window);
 }
 
-bool NPC::handleTalk() {
-    system("cls");
-    cout << "I am shy!\n\n";
-    system("pause");
+bool NPC::handleTalk(RenderWindow* window) {bool gainedFocus = 1;
+	bool holdEnter = 1;
+	Event sfEvent;
+	Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+	Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "I am shy!", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	while (window->isOpen()) {
+		while (window->pollEvent(sfEvent)) {
+			if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+				window->close();
+			}
+			switch (sfEvent.type) {
+				case Event::Closed:
+					window->close();
+					break;
+				case Event::GainedFocus:
+					gainedFocus = 1;
+					break;
+				case Event::LostFocus:
+					gainedFocus = 0;
+					break;
+				default:
+					break;
+			}
+		}
+		if (!gainedFocus) {
+			sleep(milliseconds(10));
+			continue;
+		}
+		if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+			break;
+			holdEnter = 1;
+		}
+		if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+			holdEnter = 0;
+        }
+		window->clear();
+		button->render(window);
+		window->display();
+	}
+	delete button;
+    
     return false;
 }
 

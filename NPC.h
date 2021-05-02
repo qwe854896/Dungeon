@@ -10,6 +10,7 @@
 #include "Item.h"
 
 using namespace std;
+using namespace sf;
 
 class NPC: public GameCharacter
 {
@@ -24,7 +25,7 @@ public:
     /* Virtual function that you need to complete   */
     /* In NPC, this function should deal with the   */
     /* transaction in easy implementation           */
-    bool triggerEvent(Object*) override;
+    bool triggerEvent(Object*, RenderWindow*) override;
     void input(ifstream&) override;
     void output(ofstream&) const override;
 
@@ -35,12 +36,12 @@ public:
     vector<Item> getCommodity() const;
 
     /* Supplement */
-    void listCommodity(); /* print all the Item in this NPC */
+    int listCommodity(RenderWindow*, int); /* print all the Item in this NPC */
     void pushCommodity(Item); /* push an item into commodity */
 
-    bool handleBuy(Player*);
-    bool handleSell(Player*);
-    bool handleTalk();
+    bool handleBuy(Player*, RenderWindow*);
+    bool handleSell(Player*, RenderWindow*);
+    bool handleTalk(RenderWindow*);
 };
 
 

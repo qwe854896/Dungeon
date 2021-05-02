@@ -17,6 +17,7 @@ Player::Player(string name, string image, string type, int LV, int EXP, int HP, 
 }
 
 namespace {
+    stringstream ss;
     void showBar(int current, int max) {
         const int nstars = 50;
         const int per = current * nstars / max;
@@ -27,49 +28,89 @@ namespace {
 /* Virtual function that you need to complete   */
 /* In Player, this function should show the     */
 /* status of player.                            */
-bool Player::triggerEvent(Object* object)
+bool Player::triggerEvent(Object* object, RenderWindow* window)
 {
+    bool flag;
+    vector<Button*> buttons;
+    string info, tmp;
+    stringstream ss;
+    Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+
     /* player */
     if (object->getTag() == "Player")
     {
-        cout << "Status:\n";
-        cout << getName() << "   Lv. " << setw(2) << getLV() << endl;
-        cout << left << setw(12) << "> EXP: " << getCurrentEXP() << '/' << getMaxEXP() << endl;
-        cout << left << setw(12) << "> Gold: " << getGold() << endl;
-        cout << left << setw(12) << "> HP: " << getCurrentHP() << '/' << getMaxHP() << endl;
-        cout << left << setw(12) << "> MP: " << getCurrentMP() << '/' << getMaxMP() << endl;
-        cout << left << setw(12) << "> FP: " << getCurrentFP() << '/' << getMaxFP() << endl;
-        cout << left << setw(12) << "> Attack: " << getAttack() << endl;
-        cout << left << setw(12) << "> Defense: " << getDefense() << endl;
+        ss.clear();
+        ss << "Status:\n";
+        ss << getName() << "   Lv. " << setw(2) << getLV() << endl;
+        ss << left << setw(12) << "> EXP: " << getCurrentEXP() << '/' << getMaxEXP() << endl;
+        ss << left << setw(12) << "> Gold: " << getGold() << endl;
+        ss << left << setw(12) << "> HP: " << getCurrentHP() << '/' << getMaxHP() << endl;
+        ss << left << setw(12) << "> MP: " << getCurrentMP() << '/' << getMaxMP() << endl;
+        ss << left << setw(12) << "> FP: " << getCurrentFP() << '/' << getMaxFP() << endl;
+        ss << left << setw(12) << "> Attack: " << getAttack() << endl;
+        ss << left << setw(12) << "> Defense: " << getDefense() << endl;
 
-        cout << "\nArmors:\n";
+        info = "";
+        while (getline(ss, tmp)) info += tmp + "\n";
+        info.pop_back();
+
+        Button* playerStatus = new Button(300, 200, 500, 800, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        buttons.emplace_back(playerStatus);
+
+        ss.clear();
+        ss << "\nArmors:\n";
         for (int i = 0; i < 5; ++i) {
-            cout << "> " << left << setw(12) << getArmor(i) + ": ";
-            cout << armors[i].getName() << endl;
+            ss << "> " << left << setw(12) << getArmor(i) + ": ";
+            ss << armors[i].getName() << endl;
         }
+
+        info = "";
+        while (getline(ss, tmp)) info += tmp + "\n";
+        info.pop_back();
+
+        playerStatus = new Button(1120, 200, 500, 800, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        buttons.emplace_back(playerStatus);
     }
 
     /* Item */
     if (object->getTag() == "Item")
     {
-        Item *item = dynamic_cast<Item*>(object); // Helmet, Chestplate, Leggings, Boots, Weapon, Props.
+        Item *item = dynamic_cast<Item*>(object); // Helmet, Chestplate, Leggings, Boots, Weapon, Props
 
-        if (item->getKind() == "Props") {
+        if (item->getKind() == "Potion" || item->getKind() == "Food") {
             cout << "You use " << item->getName() << endl;
+            Button* status = new Button(520, 100, 880, 880, 1, 60, &font, "You use " + item->getName(), Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            buttons.emplace_back(status);
 
             item->decreaseDurability(1);
             increaseStates(item->getHP(), item->getMP(), item->getFP(), item->getAttack(), item->getDefense());
 
-            if (item->getDurability() <= 0) return true;
-            return false;
+            ss.clear();
+            if (item->getHP())      ss << "HP " << (item->getHP() < 0 ? "" : "+") << item->getHP() << endl;
+            if (item->getMP())      ss << "MP " << (item->getMP() < 0 ? "" : "+") << item->getMP() << endl;
+            if (item->getFP())      ss << "FP " << (item->getFP() < 0 ? "" : "+") << item->getFP() << endl;
+            if (item->getAttack())  ss << "Atk " << (item->getAttack() < 0 ? "" : "+") << item->getAttack() << endl;
+            if (item->getDefense()) ss << "Def " << (item->getDefense() < 0 ? "" : "+") << item->getDefense() << endl;
+
+            info = "";
+            while (getline(ss, tmp)) info += tmp + "\n";
+
+            Button* itemInfo = new Button(520, 100, 880, 880, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            buttons.emplace_back(itemInfo);
+
+            if (item->getDurability() <= 0) {
+                flag = true;
+            }
+            flag = false;
         }
 
         int armorIndex = getArmorIndex(item->getKind());
 
         if (armorIndex != -1)
         {
+            ss.clear();
             if (armors[armorIndex].getKind() != "NULL") {
-                cout << "You take off " << armors[armorIndex].getName() << endl;
+                ss << "You take off " << armors[armorIndex].getName() << endl;
                 addItem(armors[armorIndex]);
                 decreaseStates(armors[armorIndex].getHP(), armors[armorIndex].getMP(), armors[armorIndex].getFP(), armors[armorIndex].getAttack(), armors[armorIndex].getDefense());
             }
@@ -77,14 +118,70 @@ bool Player::triggerEvent(Object* object)
             armors[armorIndex] = *item;
 
             cout << "You equip " << armors[armorIndex].getName() << endl;
+            Button* status = new Button(520, 100, 880, 880, 1, 60, &font, "You equip " + armors[armorIndex].getName(), Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            buttons.emplace_back(status);
+
             increaseStates(armors[armorIndex].getHP(), armors[armorIndex].getMP(), armors[armorIndex].getFP(), armors[armorIndex].getAttack(), armors[armorIndex].getDefense());
-            return true;
+            flag = true;
+
+            // info = "";
+            // while (getline(ss, tmp)) info += tmp + "\n";
+            // info.pop_back();
+
+            // Button* armorInfo = new Button(520, 100, 880, 880, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            // buttons.emplace_back(armorInfo);
         }
 
 
     }
 
-    return false;
+    if (buttons.empty()) return flag;
+
+    bool gainedFocus = 1;
+	bool holdEnter = 1;
+    Event sfEvent;
+    while (window->isOpen()) {
+        while (window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+
+        window->clear();
+		
+        for (auto& button : buttons) button->render(window);
+
+        window->display();
+    }
+    for (auto& button : buttons) delete button;
+
+    return flag;
 }
 
 void Player::input(ifstream& in)
@@ -170,9 +267,9 @@ void Player::popItem(int index) /*pop out the specific object, used when the int
     inventory.erase(inventory.begin() + index);
 }
 
-void Player::useItem(int index)
+void Player::useItem(int index, RenderWindow* window)
 {
-    if (triggerEvent( &inventory[index] ))
+    if (triggerEvent( &inventory[index], window) )
     {
         popItem(index);
     }
@@ -208,50 +305,135 @@ void Player::increaseArmorDurability(int delta)
     }
 }
 
-void Player::decreaseArmorDurability(int delta)
+string Player::decreaseArmorDurability(int delta)
 {
+    ss.clear();
     for (int i = 0; i < 4; ++i) { // doesn't contain "Weapon"
         if (armors[i].getKind() != "NULL") {
             if ( armors[i].decreaseDurability(delta) ) {
-                cout << "Your " << armors[i].getName() << " is broken.\n" << endl;
+                ss << "Your " << armors[i].getName() << " is broken.\n" << endl;
                 decreaseStates(armors[i].getHP(), armors[i].getMP(), armors[i].getFP(), armors[i].getAttack(), armors[i].getDefense());
 
                 armors[i] = Item();
             }
         }
     }
+
+    string info = "", tmp;
+    while (getline(ss, tmp)) info += tmp + "\n";
+    if (!info.empty()) info.pop_back();
+    return info;
 }
 
-void Player::decreaseWeaponDurability(int delta)
+string Player::decreaseWeaponDurability(int delta)
 {
+    ss.clear();
     if (armors[4].getKind() != "NULL") {
         if ( armors[4].decreaseDurability(delta) ) {
-            cout << "Your " << armors[4].getName() << " is broken.\n" << endl;
+            ss << "Your " << armors[4].getName() << " is broken.\n" << endl;
             decreaseStates(armors[4].getHP(), armors[4].getMP(), armors[4].getFP(), armors[4].getAttack(), armors[4].getDefense());
 
             armors[4] = Item();
         }
     }
+
+    string info = "", tmp;
+    while (getline(ss, tmp)) info += tmp + "\n";
+    if (!info.empty()) info.pop_back();
+    return info;
 }
 
-bool Player::listInventory()
+int Player::listInventory(string operation, RenderWindow* window)
 {
-    if (inventory.empty()) {
-        cout << "It's empty inside.\n";
-        return false;
-    }
-    cout << "Choose one item you want to use: \n";
+    if (operation == "sell" && inventory.empty()) return -1;
+    int ops;
+    string info, tmp;
+    Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
 
+    bool isEmpty = inventory.empty();
+
+    Button *button;
+    if (isEmpty) button = new Button(520, 370, 880, 340, 1, 60, &font, "It's empty inside.", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    else button = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose one item you want to " + operation + ": ", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    
+    Menu *menu = new Menu(60, 200, 400, 380, 0, 60, false, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    
     char option = 'A' - 1;
-    for (auto item : inventory) {
+    for (auto& item : inventory) {
         cout << (++option) << ". " << item << endl;
+
+        ss.clear();
+        ss << item.getName() << endl;
+        ss << "> type: " << item.getKind() << endl;
+        if (item.getHP())         ss << "> HP: " << item.getHP() << endl;
+        if (item.getMP())         ss << "> MP: " << item.getMP() << endl;
+        if (item.getFP())         ss << "> FP: " << item.getFP() << endl;
+        if (item.getAttack())     ss << "> Attack: " << item.getAttack() << endl;
+        if (item.getDefense())    ss << "> Defense: " << item.getDefense() << endl;
+        if (item.getDurability()) ss << "> Durability: " << item.getDurability() << endl;
+        if (item.getPrice())      ss << "> Price: " << item.getPrice() << endl;
+
+        info = "";
+        while (getline(ss, tmp)) info += tmp + "\n";
+        info.pop_back();
+
+        menu->push_back(info);
     }
     cout << (++option) << ". Cancel.\n";
+    menu->push_back("Cancel");
 
-    return true;
+    bool gainedFocus = 1;
+	bool holdEnter = 1;
+
+    Event sfEvent;
+    while (window->isOpen()) {
+        while (window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            if (!isEmpty) ops = menu->getIsSelected();
+            break;
+            holdEnter = 1;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        if (!isEmpty) menu->update();
+
+        window->clear();
+		
+        button->render(window);
+        if (!isEmpty) menu->render(window);
+
+        window->display();
+    }
+    delete menu;
+    delete button;
+
+    if (isEmpty) return -1;
+    return ops;
 }
 
-void Player::showStatusinFight() {
+string Player::showStatusinFight() {
     // cout << getName() << "   Lv. " << setw(2) << getLV() << endl;
     cout << "Status: \n";
     cout << left << setw(12) << "> HP "; showBar(getCurrentHP(), getMaxHP()); cout << getCurrentHP() << '/' << getMaxHP() << endl;
@@ -259,34 +441,48 @@ void Player::showStatusinFight() {
     cout << left << setw(12) << "> FP "; showBar(getCurrentFP(), getMaxFP()); cout << getCurrentFP() << '/' << getMaxFP() << endl;
     cout << left << setw(12) << "> Attack: " << getAttack() << endl;
     cout << left << setw(12) << "> Defense: " << getDefense() << endl;
+
+    stringstream ss; ss.clear();
+    ss << "Status: \n";
+    ss << left << setw(12) << "> HP " << getCurrentHP() << '/' << getMaxHP() << endl;
+    ss << left << setw(12) << "> MP " << getCurrentMP() << '/' << getMaxMP() << endl;
+    ss << left << setw(12) << "> FP " << getCurrentFP() << '/' << getMaxFP() << endl;
+    ss << left << setw(12) << "> Attack: " << getAttack() << endl;
+    ss << left << setw(12) << "> Defense: " << getDefense() << endl;
+
+    string info = "", tmp;
+    while (getline(ss, tmp)) info += tmp + "\n";
+    info.pop_back();
+
+    return info;
 }
 
 /* operation: use, sell */
-bool Player::handleInventory(string operation) {
-    if (listInventory())
+bool Player::handleInventory(string operation, RenderWindow* window) {
+    int ops = listInventory(operation, window);
+    if (ops != -1)
     {
-        string ops; getline(cin, ops);
-        while (ops[0] < 'A' || OPS > inventory.size()) {
-            cout << "Error, please enter operation again.\n";
-            getline(cin, ops);
-        }
-        if (OPS < inventory.size())
+        // string ops; getline(cin, ops);
+        // while (ops[0] < 'A' || OPS > inventory.size()) {
+        //     cout << "Error, please enter operation again.\n";
+        //     getline(cin, ops);
+        // }
+        if (ops < inventory.size())
         {
-            if (operation == "use") useItem(OPS);
-            else if (operation == "sell") sellItem(OPS);
+            if (operation == "use") useItem(ops, window);
+            else if (operation == "sell") sellItem(ops);
             return true;
         }
     }
     return false;
 }
 
-bool Player::handleAct() {
-    return handleInventory("use");
+bool Player::handleAct(RenderWindow* window) {
+    return handleInventory("use", window);
 }
 
-Item Player::handleAttack()
+Item Player::handleAttack(RenderWindow* window)
 {
-    cout << "Choose the method to attack:\n";
     cout << "A. Default Attack\nB. Skills\n";
 
     char option = 'B';
@@ -295,21 +491,71 @@ Item Player::handleAttack()
     }
     cout << ++option << ". Cancel\n";
 
-    string ops; getline(cin, ops);
-    while (ops[0] < 'A' || ops[0] > option) {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
+    int ops;
+    Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose the method to attack:", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    menu->push_back("Default Attack");
+    menu->push_back("Skills");
+    if (ultimateSkillAvailable()) menu->push_back("Ultimate Skills");
+    menu->push_back("Cancel");
+
+    bool gainedFocus = 1;
+	bool holdEnter = 1;
+    Event sfEvent;
+    while (window->isOpen()) {
+        while (window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            ops = menu->getIsSelected();
+            break;
+            holdEnter = 1;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+
+        menu->update();
+
+        window->clear();
+		
+        button->render(window);
+        menu->render(window);
+
+        window->display();
     }
-    if (ops[0] < option)
+    delete menu;
+    delete button;
+
+    if (ops < option)
     {
-        if (ops[0] == 'A') return Item("Skill", getAttack(), 0, 0, 0, 0);
-        else if (ops[0] == 'B') return handleSkills(0);
-        else if (ops[0] == 'C') return handleSkills(1);
+        if (ops == 0) return Item("Skill", getAttack(), 0, 0, 0, 0);
+        else return handleSkills(ops - 1, window);
     }
     return Item("NULL", 0, 0, 0, 0, 0);
 }
 
-Item Player::handleSkills(int ultimate) {
+Item Player::handleSkills(int ultimate, RenderWindow* window) {
     return Item("NULL", 0, 0, 0, 0, 0);
 }
 

@@ -1,17 +1,16 @@
 #include"Menu.h"
 
-Menu::Menu(float x, float y, float width, float height, int size, bool isUpDown, Font* font, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor) 
-: isSelected(0), window(window), font(font), isUpDown(isUpDown), x(x), y(y), width(width), height(height), size(size), idleColor(idleColor), hoverColor(hoverColor), activeColor(activeColor)
+Menu::Menu(float x, float y, float width, float height, int align, int size, bool isUpDown, Font* font, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor) 
+: align(align), isSelected(0), window(window), font(font), isUpDown(isUpDown), x(x), y(y), width(width), height(height), size(size), idleColor(idleColor), hoverColor(hoverColor), activeColor(activeColor)
 {
     
 }
 
-Menu::Menu(float x, float y, float width, float height, int size, bool isUpDown, Font* font, vector<string> texts, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor)
-: isSelected(0), window(window), font(font), isUpDown(isUpDown), x(x), y(y), width(width), height(height), size(size), idleColor(idleColor), hoverColor(hoverColor), activeColor(activeColor)
+Menu::Menu(float x, float y, float width, float height, int align, int size, bool isUpDown, Font* font, vector<string> texts, RenderWindow* window, Color idleColor, Color hoverColor, Color activeColor)
+: align(align), isSelected(0), window(window), font(font), isUpDown(isUpDown), x(x), y(y), width(width), height(height), size(size), idleColor(idleColor), hoverColor(hoverColor), activeColor(activeColor)
 {
-    this->isUpDown = isUpDown;
     for (auto text : texts) {
-        buttons.emplace_back(x, y, width, height, size, font, text, idleColor, hoverColor, activeColor);
+        buttons.emplace_back(x, y, width, height, align, size, font, text, idleColor, hoverColor, activeColor);
 
         if (isUpDown) this->y += 1.1 * height;
         else this->x += 1.1 * width;
@@ -52,7 +51,14 @@ void Menu::render(RenderTarget* target) {
 }
 
 void Menu::push_back(string text) {
-    buttons.emplace_back(x, y, width, height, size, font, text, idleColor, hoverColor, activeColor);
+    buttons.emplace_back(x, y, width, height, align, size, font, text, idleColor, hoverColor, activeColor);
+
+    if (isUpDown) y += 1.1 * height;
+    else x += 1.1 * width;
+}
+
+void Menu::push_back(string text, Texture *texture) {
+    buttons.emplace_back(x, y, width, height, align, size, font, text, idleColor, hoverColor, activeColor, texture);
 
     if (isUpDown) y += 1.1 * height;
     else x += 1.1 * width;

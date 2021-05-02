@@ -85,7 +85,7 @@ void Record::loadCoord(map <coord, int>& coordToIndex, ifstream& in)
 
 void Record::saveFileNames()
 {
-    ofstream fout("Record/file");
+    ofstream fout("../Record/file");
     for (int i = 0; i < (int)fileList.size(); ++i)
     {
         fout << i << endl;
@@ -105,7 +105,7 @@ void Record::saveFileNames()
 
 void Record::loadFileNames()
 {
-    ifstream fin("Record/file");
+    ifstream fin("../Record/file");
     int i;
     while (fin >> i)
     {
@@ -127,60 +127,32 @@ void Record::loadFileNames()
 
 void Record::listFileNames()
 {
+    menu = new Menu(20, 150, 1880, 100, 0, 60, true, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     char ops = 'A' - 1;
+    stringstream ss;
+    string name;
     for (auto data : fileList)
     {
         if (data.first.first == "")
         {
             cout << (++ops) << ": " << left << setw(10) << "empty" << endl;
+            menu->push_back("empty");
         }
         else {
             cout << (++ops) << ": " << left << setw(10) << data.first.first << "   LV. " << setw(2) << data.first.second << "   " << data.second << endl;
+            ss.clear();
+            ss << left << setw(10) << data.first.first << "   LV. " << setw(2) << data.first.second << "   " << data.second << endl;
+            getline(ss, name);
+            menu->push_back( name );
         }
     }
     cout << "\n" << (++ops) << ": Cancel.\n";
-
-    // Font font; font.loadFromFile("../fonts/Dosis-Light.ttf");
-
-    // Button probs(160, 100, 1600, 200, 60, &font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    // cout << "Do you want to load previous data? (Y/N)\n";
-    // Menu YN(270, 700, 500, 200, 60, false, &font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    // YN.push_back("Yes");
-    // YN.push_back("NO");
-
-    // int ops;
-    // while (_window->isOpen()) {
-    //     updateDt();
-    //     while (_window->pollEvent(sfEvent)) {
-    //         if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
-    //             _window->close();
-    //         }
-    //         switch (sfEvent.type) {
-    //             case Event::Closed:
-    //                 _window->close();
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     }
-    //     if (Keyboard::isKeyPressed(Keyboard::Enter)) {
-    //         ops = YN.getIsSelected();
-    //         break;
-    //     }
-    //     YN.update();
-
-    //     _window->clear();
-
-    //     probs.render(_window);
-    //     YN.render(_window);
-
-    //     _window->display();
-    // }
+    menu->push_back("Cancel");
 }
 
 void Record::initFileNames(int number)
 {
-    ofstream fout("Record/file");
+    ofstream fout("../Record/file");
     for (int i = 0; i < number; ++i)
     {
         fout << i << endl;
@@ -196,30 +168,77 @@ inline bool exists(const string& name) {
 
 Record::Record() {}
 Record::Record(int number, RenderWindow* _window)
+: _window(_window)
 {
-    if (!exists("Record/file")) initFileNames(number);
+    font = new Font();
+    font->loadFromFile("../fonts/Dosis-Light.ttf");
+    if (!exists("../Record/file")) initFileNames(number);
     fileList.resize(number);
     loadFileNames();
 }
 
 void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
+    button = new Button(10, 20, 1900, 100, 1, 60, font, "Choose one file to load", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     cout << "Choose one file to save:\n";
     listFileNames();
 
-    string ops; getline(cin, ops);
+    holdEnter = 1;
+    gainedFocus = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            option = menu->getIsSelected();
+            break;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        menu->update();
+
+        _window->clear();
+        button->render(_window);
+        menu->render(_window);
+
+        _window->display();
+    }
+    delete menu;
+    delete button;
+
+    /* string ops; getline(cin, ops);
     while (ops[0] < 'A' || OPS > fileList.size()) {
         cout << "Error, please enter operation again.\n";
         getline(cin, ops);
-    }
-    if (OPS == fileList.size()) return;
+    } */
+    if (option == fileList.size()) return;
 
-    ofstream fout("Record/file" + string(1, ops[0]));
+    ofstream fout("../Record/file" + string(1, 'A' + option));
 
     cout << "Saving...\n";
 
     auto end = std::chrono::system_clock::now();
     time_t end_time = chrono::system_clock::to_time_t(end);
-    fileList[OPS] = pair<pair<string, int>, string>(pair<string, int>(player->getName(), player->getLV()), ctime(&end_time));
+    fileList[option] = pair<pair<string, int>, string>(pair<string, int>(player->getName(), player->getLV()), ctime(&end_time));
 
     saveFileNames();
     savePlayer(player, fout);
@@ -233,17 +252,62 @@ void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, 
     fout.close();
 }
 bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
+    button = new Button(10, 20, 1900, 100, 1, 60, font, "Choose one file to load", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     cout << "Choose one file to load:\n";
     listFileNames();
 
-    string ops; getline(cin, ops);
-    while (ops[0] < 'A' || OPS > fileList.size() || fileList[OPS].first.first == "") {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
-    }
-    if (OPS == fileList.size()) return 0;
+    gainedFocus = 1;
+    holdEnter = 1;
+    while (_window->isOpen()) {
+        while (_window->pollEvent(sfEvent)) {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+                _window->close();
+            }
+            switch (sfEvent.type) {
+                case Event::Closed:
+                    _window->close();
+                    break;
+                case Event::GainedFocus:
+                    gainedFocus = 1;
+                    break;
+                case Event::LostFocus:
+                    gainedFocus = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (!gainedFocus) {
+            sleep(milliseconds(10));
+            continue;
+        }
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            option = menu->getIsSelected();
+            if (fileList[option].first.first != "") break;
+            holdEnter = 1;
+        }
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 0;
+        }
+        menu->update();
 
-    ifstream fin("Record/file" + string(1, ops[0]));
+        _window->clear();
+        button->render(_window);
+        menu->render(_window);
+
+        _window->display();
+    }
+    delete menu;
+    delete button;
+
+    // string ops; getline(cin, ops);
+    // while (ops[0] < 'A' || OPS > fileList.size() || fileList[OPS].first.first == "") {
+    //     cout << "Error, please enter operation again.\n";
+    //     getline(cin, ops);
+    // }
+    if (option == fileList.size()) return 0;
+
+    ifstream fin("../Record/file" + string(1, 'A' + option));
 
     cout << "Loading...\n";
 
@@ -260,4 +324,12 @@ bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis
 
     fin.close();
     return 1;
+}
+
+void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex, ofstream& fout) {
+    savePlayer(player, fout);
+    saveRooms(rooms, fout);
+    saveVis(vis, fout);
+    saveCoord(coordToIndex, fout);
+    fout << usedIndex << endl;
 }

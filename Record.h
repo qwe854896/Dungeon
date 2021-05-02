@@ -19,9 +19,12 @@
 #include "Monster.h"
 #include "NPC.h"
 #include "Player.h"
+#include "Button.h"
+#include "Menu.h"
 
 using namespace std;
 using namespace sf;
+using std::cout;
 
 using coord = pair<int, int>;
 
@@ -33,7 +36,8 @@ using coord = pair<int, int>;
 class Record
 {
 private:
-    int CRIndex, PRIndex;
+    bool gainedFocus, holdEnter;
+    int CRIndex, PRIndex, option;
     vector < pair<pair<string, int>, string> > fileList;
 
     void savePlayer(Player*, ofstream&);
@@ -52,11 +56,15 @@ private:
     void initFileNames(int);
 
     RenderWindow *_window;
-
+    Event sfEvent;
+    Font *font;
+    Button *button;
+    Menu *menu;
 public:
     Record();
     Record(int, RenderWindow* _window);
     void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
+    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, ofstream&);
     bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
 };
 

@@ -18,16 +18,22 @@ class Button{
         Font* font;
         Text text;
 
+        int align;
+
         Color idleColor;
         Color hoverColor;
         Color activeColor;
 
     public:
-        Button(float x, float y, float width, float height, int size, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor);
+        Button(float x, float y, float width, float height, int align, int size, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor);
+        Button(float x, float y, float width, float height, int align, int size, Font* font, string text, Color idleColor, Color hoverColor, Color activeColor, Texture *texture);
         ~Button();
         
+        void updateText(string text);
         void update(bool isSelected);
         void render(RenderTarget *target);
+
+        void updateTexture(Texture *texture);
 
         const bool isPressed() const;
 };
