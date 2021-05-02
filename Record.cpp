@@ -83,9 +83,28 @@ void Record::loadCoord(map <coord, int>& coordToIndex, ifstream& in)
     }
 }
 
+void Record::saveRoomCnt(vector<int>& roomCnt, ofstream& out) {
+    out << roomCnt.size() << endl;
+    for (auto& cnt : roomCnt) {
+        out << cnt << ' ';
+    }
+}
+
+void Record::loadRoomCnt(vector<int>& roomCnt, ifstream& in) {
+    int n;
+    in >> n; roomCnt.resize(n);
+    for (int i = 0; i < n; ++i) {
+        in >> roomCnt[i];
+    }
+}
+namespace {
+    char filename[] = "../Record/file";
+    stringstream ss;
+}
+
 void Record::saveFileNames()
 {
-    ofstream fout("../Record/file");
+    ofstream fout(filename);
     for (int i = 0; i < (int)fileList.size(); ++i)
     {
         fout << i << endl;
@@ -105,7 +124,7 @@ void Record::saveFileNames()
 
 void Record::loadFileNames()
 {
-    ifstream fin("../Record/file");
+    ifstream fin(filename);
     int i;
     while (fin >> i)
     {
@@ -127,32 +146,32 @@ void Record::loadFileNames()
 
 void Record::listFileNames()
 {
-    menu = new Menu(20, 150, 1880, 100, 0, 60, true, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    char ops = 'A' - 1;
-    stringstream ss;
+    menu = new Menu(
+        20, 150, 1880, 100, 
+        0, 60, true, font, _window, 
+        Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+
     string name;
     for (auto data : fileList)
     {
         if (data.first.first == "")
         {
-            cout << (++ops) << ": " << left << setw(10) << "empty" << endl;
             menu->push_back("empty");
         }
         else {
-            cout << (++ops) << ": " << left << setw(10) << data.first.first << "   LV. " << setw(2) << data.first.second << "   " << data.second << endl;
             ss.clear();
             ss << left << setw(10) << data.first.first << "   LV. " << setw(2) << data.first.second << "   " << data.second << endl;
             getline(ss, name);
             menu->push_back( name );
         }
     }
-    cout << "\n" << (++ops) << ": Cancel.\n";
     menu->push_back("Cancel");
 }
 
 void Record::initFileNames(int number)
 {
-    ofstream fout("../Record/file");
+    ofstream fout(filename);
     for (int i = 0; i < number; ++i)
     {
         fout << i << endl;
@@ -172,14 +191,19 @@ Record::Record(int number, RenderWindow* _window)
 {
     font = new Font();
     font->loadFromFile("../fonts/Dosis-Light.ttf");
-    if (!exists("../Record/file")) initFileNames(number);
+    if (!exists(filename)) initFileNames(number);
     fileList.resize(number);
     loadFileNames();
 }
 
-void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
-    button = new Button(10, 20, 1900, 100, 1, 60, font, "Choose one file to load", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    cout << "Choose one file to save:\n";
+void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex, vector<int>& roomCnt) {
+
+
+    button = new Button(
+        10, 20, 1900, 100, 1, 60, font, 
+        "Choose one file to load", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     listFileNames();
 
     holdEnter = 1;
@@ -225,14 +249,9 @@ void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, 
     delete menu;
     delete button;
 
-    /* string ops; getline(cin, ops);
-    while (ops[0] < 'A' || OPS > fileList.size()) {
-        cout << "Error, please enter operation again.\n";
-        getline(cin, ops);
-    } */
     if (option == fileList.size()) return;
 
-    ofstream fout("../Record/file" + string(1, 'A' + option));
+    ofstream fout(filename + string(1, 'A' + option));
 
     cout << "Saving...\n";
 
@@ -245,15 +264,19 @@ void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, 
     saveRooms(rooms, fout);
     saveVis(vis, fout);
     saveCoord(coordToIndex, fout);
+    saveRoomCnt(roomCnt, fout);
     fout << usedIndex << endl;
 
     cout << "Done.\n";
 
     fout.close();
 }
-bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex) {
-    button = new Button(10, 20, 1900, 100, 1, 60, font, "Choose one file to load", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    cout << "Choose one file to load:\n";
+bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex, vector<int>& roomCnt) {
+    button = new Button(
+        10, 20, 1900, 100, 1, 60, font, 
+        "Choose one file to load", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     listFileNames();
 
     gainedFocus = 1;
@@ -300,14 +323,9 @@ bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis
     delete menu;
     delete button;
 
-    // string ops; getline(cin, ops);
-    // while (ops[0] < 'A' || OPS > fileList.size() || fileList[OPS].first.first == "") {
-    //     cout << "Error, please enter operation again.\n";
-    //     getline(cin, ops);
-    // }
     if (option == fileList.size()) return 0;
 
-    ifstream fin("../Record/file" + string(1, 'A' + option));
+    ifstream fin(filename + string(1, 'A' + option));
 
     cout << "Loading...\n";
 
@@ -315,6 +333,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis
     loadRooms(rooms, fin);
     loadVis(vis, fin);
     loadCoord(coordToIndex, fin);
+    loadRoomCnt(roomCnt, fin);
     fin >> usedIndex;
 
     cout << "Done.\n";
@@ -326,10 +345,11 @@ bool Record::loadFromFile(Player* player, vector<Room>& rooms, vector<bool>& vis
     return 1;
 }
 
-void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex, ofstream& fout) {
+void Record::saveToFile(Player* player, vector<Room>& rooms, vector<bool>& vis, int& usedIndex, map <coord, int>& coordToIndex, vector<int>& roomCnt, ofstream& fout) {
     savePlayer(player, fout);
     saveRooms(rooms, fout);
     saveVis(vis, fout);
     saveCoord(coordToIndex, fout);
+    saveRoomCnt(roomCnt, fout);
     fout << usedIndex << endl;
 }

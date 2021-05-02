@@ -4,6 +4,7 @@ Room::Room() {
     upRoom = downRoom = leftRoom = rightRoom = nullptr;
     isExit = 0;
     index = 0;
+    X = Y = 0;
     objects.clear();
 }
 Room::Room(bool isExit, int index, int X, int Y)

@@ -19,6 +19,17 @@ namespace {
 /* In NPC, this function should deal with the   */
 /* transaction in easy implementation           */
 bool NPC::triggerEvent(Object* object, RenderWindow* window) {
+    Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+
+    background.setTexture(*backgroundTexture);
+    background.scale(Vector2f(window->getSize().x / backgroundTexture->getSize().x, window->getSize().y / backgroundTexture->getSize().y));
+    npc = new Button(
+        730, 300, 430, 480, 1, 60, &font, 
+        "", 
+        Color(128, 113, 130, 100), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+    npc->updateTexture(npcTexture);
+
     if (object->getTag() == "Player") {
         Player *player = dynamic_cast<Player*>(object);
 
@@ -26,18 +37,31 @@ bool NPC::triggerEvent(Object* object, RenderWindow* window) {
         bool gainedFocus = 1;
 	    bool holdEnter = 1;
         bool bag = 0;
+
         Event sfEvent;
         Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
-        Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, script, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-        Button *yourBagIsempty = new Button(10, 20, 1900, 100, 1, 60, &font, "Your bag is empty now!", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-	    Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+
+        Button *button = new Button(
+            10, 820, 1900, 100, 1,
+            60, &font, script, 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
+        Button *yourBagIsempty = new Button(
+            10, 820, 1900, 100, 1, 
+            60, &font, "Your bag is empty now!", 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
+	    Menu *menu = new Menu(
+            44.1, 930, 426, 100, 1, 
+            60, false, &font, window, 
+            Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
         menu->push_back("BUY");
         menu->push_back("SELL");
         menu->push_back("TALK");
         menu->push_back("EXIT");
 
         while (window->isOpen()) {
-            // system("cls");
             while (window->pollEvent(sfEvent)) {
                 if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
                     window->close();
@@ -61,9 +85,9 @@ bool NPC::triggerEvent(Object* object, RenderWindow* window) {
                 continue;
             }
             if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+                holdEnter = 1;
                 if (bag) {
                     bag = 0;
-                    holdEnter = 1;
                     continue;
                 }
                 ops = menu->getIsSelected();
@@ -81,7 +105,6 @@ bool NPC::triggerEvent(Object* object, RenderWindow* window) {
                     case 3:
                         return false;
                 }
-                holdEnter = 1;
             }
             if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
                 holdEnter = 0;
@@ -90,6 +113,8 @@ bool NPC::triggerEvent(Object* object, RenderWindow* window) {
             menu->update();
 
             window->clear();
+            window->draw(background);
+            npc->render(window);
 
             if (bag) yourBagIsempty->render(window);
             else button->render(window), menu->render(window);
@@ -152,6 +177,12 @@ string NPC::getScript() const {
 vector<Item> NPC::getCommodity() const {
     return commodity;
 }
+void NPC::setNPCTexture(Texture* npcTexture) {
+    this->npcTexture = npcTexture;
+}
+void NPC::setBackgroundTexture(Texture* backgroundTexture) {
+    this->backgroundTexture = backgroundTexture;
+}
 
 /* Supplement */
 
@@ -162,14 +193,23 @@ int NPC::listCommodity(RenderWindow* window, int gold) /* print all the Item in 
     Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
 
     bool isError = 0;
-    Button *title = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose one item you want to buy: ", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    Button *error = new Button(10, 20, 1900, 100, 1, 60, &font, "Sorry, you don't have enough money!\nPlease enter operation again.", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    Menu *menu = new Menu(60, 200, 400, 380, 0, 60, false, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *title = new Button(
+        10, 20, 1900, 100, 1, 60, &font, 
+        "Choose one item you want to buy: ", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+    Button *error = new Button(
+        10, 20, 1900, 100, 1, 60, &font, 
+        "Sorry, you don't have enough money!\nPlease enter operation again.", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+    Menu *menu = new Menu(
+        60, 200, 450, 500, 
+        0, 60, false, &font, window, 
+        Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     
-    char option = 'A' - 1;
     for (auto& item : commodity) {
-        cout << (++option) << ". " << item << endl;
-
         ss.clear();
         ss << item.getName() << endl;
         ss << "> type: " << item.getKind() << endl;
@@ -187,7 +227,6 @@ int NPC::listCommodity(RenderWindow* window, int gold) /* print all the Item in 
 
         menu->push_back(info);
     }
-    cout << (++option) << ". Cancel.\n";
     menu->push_back("Cancel");
 
     bool gainedFocus = 1;
@@ -218,13 +257,13 @@ int NPC::listCommodity(RenderWindow* window, int gold) /* print all the Item in 
             continue;
         }
         if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+            holdEnter = 1;
             if (!isError) {
                 ops = menu->getIsSelected();
                 if (ops == commodity.size() || commodity[ops].getPrice() <= gold) break;
                 isError = 1;
             }
             else isError = 0;
-            holdEnter = 1;
         }
         if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
             holdEnter = 0;
@@ -237,7 +276,6 @@ int NPC::listCommodity(RenderWindow* window, int gold) /* print all the Item in 
         window->clear();
 		
         menu->render(window);
-        
         if (!isError) title->render(window);
         else error->render(window);
 
@@ -263,7 +301,12 @@ bool NPC::handleBuy(Player *player, RenderWindow* window) {
 	bool holdEnter = 1;
 	Event sfEvent;
 	Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
-	Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "You buy " + commodity[ops].getName(), Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	Button *button = new Button(
+        10, 450, 1900, 100, 1, 60, &font, 
+        "You buy " + commodity[ops].getName(), 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+
 	while (window->isOpen()) {
 		while (window->pollEvent(sfEvent)) {
 			if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
@@ -299,6 +342,7 @@ bool NPC::handleBuy(Player *player, RenderWindow* window) {
 		window->display();
 	}
 	delete button;
+
     player->addItem(commodity[ops]);
     player->decreaseGold(commodity[ops].getPrice());
 
@@ -313,7 +357,11 @@ bool NPC::handleTalk(RenderWindow* window) {bool gainedFocus = 1;
 	bool holdEnter = 1;
 	Event sfEvent;
 	Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
-	Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "I am shy!", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+	Button *button = new Button(
+        10, 820, 1900, 100, 1, 60, &font, 
+        "I am shy!", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
 	while (window->isOpen()) {
 		while (window->pollEvent(sfEvent)) {
 			if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {

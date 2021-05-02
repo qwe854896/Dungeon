@@ -12,6 +12,7 @@
 #include "GameCharacter.h"
 #include "Player.h"
 #include "Item.h"
+#include "Button.h"
 
 using namespace std;
 
@@ -19,10 +20,19 @@ class Monster: public GameCharacter
 {
 private:
     Item drop;
+
+    Sprite background;
+    Button* monster;
+    Texture *monsterTexture;
+    Texture *backgroundTexture;
+    Sound sound;
+    SoundBuffer hit;
+
     static pair<string, int> damageCalculate(int, int);
 public:
     Monster();
     Monster(string, string, string, int, Item);
+    Monster(string, string, string, int, Item, Texture*, Texture*);
     Monster(string, string, string, int, int, int, int, int, int, int);
 
     /* Virtual function that you need to complete   */
@@ -31,6 +41,10 @@ public:
     bool triggerEvent(Object*, RenderWindow*) override;
     void input(ifstream&) override;
     void output(ofstream&) const override;
+
+    /* Setter & Getter */
+    void setMonsterTexture(Texture*);
+    void setBackgroundTexture(Texture*);
 
     /* Supplement */
     string produceStatus();

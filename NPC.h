@@ -1,7 +1,6 @@
 #ifndef NPC_H_INCLUDED
 #define NPC_H_INCLUDED
 
-#define OPS (unsigned int)(ops[0] - 'A')
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,6 +16,11 @@ class NPC: public GameCharacter
 private:
     string script;
     vector<Item> commodity;
+
+    Sprite background;
+    Button* npc;
+    Texture *npcTexture;
+    Texture *backgroundTexture;
 public:
     NPC();
     NPC(string, string, string, string, int);
@@ -34,6 +38,8 @@ public:
     void setCommodity(vector<Item>);
     string getScript() const;
     vector<Item> getCommodity() const;
+    void setNPCTexture(Texture*);
+    void setBackgroundTexture(Texture*);
 
     /* Supplement */
     int listCommodity(RenderWindow*, int); /* print all the Item in this NPC */

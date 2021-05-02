@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string>
 #include <vector>
 #include <map>
@@ -21,12 +22,14 @@
 #include "Object.h"
 #include "Button.h"
 #include "Menu.h"
+#include "Minimap.h"
 
 using namespace std;
 using namespace sf;
 using std::cout;
 
 using coord = pair<int, int>;
+
 
 class Dungeon{
 private:
@@ -38,16 +41,24 @@ private:
 
     map <coord, int> coordToIndex;
 
+    vector <int> roomCnt{1, 1, 1, 1, 1, 1};
+
     /* SFML */
+    map <string, Texture> textures;
+    Texture *monsterTexture, *npcTexture, *chestTexture, *backgroundTexture;
+    Sprite background;
+
     RenderWindow *_window;
-    // CircleShape _player;
     Event sfEvent;
     Clock dtClock;
     float dt;
+    Music backgroundMusic;
 
     int ops;
     bool holdKey;
     bool holdEnter;
+    bool holdUp;
+    bool holdDown;
     bool gainedFocus;
     Font *font;
 
@@ -59,6 +70,8 @@ private:
 public:
     Dungeon();
     ~Dungeon();
+
+    void initTextures();
 
     /* Create a new player, and give him/her basic status */
     void createPlayer();

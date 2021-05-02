@@ -3,19 +3,32 @@
 Monster::Monster() : GameCharacter() {}
 Monster::Monster(string name, string image, string type, int LV, Item drop)
 : GameCharacter(name, "Monster", image, type, LV), drop(drop)
-{}
+{
+    hit.loadFromFile("../Sounds/hit.ogg");
+    sound.setBuffer(hit);
+}
+Monster::Monster(string name, string image, string type, int LV, Item drop, Texture *monsterTexture, Texture *backgroundTexture)
+: GameCharacter(name, "Monster", image, type, LV), drop(drop), monsterTexture(monsterTexture), backgroundTexture(backgroundTexture)
+{
+    
+}
 Monster::Monster(string name, string image, string type, int LV, int EXP, int HP, int MP, int FP, int attack, int defense)
 : GameCharacter(name, "Monster", image, type, LV, EXP, HP, MP, FP, attack, defense)
-{}
+{
+    delete monster;
+}
 namespace {
     /* randomly pick a number by given probability */
+    stringstream ss;  
+    mt19937 engine( rand() );
     int getRand(vector<long double> p)
     {
         uniform_real_distribution<long double> distribution(0, p.back());
-        mt19937 engine( rand() );
 
         long double value = distribution(engine);
-        return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        int id = (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        assert(id != p.size());
+        return id;
     }
     void showBar(int current, int max) {
         const int nstars = 50;
@@ -24,26 +37,57 @@ namespace {
     }
 }
 
+
+/* Setter & Getter */
+void Monster::setMonsterTexture(Texture* monsterTexture) {
+    this->monsterTexture = monsterTexture;
+}
+void Monster::setBackgroundTexture(Texture* backgroundTexture) {
+    this->backgroundTexture = backgroundTexture;
+}
+
 /* Virtual function that you need to complete   */
 /* In Monster, this function should deal with   */
 /* the combat system.                           */
 /* return true if the monster is dead. */
 bool Monster::triggerEvent(Object* object, RenderWindow* window) {
-    stringstream ss;
     Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
+
+    background.setTexture(*backgroundTexture);
+    background.scale(Vector2f(window->getSize().x / backgroundTexture->getSize().x, window->getSize().y / backgroundTexture->getSize().y));
+    monster = new Button(
+        730, 300, 430, 480, 1, 60, &font, 
+        "", 
+        Color(128, 113, 130, 100), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+    monster->updateTexture(monsterTexture);
+
     if (object->getTag() == "Player") {
         Player *player = dynamic_cast<Player*>(object);
         
         string statusText = produceStatus();
         string playerStatusText = player->showStatusinFight();
+         
+        Button *status = new Button(
+            720, 75, 500, 200, 1,
+            60, &font, statusText, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
+        Button *playerStatus = new Button(
+            100, 200, 500, 700, 1, 
+            60, &font, playerStatusText, 
+            Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
+        Button *description = new Button(
+            10, 820, 1900, 100, 1, 
+            60, &font, statusText, 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
 
-        Button *status = new Button(10, 20, 1900, 100, 1, 60, &font, "", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));;
-        Button *playerStatus = new Button(10, 20, 1900, 100, 1, 60, &font, "", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-        Button *description = new Button(10, 20, 1900, 100, 1, 60, &font, "", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));;
-
-        Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));;
-
-        
+        Menu *menu = new Menu(
+            44.1, 930, 426, 100, 1, 
+            60, false, &font, window, 
+            Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
         menu->push_back("ATTACK");
         menu->push_back("ACT");
         menu->push_back("ITEM");
@@ -120,11 +164,12 @@ bool Monster::triggerEvent(Object* object, RenderWindow* window) {
                     if (damageInfo.second < 0) damageInfo.second = 0;
 
                     ss.clear();
-                    ss << "You caused " << damageInfo.second << " damages!\n\n";
+                    ss << "You caused " << damageInfo.second << " damages!\n";
                     info = "";
                     while (getline(ss, tmp)) info += tmp + "\n";
+                    info.pop_back();
 
-                    description->updateText( "Your attack!\n" + damageInfo.first + info + "\n" + player->decreaseWeaponDurability(1) );
+                    description->updateText( "Your attack!   " + damageInfo.first + "   " + info + "   " + player->decreaseWeaponDurability(1) );
 
                     takeDamage(damageInfo.second);
                     state = 7;
@@ -145,7 +190,6 @@ bool Monster::triggerEvent(Object* object, RenderWindow* window) {
                 case 3: // FLEE
                     description->updateText("You flee!");
                     player->changeRoom(player->getPreviousRoom());
-
                     state = 9;
                     break;
 
@@ -162,9 +206,10 @@ bool Monster::triggerEvent(Object* object, RenderWindow* window) {
                     ss.clear();
                     ss << getName() << " caused " << damageInfo.second << " damages!\n\n";
                     info = "";
-                    while (getline(ss, tmp)) info += tmp + "\n";
+                    while (getline(ss, tmp)) info += tmp + "   ";
                     info.pop_back();
-                    description->updateText(getName() + " attack!\n" + damageInfo.first + info + player->decreaseArmorDurability(1));
+
+                    description->updateText(getName() + " attack!   " + damageInfo.first + "   " + info + "   " + player->decreaseArmorDurability(1));
 
                     player->takeDamage(damageInfo.second);
                     player->increaseFP(1);
@@ -177,19 +222,31 @@ bool Monster::triggerEvent(Object* object, RenderWindow* window) {
                     player->increaseEXP( getMaxEXP() );
 
                     tmp = "";
-                    if (getRand( vector<long double>{80, 100} )) {
+                    if (getRand( vector<long double>{40, 100} )) {
                         if (drop.getKind() == "NULL") drop = Item::randomItemGenerator(player->getLV(), "RANDOM");
-                        tmp = "\n" + getName() + " drop " + drop.getName();
+                        tmp = "   " + getName() + " drop " + drop.getName();
                         player->addItem(drop);
                     }
 
-                    description->updateText(getName() + " is dead!\nYou win!" + tmp);
+                    description->updateText(getName() + " is dead!   You win!" + tmp);
                     state = 9;
                     break;
             }  
             menu->update();
+            status->updateText(produceStatus());
+            playerStatus->updateText(player->showStatusinFight());
 
             window->clear();
+
+            window->draw(background);
+            status->render(window);
+            playerStatus->render(window);
+            monster->render(window);
+
+            if (state == 7 || state == 8) {
+                if (sound.getStatus() != Sound::Playing)
+                    sound.play();
+            }
 
             switch (state) {
                 case 3:
@@ -201,9 +258,7 @@ bool Monster::triggerEvent(Object* object, RenderWindow* window) {
                 case 4:
                     description->render(window);
                     menu->render();
-                    
                     break;
-                
                 default:
                     break;
             }
@@ -242,15 +297,15 @@ pair<string, int> Monster::damageCalculate(int attack, int defense) {
     int event = getRand(vector<long double>( {1, 2, 12, 92} )); // 1 1 10 80
     switch (event) {
         case 0:
-            info = "MISS!\n";
+            info = "MISS!";
             damage = 0;
             break;
         case 1:
-            info = "Critical Hit!\n";
+            info = "Critical Hit!";
             damage *= 2;
             break;
         case 2:
-            info = "Defensed!\n";
+            info = "Defensed!";
             damage *= 0.9;
             break;
         case 3:
@@ -262,13 +317,8 @@ pair<string, int> Monster::damageCalculate(int attack, int defense) {
     return pair<string, int>(info, damage);
 }
 
-
 string Monster::produceStatus() {
-    cout << getImage() << endl;
-    cout << getName() << "   Lv. " << setw(2) << getLV() << endl;
-    cout << left << setw(12) << "> HP: "; showBar(getCurrentHP(), getMaxHP()); cout << getCurrentHP() << '/' << getMaxHP() << endl;
-
-    stringstream ss;  ss.clear();
+    ss.clear();
     ss << getName() << "   Lv. " << setw(2) << getLV() << endl;
     ss << left << setw(12) << "> HP: " << getCurrentHP() << '/' << getMaxHP() << endl;
 

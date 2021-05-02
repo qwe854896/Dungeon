@@ -5,6 +5,7 @@
         "vector": "cpp",
         "map": "cpp",
         "new": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "sstream": "cpp"
     }
 }

@@ -88,16 +88,19 @@ int GameCharacter::getDefense() const {
 /* Need to discuss about the balance of game */
 int GameCharacter::expNeedToNextLV()
 {
-    if (LV <= 5) return 2 * LV + 7;
-    else if (LV <= 10) return 5 * LV - 12;
-    else return 9 * LV - 52;
+    int exp;
+    if (LV <= 5) exp = 2 * LV + 7;
+    else if (LV <= 10) exp = 5 * LV - 12;
+    else exp = 9 * LV - 52;
 
-    return 10000;
+    if (getTag() == "Monster") exp /= 2;
+
+    return exp;
 }
 int GameCharacter::HPNextLV()
 {
     int HP = 200 * LV * (LV + 1);
-    if (getTag() == "Monster") HP *= 0.8;
+    if (getTag() == "Monster") HP *= 0.5;
     return HP;
 }
 int GameCharacter::MPNextLV()
@@ -115,7 +118,7 @@ int GameCharacter::FPNextLV()
 int GameCharacter::attackNextLV()
 {
     int attack = 20 * LV * (LV + 1);
-    if (getTag() == "Monster") attack *= 1;
+    if (getTag() == "Monster") attack *= 0.8;
     return attack;
 }
 int GameCharacter::defenseNextLV()
@@ -132,7 +135,6 @@ void GameCharacter::increaseStates(int HP, int MP, int FP, int attack, int defen
     this->attack += attack;
     this->defense += defense;
 }
-
 void GameCharacter::decreaseStates(int HP, int MP, int FP, int attack, int defense) {
     increaseStates(-HP, -MP, -FP, -attack, -defense);
 }
@@ -152,6 +154,7 @@ void GameCharacter::increaseLV()
 {
     ++LV;
     if (getTag() == "Player") cout << "Level Up! You are Lv. " << LV << " now!\n\n";
+
     currentEXP -= maxEXP;
     maxEXP = expNeedToNextLV();
     maxHP = currentHP = HPNextLV();

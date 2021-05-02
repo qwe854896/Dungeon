@@ -58,6 +58,7 @@ public:
     /* Supplement */
     void increaseDurability(int);
     bool decreaseDurability(int);
+    string genInfo();
     static Item randomItemGenerator(int, string);
     void renderOnWindow(float x, float y, float width, float height, RenderWindow* window, Color color);
 };

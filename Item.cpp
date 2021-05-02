@@ -17,13 +17,14 @@ Item::Item(string name, string kind, string image, int HP, int MP, int FP, int a
 namespace {
     /* randomly pick a number by given probability */
     stringstream ss;
+    mt19937 engine( rand() );
     int getRand(vector<long double> p)
     {
         uniform_real_distribution<long double> distribution(0, p.back());
-        mt19937 engine( rand() );
-
         long double value = distribution(engine);
-        return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        int id = (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        assert(id != p.size());
+        return id;
     }
 }
 
@@ -32,9 +33,9 @@ namespace {
 /* pick up action. You should add status to the  */
 /* player.                                       */
 bool Item::triggerEvent(Object* object, RenderWindow* window) {
-    string info = "", tmp;
-    bool flag;
     ss.clear();
+    bool flag;
+    string info = "", tmp;
     if (object->getTag() == "Player") {
         Player *player = dynamic_cast<Player*>(object);
         if (kind == "Chest")
@@ -48,13 +49,11 @@ bool Item::triggerEvent(Object* object, RenderWindow* window) {
             ss << "You pick up " << getName() << endl;
             player->addItem(*this);
         }
-
         flag = true;
     }
 
     while (getline(ss, tmp)) info += tmp + "\n";
     if (info != "") info.pop_back();
-    cout << info << endl;
 
     Font *font = new Font(); font->loadFromFile("../Fonts/Dosis-Light.ttf");
     Button* button = new Button(350, 280, 1220, 520, 1, 60, font, info, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
@@ -185,6 +184,19 @@ bool Item::decreaseDurability(int delta)
     return durability <= 0;
 }
 
+string Item::genInfo() {
+    ss.clear();
+    if (HP)      ss << "HP " << (HP < 0 ? "" : "+") << HP << endl;
+    if (MP)      ss << "MP " << (MP < 0 ? "" : "+") << MP << endl;
+    if (FP)      ss << "FP " << (FP < 0 ? "" : "+") << FP << endl;
+    if (attack)  ss << "Atk " << (attack < 0 ? "" : "+") << attack << endl;
+    if (defense) ss << "Def " << (defense < 0 ? "" : "+") << defense << endl;
+
+    string info = "", tmp;
+    while (getline(ss, tmp)) info += tmp + "\n";
+    return info;
+}
+
 ostream& operator<<(ostream& out, const Item& item) {
     out << item.getName() << endl;
     out << "> type: " << item.getKind() << endl;
@@ -212,20 +224,20 @@ ofstream& operator<<(ofstream& out, const Item& item)
 Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
 {
     int LevelArg = LV * (LV + 1);
-    vector<Item> Booty //This is for items that monster drops.
-    {
-        Item("Orc's Chestplate", "Chestplate", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg), 
-        Item("Dwarf's diamond", "Treasure", 0, 0, 0, 0, 0, 0, 1000 * LevelArg),
-        Item("Dragon's cloak", "cloak", 0, 0, 10*LevelArg, 0, 20 * LevelArg, 0, 0),
-        Item("Elf's sword", "Weapon", 0, 0, 10*LevelArg, 20 * LevelArg, 0, 0, 0),
-        Item("Wizard's potion", "Potion", 10 * LevelArg, 10 * LevelArg, 10 * LevelArg, 1 * LevelArg, 1 * LevelArg, 0, 0),
-        Item("Troll's stick", "Weapon", 0, 0, 0, 3 * LevelArg, 1 * LevelArg, 10 * LevelArg, 0),
-        Item("Basilisk's fang", "Treasure", 0, 0, 0, 0, 0, 0, 800 * LevelArg),
-        Item("Caveman's bow", "Weapon", 0, 0, 5 * LevelArg, 0, 0, 0, 100 * LevelArg),
-        Item("Phoenix's Tear", "Treasure", 100 * LevelArg , 100 * LevelArg , 100 * LevelArg, 0, 0, 0, 0),
-        Item("Cerberus's fur", "Leggings", 0, 0, 0, 0, 20 * LevelArg, 100 * LevelArg, 100 * LevelArg),
-        Item("Danny's cheese", "Food", 1000 * LevelArg, 0, 0, 0, 0, 0, 109 * LevelArg)
-    };
+    // vector<Item> Booty //This is for items that monster drops.
+    // {
+    //     Item("Orc's Chestplate", "Chestplate", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg), 
+    //     Item("Dwarf's diamond", "Treasure", 0, 0, 0, 0, 0, 0, 1000 * LevelArg),
+    //     Item("Dragon's cloak", "cloak", 0, 0, 10*LevelArg, 0, 20 * LevelArg, 0, 0),
+    //     Item("Elf's sword", "Weapon", 0, 0, 10*LevelArg, 20 * LevelArg, 0, 0, 0),
+    //     Item("Wizard's potion", "Potion", 10 * LevelArg, 10 * LevelArg, 10 * LevelArg, 1 * LevelArg, 1 * LevelArg, 0, 0),
+    //     Item("Troll's stick", "Weapon", 0, 0, 0, 3 * LevelArg, 1 * LevelArg, 10 * LevelArg, 0),
+    //     Item("Basilisk's fang", "Treasure", 0, 0, 0, 0, 0, 0, 800 * LevelArg),
+    //     Item("Caveman's bow", "Weapon", 0, 0, 5 * LevelArg, 0, 0, 0, 100 * LevelArg),
+    //     Item("Phoenix's Tear", "Treasure", 100 * LevelArg , 100 * LevelArg , 100 * LevelArg, 0, 0, 0, 0),
+    //     Item("Cerberus's fur", "Leggings", 0, 0, 0, 0, 20 * LevelArg, 100 * LevelArg, 100 * LevelArg),
+    //     Item("Danny's cheese", "Food", 1000 * LevelArg, 0, 0, 0, 0, 0, 109 * LevelArg)
+    // };
 
     vector<Item> ItemsforSale //This is for npc to sell them.
     {
@@ -254,11 +266,11 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
         "Weapon",
         "Food",
         "Potion",
-        "Treasure"
+        // "Treasure"
     };
     if (kind == "RANDOM")
     {
-        kind = kindList[ getRand( vector<long double>({5, 10, 15, 20, 25, 35, 40, 41}) ) ];
+        kind = kindList[ getRand( vector<long double>({5, 10, 15, 20, 25, 35, 40, /*41*/}) ) ];
     }
 
     vector <Item> pool;
@@ -270,7 +282,7 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
             prob.emplace_back(++i);
         }
     }
-
+    if (prob.empty()) return Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg);
     return pool[ getRand( prob ) ];
 }
 

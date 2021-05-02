@@ -12,6 +12,8 @@ using namespace sf;
 class Menu {
     private:
         bool isUpDown;
+        bool showColor;
+        bool notSingleMenu;
         int isSelected;
 
         RenderWindow* window;
@@ -33,6 +35,11 @@ class Menu {
         void push_back(string text);
         void push_back(string text, Texture *texture);
         void pop_back();
+
+        void setShowColor(bool);
+        bool empty();
+        void shiftIsSelected(int);
+        void setNotSingleMenu(bool);
 
         void update();
         void render(RenderTarget* target = nullptr);

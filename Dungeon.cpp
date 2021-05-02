@@ -1,16 +1,26 @@
 #include "Dungeon.h"
 
-Dungeon::Dungeon() /*: _player(150)*/ {
+Dungeon::Dungeon() {
     _window = new RenderWindow(VideoMode(1920, 1080), "Dungeon!", Style::Default | Style::Fullscreen);
+
     font = new Font();
     font->loadFromFile("../fonts/Dosis-Light.ttf");
-    // _player.setFillColor(Color::Blue);
-    // _player.setPosition(10, 20);
+
+    initTextures();
+    monsterTexture = &textures["monster.png"];
+    npcTexture = &textures["NPC.png"];
+    chestTexture = &textures["chest.png"];
+    backgroundTexture = &textures["Background.jpg"];
+
+    background.setTexture(*backgroundTexture);
+    background.scale(Vector2f(_window->getSize().x / backgroundTexture->getSize().x, _window->getSize().y / backgroundTexture->getSize().y));
+
+    backgroundMusic.openFromFile("../Audios/b1.ogg");
+    backgroundMusic.setLoop(true);
+    backgroundMusic.setVolume(10.0);
+    backgroundMusic.play();
 }
 Dungeon::~Dungeon(){
-    Record agent(6, _window);
-    ofstream fout("../error");
-    agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex, fout);
     delete _window;
     delete font;
     for (auto& room : rooms) {
@@ -20,22 +30,33 @@ Dungeon::~Dungeon(){
     }
 }
 
+void Dungeon::initTextures() {
+    vector<string> pool{
+        "monster.png",
+        "NPC.png",
+        "chest.png",
+        "Background.jpg"
+    };
+    for (auto& file : pool) textures[file].loadFromFile("../Images/" + file);
+}
+
 namespace {
     /* randomly pick a number by given probability */
+    mt19937 engine( rand() ); 
     int getRand(vector<long double> p)
     {
+        // cout << "genRand" << endl;
         uniform_real_distribution<long double> distribution(0, p.back());
-        mt19937 engine( rand() );
-
         long double value = distribution(engine);
-        return (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        int id = (int)(upper_bound(p.begin(), p.end(), value) - p.begin());
+        assert(id != p.size());
+        return id;
     }
 }
 
 /* Create a new player, and give him/her basic status */
 void Dungeon::createPlayer() {
     string name = "";
-    cout << "Please enter player's name: ";
     Button *button = new Button(540, 340, 840, 100, 1, 60, font, "Please enter player's name", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     Button *inputName = new Button(540, 450, 840, 100, 1, 60, font, "", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
 
@@ -99,10 +120,8 @@ void Dungeon::createPlayer() {
     delete button;
     delete inputName;
 
-    // while (name == "") getline(cin, name);
     player = Player(name, "^_^", "Player", 0);
     player.increaseLV();
-    // player.setAttack(1000000);
 }
 
 /* Create a map, which include several different rooms */
@@ -113,13 +132,22 @@ void Dungeon::createMap() {
     vis.resize(128);
 
     rooms[0] = Room(0, 0, 0, 0); // init
-    vis[0] = 1;
+    vis[0] = 0;
     coordToIndex[ coord(0, 0) ] = 0;
-    rooms[0].setRightRoom(&rooms[1]);
+    // rooms[0].setRightRoom(&rooms[1]);
+
+    // Monster *mo = new Monster();
+    // *mo = generateMonster(1);
+    // rooms[0].pushObject(mo);
+    // NPC *moo = new NPC();
+    // *moo = generateNPC(1, "Shop");
+    // rooms[0].pushObject(moo);
+    // Item *mooo = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
+    // rooms[0].pushObject(mooo);
 
     player.setCurrentRoom(&rooms[0]);
     player.setPreviousRoom(&rooms[0]);
-
+/*
     rooms[1] = Room(0, 1, 1, 0); // monster
     vis[1] = 1;
     coordToIndex[ coord(1, 0) ] = 1;
@@ -165,20 +193,14 @@ void Dungeon::createMap() {
 
     Monster *boss = new Monster("Boss", "~_~", "Boss", 10, 20, 1000, 1000, 600, 100, 100);
     rooms[4].pushObject(boss);
-
-    usedIndex = 4;
+*/
+    usedIndex = 0;
     cout << "Done.\n";
 }
 
 /* Deal with player's moveing action */
 void Dungeon::handleMovement() {
     Room* room = player.getCurrentRoom();
-    // vector <Room*> options;
-
-    // menu = new Menu(380, 670, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    
-    
-
     bool isAvailable[5] = {0};
     Button buttons[5] = {
         Button(710, 75, 500, 180, 1, 60, font, "Go up", Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)),
@@ -193,60 +215,30 @@ void Dungeon::handleMovement() {
         if (player.getPreviousRoom() == room->getDownRoom()) isAvailable[1] = 1;
         if (player.getPreviousRoom() == room->getLeftRoom()) isAvailable[3] = 1;
         if (player.getPreviousRoom() == room->getRightRoom()) isAvailable[4] = 1;
-
-        // cout << "A. Go previous room\nB. Cancel\n";
-        // menu->push_back("Go previous room");
-
-        // string ops; getline(cin, ops);
-        // while (ops[0] < 'A' || ops[0] > 'B') {
-        //     cout << "Error, please enter operation again.\n";
-        //     getline(cin, ops);
-        // }
-
-        // options.emplace_back(player.getPreviousRoom());
     }
-    else {
-        char option = 'A' - 1;
-        
+    else {  
         if (room->getUpRoom() != nullptr)
         {
-            cout << (++option) << ". Go up\n";
             isAvailable[0] = 1;
-            // menu->push_back("Go up");
-            // options.emplace_back(room->getUpRoom());
         }
         if (room->getDownRoom() != nullptr)
         {
-            cout << (++option) << ". Go down\n";
             isAvailable[1] = 1;
-            // menu->push_back("Go down");
-            // options.emplace_back(room->getDownRoom());
         }
         if (room->getLeftRoom() != nullptr)
         {
-            cout << (++option) << ". Go left\n";
             isAvailable[3] = 1;
-            // menu->push_back("Go left");
-            // options.emplace_back(room->getLeftRoom());
         }
         if (room->getRightRoom() != nullptr)
         {
-            cout << (++option) << ". Go right\n";
             isAvailable[4] = 1;
-            // menu->push_back("Go right");
-            // options.emplace_back(room->getRightRoom());
         }
-        cout << (++option) << ". Cancel\n";
     }
-
     isAvailable[2] = 1;
-    // menu->push_back("Cancel");
 
-    
     bool pressUp = false, pressDown = false, pressLeft = false, pressRight = false;
     gainedFocus = 1;
     holdEnter = 1;
-    
     int isSelected = 2;
     while (_window->isOpen()) {
         while (_window->pollEvent(sfEvent)) {
@@ -277,7 +269,6 @@ void Dungeon::handleMovement() {
         if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
             holdEnter = 0;
         }
-        
 
         if (!pressUp && Keyboard::isKeyPressed(Keyboard::Up) ) {
             pressUp = 1;
@@ -389,36 +380,23 @@ void Dungeon::handleMovement() {
         buttons[isSelected].update(1);
 
         _window->clear();
-
         for (int i = 0; i < 5; ++i) {
             if (isAvailable[i]) {
                 buttons[i].render(_window);
             }
         }
-
         _window->display();
     }
 
-
-    // string ops; getline(cin, ops);
-    // while (ops[0] < 'A' || OPS > options.size()) {
-    //     cout << "Error, please enter operation again.\n";
-    //     getline(cin, ops);
-    // }
-    // if (ops < options.size()) player.changeRoom(options[ops]);
-
-    // cout << "before change room" ;
     if (isSelected == 0) player.changeRoom(room->getUpRoom());
     if (isSelected == 1) player.changeRoom(room->getDownRoom());
     if (isSelected == 3) player.changeRoom(room->getLeftRoom());
     if (isSelected == 4) player.changeRoom(room->getRightRoom());
-    // cout << "after change room";
 }
 
 /* Deal with player's interaction with objects in that room */
 /* If triggerEvent return true, pop this object */
 void Dungeon::handleEvent(Object* obj) {
-    // system("cls");
     if (obj->triggerEvent(&player, _window)) {
         player.getCurrentRoom()->popObject(obj);
         delete obj;
@@ -434,12 +412,11 @@ void Dungeon::handleInventory()
 /* Deal with all game initial setting       */
 /* Including create player, create map etc  */
 void Dungeon::startGame() {
-    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, "Do you want to load previous data?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    cout << "Do you want to load previous data? (Y/N)\n";
-
-    Menu *menu = new Menu(380, 670, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    menu->push_back("Yes");
-    menu->push_back("NO");
+    Font headerFont; headerFont.loadFromFile("../Fonts/DUNGRG__.TTF");
+    Button *button = new Button(160, 200, 1600, 200, 1, 300, &headerFont, "Dungeon", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Menu *menu = new Menu(435, 700, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    menu->push_back("Load");
+    menu->push_back("New Game");
 
     gainedFocus = 1;
     while (_window->isOpen()) {
@@ -477,12 +454,12 @@ void Dungeon::startGame() {
             cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
         }
         menu->update();
-
+        
         _window->clear();
 
         button->render(_window);
         menu->render(_window);
-
+        
         _window->display();
     }
     delete button;
@@ -498,7 +475,7 @@ void Dungeon::startGame() {
     if (ops == 0) {
         // system("cls");
         Record agent(6, _window);
-        if (agent.loadFromFile(&player, rooms, vis, usedIndex, coordToIndex)) return;
+        if (agent.loadFromFile(&player, rooms, vis, usedIndex, coordToIndex, roomCnt)) return;
     }
 
     // system("cls");
@@ -509,9 +486,12 @@ void Dungeon::startGame() {
 
 void Dungeon::encounterDanny()
 {
-    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\nDanny : I am going to rob all of your food :D\nAll of your food has eaten by Danny!\n\nPress enter to continue...", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    cout << "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\n";
-    cout << "Danny : I am going to rob all of your food :D\n";
+    Font headerFont; headerFont.loadFromFile("../Fonts/No Virus.ttf");
+    Button *button = new Button(
+        60, 290, 1800, 500, 1, 60, &headerFont,
+        "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\nDanny : I am going to rob all of your food :D\nAll of your food has eaten by Danny!\n\nPress enter to continue...", 
+        Color(255, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
 
     vector<Item> inv = player.getInventory();
     for(int i = inv.size() - 1; i >= 0; --i)
@@ -521,7 +501,6 @@ void Dungeon::encounterDanny()
             player.popItem(i);
         }
     }
-    cout << "All of your food has eaten by Danny!\n";
 
     holdEnter = 1;
     gainedFocus = 1;
@@ -569,25 +548,38 @@ void Dungeon::encounterDanny()
 /* that player can do at that room   */
 /* and dealing with player's input   */
 void Dungeon::chooseAction(const vector<Object*>& objects) {
-    // system("cls");
-    Button *button = new Button(10, 20, 1900, 100, 1, 60, font, generateDescription() + "   What do you want to do?", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *button = new Button(
+        10, 820, 1900, 100, 1, 60, font, 
+        generateDescription() + "   What do you want to do?", 
+        Color(128, 113, 130, 100), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
 
-    cout << "What do you want to do?\n";
-
-    Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    
-    cout << "A. MOVE\nB. STAT\nC. SAVE\nD. ITEM\n";
+    Menu *menu = new Menu(
+        44.1, 930, 426, 100, 
+        1, 60, false, font, _window, 
+        Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     menu->push_back("MOVE");
     menu->push_back("STAT");
     menu->push_back("SAVE");
     menu->push_back("ITEM");
+    
 
-    char option = 'D';
+    Menu *menu1 = new Menu(
+        730, 300, 430, 480, 
+        1, 60, false, font, _window, 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+
+    Menu *bg = new Menu(
+        670, 475, 215, 240, 
+        1, 60, false, font, _window, 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+
+    Minimap *minimap = new Minimap(1450, 30, 450, 450, _window, player.getCurrentRoom());
+
     vector<Object*> options;
-
-    Texture texture;
-    if (!texture.loadFromFile("../Images/monster.png")) cout << "Oops!";
-
     if (checkMonsterRoom(objects))
     {
         for (auto obj : objects) {
@@ -596,9 +588,19 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
                 {
                     encounterDanny();
                 }
-                cout << (++option) << ". Fight the monster: " << obj->getName() << "\n";
-                menu->push_back("Fight the monster: " + obj->getName(), &texture);
+                menu1->push_back("", monsterTexture);
+
+                Monster *monster = dynamic_cast<Monster*>(obj);
+                monster->setBackgroundTexture(backgroundTexture);
+                monsterTexture = &textures["monster.png"];
+                monster->setMonsterTexture(monsterTexture);
                 options.emplace_back(obj);
+            }
+            else if (obj->getTag() == "NPC") {
+                bg->push_back("", npcTexture);
+            }
+            else if (obj->getTag() == "Item") {
+                bg->push_back("", chestTexture);
             }
         }
 
@@ -607,35 +609,32 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
     {
         for (auto obj : objects) {
             if (obj->getTag() == "NPC") {
-                cout << (++option) << ". Talk to Shopkeeper: " << obj->getName() << "\n";
-                menu->push_back("Talk to Shopkeeper: " + obj->getName());
+                menu1->push_back("", npcTexture);
+
+                NPC *npc = dynamic_cast<NPC*>(obj);
+                npc->setBackgroundTexture(backgroundTexture);
+                npc->setNPCTexture(npcTexture);
                 options.emplace_back(obj);
             }
             else if (obj->getTag() == "Item") {
                 Item *item = dynamic_cast<Item*>(obj);
-                cout << (++option);
                 if (item->getKind() == "Chest") {
-                    cout << ". Open the chest\n";
-                    menu->push_back("Open the chest");
+                    menu1->push_back("", chestTexture);
                 }
                 else {
-                    cout << ". Pick up Item: " << obj->getName() << "\n";
                     menu->push_back("Pick up Item: " + obj->getName());
                 }
-                options.emplace_back(obj);
             }
+            options.emplace_back(obj);
         }
     }
 
-    // string ops; getline(cin, ops);
-    // while (ops[0] < 'A' || OPS >= options.size() + 4) {
-    //     cout << "Error, please enter operation again.\n";
-    //     getline(cin, ops);
-    // }
+    if (!menu1->empty()) menu->setNotSingleMenu(true), menu1->setNotSingleMenu(true);
 
-    // system("cls");
-
+    bool atMenu = false;
     holdEnter = 1;
+    holdUp = 0;
+    holdDown = 0;
     gainedFocus = 1;
     while (_window->isOpen()) {
         while (_window->pollEvent(sfEvent)) {
@@ -661,18 +660,55 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
             continue;
         }
         if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
-            ops = menu->getIsSelected();
+            if (atMenu) ops = menu1->getIsSelected() + 4;
+            else ops = menu->getIsSelected();
             break;
         }
         if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
             holdEnter = 0;
         }
+        if (!holdUp && Keyboard::isKeyPressed(Keyboard::Up)) {
+            holdUp = 1;
+            if (!menu1->empty()) {
+                atMenu = !atMenu;
+                // if (atMenu) menu->shiftIsSelected(1);
+                // else menu1->shiftIsSelected(1);
+                continue;
+            }
+        }
+        if (holdUp && !Keyboard::isKeyPressed(Keyboard::Up)) {
+            holdUp = 0;
+        }
+        if (!holdDown && Keyboard::isKeyPressed(Keyboard::Down)) {
+            holdDown = 1;
+            if (!menu1->empty()) {
+                atMenu = !atMenu;
+                // if (atMenu) menu->shiftIsSelected(-1);
+                // else menu1->shiftIsSelected(-1);
+                continue;
+            }
+        }
+        if (holdDown && !Keyboard::isKeyPressed(Keyboard::Down)) {
+            holdDown = 0;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::K)) {
+            cout << Mouse::getPosition().x << ' ' << Mouse::getPosition().y << endl;
+        }
+
+        menu->setShowColor(!atMenu);
+        menu1->setShowColor(atMenu);
+
         menu->update();
+        menu1->update();
 
         _window->clear();
 		
+        _window->draw(background);
         button->render(_window);
+        bg->render(_window);
         menu->render(_window);
+        menu1->render(_window);
+        minimap->render(_window);
 
         _window->display();
     }
@@ -680,7 +716,6 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
     delete button;
 
     if (ops == 0) {
-        cout << "debug" << endl;
         handleMovement();
         return;
     }
@@ -689,7 +724,7 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
     }
     else if (ops == 2) {
         Record agent(6, _window);
-        agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex);
+        agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex, roomCnt);
     }
     else if (ops == 3) {
         handleInventory();
@@ -697,24 +732,30 @@ void Dungeon::chooseAction(const vector<Object*>& objects) {
     else {
         handleEvent(options[ops - 4]);
     }
-    cout << endl;
-    // system("pause");
 }
 
 /* Check whether the game should end or not */
 /* Including player victory, or he/she dead */
 bool Dungeon::checkGameLogic() {
-    // system("cls");
     string gameIsEnd = "";
     if (player.checkIsDead()) {
         gameIsEnd = "Game Over!";
+        backgroundMusic.openFromFile("../Audios/JustDoIt.ogg");
+        backgroundMusic.play();
     }
     if (player.getCurrentRoom()->getIsExit() && !checkMonsterRoom(player.getCurrentRoom()->getObjects())) {
         gameIsEnd = "Victory!";
+        backgroundMusic.openFromFile("../Audios/RickyRoll.ogg");
+        backgroundMusic.play();
     }
     if (gameIsEnd == "") return false;
 
-    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, gameIsEnd, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Font headerFont; headerFont.loadFromFile("../Fonts/DUNGRG__.TTF");
+    Button *button = new Button(
+        160, 200, 1600, 200, 
+        1, 300, &headerFont, gameIsEnd, 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
 
     gainedFocus = 1;
 	holdEnter = 1;
@@ -764,25 +805,23 @@ bool Dungeon::checkGameLogic() {
 /* Deal with the whole game process */
 void Dungeon::runDungeon(int minimum_frame_per_seconds) {
     bool isStarted = 0;
-
     while (_window->isOpen()) {
         if (!isStarted) {
             isStarted = 1;
             startGame();
         }
-        // cout << "startGame" << endl;
+        // debug
+        ofstream fout("../error");
+        Record agent(6, _window);
+        agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex, roomCnt, fout);
+        fout.close();
+
         if (checkGameLogic()) {
             _window->close();
             break;
         }
         createRoom(player.getCurrentRoom()->getIndex());
-        // cout << "createRoom" << endl;
-        chooseAction(player.getCurrentRoom()->getObjects());    
-        // cout << "chooseAction" << endl;
-        
-        // updateDt();
-        // update();
-        // render();
+        chooseAction(player.getCurrentRoom()->getObjects());
     }
 }
 
@@ -822,13 +861,11 @@ void Dungeon::createRoom(int index)
 {
     if (vis[index]) return;
     vis[index] = 1;
-
     int x = rooms[index].getX(), y = rooms[index].getY();
     int X, Y;
 
     long double prob = 75;
     
-    // system("cls");
     string info = "";
     for (int i = 0; i < 4; ++i) {
         switch ( getRand(vector<long double>( {25, 50, 75, 100} ) ) ) {
@@ -918,8 +955,12 @@ void Dungeon::createRoom(int index)
                 break;
         }
     }
+
     if (info == "") return;
-    Button *button = new Button(160, 100, 1600, 200, 1, 60, font, info, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *button = new Button(
+        160, 440, 1600, 200, 
+        1, 60, font, info, Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
 
     gainedFocus = 1;
 	holdEnter = 1;
@@ -963,11 +1004,13 @@ void Dungeon::createRoom(int index)
 
         _window->display();
     }
+    delete button;
 }
 
 /* Random Generator */
 Monster Dungeon::generateMonster(int LV)
 {
+    // cout << "genMonster" << endl;
     int LevelArg = LV * (LV + 1);
     vector<Monster> monster_list 
     {
@@ -987,60 +1030,73 @@ Monster Dungeon::generateMonster(int LV)
     vector<long double> prob;
     for (int i = 0; i < monster_list.size(); ++i) prob.emplace_back(i + 1);
     Monster monster = monster_list[ getRand( prob ) ];
-
     monster.increaseLV();
-
     return monster;
 }
 NPC Dungeon::generateNPC(int LV, string kind)
 {
-    NPC npc = NPC("Chris's mother", "~_~", kind, "Hello, I'm Chris's mother.\nI sell the following items: \n", LV - 1);
+    // cout << "genNPC" << endl;
+    NPC npc = NPC("Chris's mother", "~_~", kind, "Hello, I'm Chris's mother.   Welcome to my shop!", LV - 1);
     npc.increaseLV();
 
-    if (kind == "Shop") {
-        vector <Item> goods;
-        goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
-        goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
-        goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
-        npc.setCommodity(goods);
-    }
+    vector <Item> goods;
+    goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
+    goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
+    goods.emplace_back(Item::randomItemGenerator(LV, "RANDOM"));
+    npc.setCommodity(goods);
 
     return npc;
 }
 Room Dungeon::generateRoom(bool isExit, int index, int X, int Y, int LV, string kind)
 {
+    // cout << "genRoom" << endl;
     Room room = Room(isExit, index, X, Y);
     coordToIndex[ coord(X, Y) ] = index;
 
-    string kindList[4] = {
-        "Monster",
-        "Shop",
-        "Chest",
-        "Boss"
+    string kindList[] = {
+        "Monster",          // 6
+        "Shop",             // 3
+        "Chest",            // 2
+        "Boss",             // 0 -> 1
+        "MonsterChest",     // 1
+        "MonsterShop"       // 1
     };
 
-    long double condition = player.getLV() >= 5 ? 11 : 11;
-    int id = getRand(vector<long double>( {6, 9, 11, condition} ));
+    long double condition = player.getLV() >= 5 ? 1 : 0;
+    vector<long double> prob{
+        6, 
+        3, 
+        2, 
+        condition,
+        1,
+        1
+    };
+    for (int i = 0; i < prob.size(); ++i) prob[i] /= roomCnt[i]; // fix probability
+    for (int i = 1; i < prob.size(); ++i) prob[i] += prob[i - 1];
+
+    int id = getRand(prob);
+    ++roomCnt[ id ];
+
     if (kind == "RANDOM") kind = kindList[ id ];
 
-    if (kind == "Monster")
+    if (kind == "Monster" || kind == "MonsterChest" || kind == "MonsterShop")
     {
         Monster *monster = new Monster();
         *monster = generateMonster(LV);
         room.pushObject(monster);
     }
-    else if (kind == "Shop")
+    if (kind == "Shop" || kind == "MonsterShop")
     {
         NPC *npc = new NPC();
         *npc = generateNPC(LV, kind);
         room.pushObject(npc);
     }
-    else if (kind == "Chest")
+    if (kind == "Chest" || kind == "MonsterChest")
     {
         Item *chest = new Item("chest", "Chest", 0, 0, 0, 0, 0, 100, 0);
         room.pushObject(chest);
     }
-    else if (kind == "Boss")
+    if (kind == "Boss")
     {
         Monster *boss = new Monster();
         *boss = generateMonster(LV);
@@ -1053,11 +1109,7 @@ Room Dungeon::generateRoom(bool isExit, int index, int X, int Y, int LV, string 
 }
 string Dungeon::generateDescription() {
     stringstream ss; ss.clear();
-
-    cout << "It's beautiful outside.\n";
     ss << "It's beautiful outside.   ";
-
-    cout << "You are at (" << player.getCurrentRoom()->getX() << ", " << player.getCurrentRoom()->getY() << ").\n";
     ss << "You are at (" << player.getCurrentRoom()->getX() << ", " << player.getCurrentRoom()->getY() << ").\n";
     
     string description = "", tmp;

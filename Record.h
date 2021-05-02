@@ -1,7 +1,6 @@
 #ifndef RECORD_H_INCLUDED
 #define RECORD_H_INCLUDED
 
-#define OPS (unsigned int)(ops[0] - 'A')
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -44,11 +43,13 @@ private:
     void saveRooms(vector<Room>&, ofstream&);
     void saveVis(vector<bool>&, ofstream&);
     void saveCoord(map <coord, int>&, ofstream&);
+    void saveRoomCnt(vector<int>&, ofstream&);
 
     void loadPlayer(Player*, ifstream&);
     void loadRooms(vector<Room>&, ifstream&);
     void loadVis(vector<bool>&, ifstream&);
     void loadCoord(map <coord, int>&, ifstream&);
+    void loadRoomCnt(vector<int>&, ifstream&);
 
     void saveFileNames();
     void loadFileNames();
@@ -63,9 +64,9 @@ private:
 public:
     Record();
     Record(int, RenderWindow* _window);
-    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
-    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, ofstream&);
-    bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&);
+    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&);
+    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&, ofstream&);
+    bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&);
 };
 
 #endif // RECORD_H_INCLUDED

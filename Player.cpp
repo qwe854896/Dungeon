@@ -30,10 +30,9 @@ namespace {
 /* status of player.                            */
 bool Player::triggerEvent(Object* object, RenderWindow* window)
 {
-    bool flag;
+    bool flag = false;
     vector<Button*> buttons;
     string info, tmp;
-    stringstream ss;
     Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
 
     /* player */
@@ -53,12 +52,17 @@ bool Player::triggerEvent(Object* object, RenderWindow* window)
         info = "";
         while (getline(ss, tmp)) info += tmp + "\n";
         info.pop_back();
+        font.loadFromFile("../Fonts/coolvetica condensed rg.ttf");
 
-        Button* playerStatus = new Button(300, 200, 500, 800, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        Button* playerStatus = new Button(
+            250, 150, 500, 800, 1, 60, &font, 
+            info, 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
         buttons.emplace_back(playerStatus);
 
         ss.clear();
-        ss << "\nArmors:\n";
+        ss << "Armors:\n";
         for (int i = 0; i < 5; ++i) {
             ss << "> " << left << setw(12) << getArmor(i) + ": ";
             ss << armors[i].getName() << endl;
@@ -68,7 +72,11 @@ bool Player::triggerEvent(Object* object, RenderWindow* window)
         while (getline(ss, tmp)) info += tmp + "\n";
         info.pop_back();
 
-        playerStatus = new Button(1120, 200, 500, 800, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+        playerStatus = new Button(
+            1070, 150, 500, 800, 1, 60, &font, 
+            info, 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
         buttons.emplace_back(playerStatus);
     }
 
@@ -78,34 +86,32 @@ bool Player::triggerEvent(Object* object, RenderWindow* window)
         Item *item = dynamic_cast<Item*>(object); // Helmet, Chestplate, Leggings, Boots, Weapon, Props
 
         if (item->getKind() == "Potion" || item->getKind() == "Food") {
-            cout << "You use " << item->getName() << endl;
-            Button* status = new Button(520, 100, 880, 880, 1, 60, &font, "You use " + item->getName(), Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            Button* status = new Button(
+                520, 0, 880, 880, 1, 60, &font, 
+                "You use " + item->getName(), 
+                Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+            );
             buttons.emplace_back(status);
 
             item->decreaseDurability(1);
             increaseStates(item->getHP(), item->getMP(), item->getFP(), item->getAttack(), item->getDefense());
 
-            ss.clear();
-            if (item->getHP())      ss << "HP " << (item->getHP() < 0 ? "" : "+") << item->getHP() << endl;
-            if (item->getMP())      ss << "MP " << (item->getMP() < 0 ? "" : "+") << item->getMP() << endl;
-            if (item->getFP())      ss << "FP " << (item->getFP() < 0 ? "" : "+") << item->getFP() << endl;
-            if (item->getAttack())  ss << "Atk " << (item->getAttack() < 0 ? "" : "+") << item->getAttack() << endl;
-            if (item->getDefense()) ss << "Def " << (item->getDefense() < 0 ? "" : "+") << item->getDefense() << endl;
+            info = item->genInfo();
 
-            info = "";
-            while (getline(ss, tmp)) info += tmp + "\n";
-
-            Button* itemInfo = new Button(520, 100, 880, 880, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            Button* itemInfo = new Button(
+                520, 250, 880, 880, 1, 60, &font, 
+                info, 
+                Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+            );
             buttons.emplace_back(itemInfo);
 
             if (item->getDurability() <= 0) {
                 flag = true;
             }
-            flag = false;
+            else flag = false;
         }
 
         int armorIndex = getArmorIndex(item->getKind());
-
         if (armorIndex != -1)
         {
             ss.clear();
@@ -117,22 +123,25 @@ bool Player::triggerEvent(Object* object, RenderWindow* window)
 
             armors[armorIndex] = *item;
 
-            cout << "You equip " << armors[armorIndex].getName() << endl;
-            Button* status = new Button(520, 100, 880, 880, 1, 60, &font, "You equip " + armors[armorIndex].getName(), Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+            Button* status = new Button(
+                520, 0, 880, 880, 1, 60, &font, 
+                "You equip " + armors[armorIndex].getName(), 
+                Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+            );
             buttons.emplace_back(status);
 
             increaseStates(armors[armorIndex].getHP(), armors[armorIndex].getMP(), armors[armorIndex].getFP(), armors[armorIndex].getAttack(), armors[armorIndex].getDefense());
             flag = true;
 
-            // info = "";
-            // while (getline(ss, tmp)) info += tmp + "\n";
-            // info.pop_back();
+            info = item->genInfo();
 
-            // Button* armorInfo = new Button(520, 100, 880, 880, 1, 60, &font, info, Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-            // buttons.emplace_back(armorInfo);
+            Button* itemInfo = new Button(
+                520, 250, 880, 880, 1, 60, &font, 
+                info, 
+                Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+            );
+            buttons.emplace_back(itemInfo);
         }
-
-
     }
 
     if (buttons.empty()) return flag;
@@ -262,8 +271,6 @@ void Player::addItem(Item item){
 
 void Player::popItem(int index) /*pop out the specific object, used when the interaction is done*/
 {
-    // swap(inventory.back(), inventory[index]);
-    // inventory.pop_back();
     inventory.erase(inventory.begin() + index);
 }
 
@@ -313,14 +320,13 @@ string Player::decreaseArmorDurability(int delta)
             if ( armors[i].decreaseDurability(delta) ) {
                 ss << "Your " << armors[i].getName() << " is broken.\n" << endl;
                 decreaseStates(armors[i].getHP(), armors[i].getMP(), armors[i].getFP(), armors[i].getAttack(), armors[i].getDefense());
-
                 armors[i] = Item();
             }
         }
     }
 
     string info = "", tmp;
-    while (getline(ss, tmp)) info += tmp + "\n";
+    while (getline(ss, tmp)) info += tmp + "   ";
     if (!info.empty()) info.pop_back();
     return info;
 }
@@ -338,7 +344,7 @@ string Player::decreaseWeaponDurability(int delta)
     }
 
     string info = "", tmp;
-    while (getline(ss, tmp)) info += tmp + "\n";
+    while (getline(ss, tmp)) info += tmp + "   ";
     if (!info.empty()) info.pop_back();
     return info;
 }
@@ -346,6 +352,7 @@ string Player::decreaseWeaponDurability(int delta)
 int Player::listInventory(string operation, RenderWindow* window)
 {
     if (operation == "sell" && inventory.empty()) return -1;
+
     int ops;
     string info, tmp;
     Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
@@ -353,16 +360,27 @@ int Player::listInventory(string operation, RenderWindow* window)
     bool isEmpty = inventory.empty();
 
     Button *button;
-    if (isEmpty) button = new Button(520, 370, 880, 340, 1, 60, &font, "It's empty inside.", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-    else button = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose one item you want to " + operation + ": ", Color(100, 100, 150, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    if (isEmpty) 
+        button = new Button(
+            520, 370, 880, 440, 1, 60, &font, 
+            "It's empty inside.", 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
+    else 
+        button = new Button(
+            10, 20, 1900, 100, 1, 60, &font, 
+            "Choose one item you want to " + operation + ": ", 
+            Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+        );
     
-    Menu *menu = new Menu(60, 200, 400, 380, 0, 60, false, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Menu *menu = new Menu(
+        60, 200, 450, 500, 
+        0, 60, false, &font, window, 
+        Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     
-    char option = 'A' - 1;
     for (auto& item : inventory) {
-        cout << (++option) << ". " << item << endl;
-
-        ss.clear();
+        stringstream().swap(ss);
         ss << item.getName() << endl;
         ss << "> type: " << item.getKind() << endl;
         if (item.getHP())         ss << "> HP: " << item.getHP() << endl;
@@ -379,7 +397,6 @@ int Player::listInventory(string operation, RenderWindow* window)
 
         menu->push_back(info);
     }
-    cout << (++option) << ". Cancel.\n";
     menu->push_back("Cancel");
 
     bool gainedFocus = 1;
@@ -434,15 +451,7 @@ int Player::listInventory(string operation, RenderWindow* window)
 }
 
 string Player::showStatusinFight() {
-    // cout << getName() << "   Lv. " << setw(2) << getLV() << endl;
-    cout << "Status: \n";
-    cout << left << setw(12) << "> HP "; showBar(getCurrentHP(), getMaxHP()); cout << getCurrentHP() << '/' << getMaxHP() << endl;
-    cout << left << setw(12) << "> MP "; showBar(getCurrentMP(), getMaxMP()); cout << getCurrentMP() << '/' << getMaxMP() << endl;
-    cout << left << setw(12) << "> FP "; showBar(getCurrentFP(), getMaxFP()); cout << getCurrentFP() << '/' << getMaxFP() << endl;
-    cout << left << setw(12) << "> Attack: " << getAttack() << endl;
-    cout << left << setw(12) << "> Defense: " << getDefense() << endl;
-
-    stringstream ss; ss.clear();
+    ss.clear();
     ss << "Status: \n";
     ss << left << setw(12) << "> HP " << getCurrentHP() << '/' << getMaxHP() << endl;
     ss << left << setw(12) << "> MP " << getCurrentMP() << '/' << getMaxMP() << endl;
@@ -462,11 +471,6 @@ bool Player::handleInventory(string operation, RenderWindow* window) {
     int ops = listInventory(operation, window);
     if (ops != -1)
     {
-        // string ops; getline(cin, ops);
-        // while (ops[0] < 'A' || OPS > inventory.size()) {
-        //     cout << "Error, please enter operation again.\n";
-        //     getline(cin, ops);
-        // }
         if (ops < inventory.size())
         {
             if (operation == "use") useItem(ops, window);
@@ -483,21 +487,23 @@ bool Player::handleAct(RenderWindow* window) {
 
 Item Player::handleAttack(RenderWindow* window)
 {
-    cout << "A. Default Attack\nB. Skills\n";
-
-    char option = 'B';
-    if (ultimateSkillAvailable()) {
-        cout << ++option << ". Ultimate Skills\n";
-    }
-    cout << ++option << ". Cancel\n";
-
+    int option = 2;
     int ops;
+
     Font font; font.loadFromFile("../Fonts/Dosis-Light.ttf");
-    Button *button = new Button(10, 20, 1900, 100, 1, 60, &font, "Choose the method to attack:", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
-	Menu *menu = new Menu(20, 150, 1880, 100, 0, 60, true, &font, window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Button *button = new Button(
+        10, 20, 1900, 100, 1, 60, &font, 
+        "Choose the method to attack:", 
+        Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
+	Menu *menu = new Menu(
+        20, 150, 1880, 100, 
+        0, 60, true, &font, window, 
+        Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255)
+    );
     menu->push_back("Default Attack");
     menu->push_back("Skills");
-    if (ultimateSkillAvailable()) menu->push_back("Ultimate Skills");
+    if (ultimateSkillAvailable()) ++option, menu->push_back("Ultimate Skills");
     menu->push_back("Cancel");
 
     bool gainedFocus = 1;
@@ -552,6 +558,7 @@ Item Player::handleAttack(RenderWindow* window)
         if (ops == 0) return Item("Skill", getAttack(), 0, 0, 0, 0);
         else return handleSkills(ops - 1, window);
     }
+    
     return Item("NULL", 0, 0, 0, 0, 0);
 }
 

@@ -1,15 +1,44 @@
 Player
+dgew
 
 ^_^
 image end.
 Player
-1
-9 0
-400 400
-400 400
-200 0
-40 40
-0
+3
+13 1
+2400 2400
+2400 2400
+1200 8
+240 240
+4
+Item
+Armor Pants
+
+image end.
+Leggings
+0 0 0 0 8 20 32
+
+Item
+Bread
+
+image end.
+Food
+6 6 2 0 0 0 4
+
+Item
+Boots
+
+image end.
+Boots
+0 0 0 0 4 20 16
+
+Item
+Bread
+
+image end.
+Food
+36 36 12 0 0 0 24
+
 5
 Item
 empty
@@ -47,7 +76,7 @@ NULL
 0 0 0 0 0 0 0
 
 100
-0 0
+2 0
 
 128
 0
@@ -57,230 +86,374 @@ NULL
 script end.
 
 0
--1 -1 -1 1
+-1 1 2 -1
 
 1
 0
-1 0
-
-script end.
-
-1
-Monster
-Slime
->_<
-image end.
-Slime
-0
-10 0
-10 10
-10 10
-10 0
-10 10
-
-2 3 0 4
-
-2
-0
-1 1
+0 -1
 
 script end.
 
 1
 NPC
-Chris
->_>
+Chris's mother
+~_~
 image end.
 Shop
-10
-0 0
-0 0
-0 0
-0 0
-0 0
-Hello, I'm Chris.
-I sell the following items: 
-
+1
+9 0
+400 400
+400 400
+200 0
+40 40
+Hello, I'm Chris's mother.
+Welcome to my shops!
 script end.
 
 3
 Item
-Rusty Sword
-
-image end.
-Weapon
-0 0 0 10 0 3 50
-
-Item
-Rusty Sticks
-
-image end.
-Weapon
-0 0 0 5 0 3 25
-
-Item
-Old Shoes
+Boots
 
 image end.
 Boots
-0 0 0 0 10 3 50
+0 0 0 0 4 20 16
+
+Item
+Chest Armor
+
+image end.
+Chestplate
+0 0 0 0 10 20 40
+
+Item
+Bread
+
+image end.
+Food
+6 6 2 0 0 0 4
 
 
--1 1 -1 -1
+0 3 -1 -1
 
-3
+2
 0
-1 -1
+-1 0
 
 script end.
 
+1
+Item
+chest
+
+image end.
+Chest
+0 0 0 0 0 100 0
+
+-1 -1 -1 0
+
 3
-Item
-chest
+0
+0 -2
 
-image end.
-Chest
-0 0 0 0 0 100 0
+script end.
 
-Item
-chest
-
-image end.
-Chest
-0 0 0 0 0 100 0
-
-Item
-chest
-
-image end.
-Chest
-0 0 0 0 0 100 0
-
-1 -1 -1 -1
+0
+1 4 -1 5
 
 4
-1
-2 0
+0
+0 -3
+
+script end.
+
+0
+3 6 -1 7
+
+5
+0
+1 -2
 
 script end.
 
 1
 Monster
-Boss
+Phoenix
+
+image end.
+Monster
+1
+4 0
+200 200
+320 320
+200 0
+32 32
+
+-1 -1 3 -1
+
+6
+0
+0 -4
+
+script end.
+
+1
+NPC
+Chris's mother
 ~_~
 image end.
-Boss
+Shop
+1
+9 0
+400 400
+400 400
+200 0
+40 40
+Hello, I'm Chris's mother.
+Welcome to my shops!
+script end.
+
+3
+Item
+Bread
+
+image end.
+Food
+6 6 2 0 0 0 4
+
+Item
+Bread
+
+image end.
+Food
+6 6 2 0 0 0 4
+
+Item
+Armor Pants
+
+image end.
+Leggings
+0 0 0 0 8 20 32
+
+
+4 8 -1 -1
+
+7
+0
+1 -3
+
+script end.
+
+2
+Monster
+Dragon
+
+image end.
+Monster
+1
+4 0
+200 200
+320 320
+200 0
+32 32
+
+NPC
+Chris's mother
+~_~
+image end.
+MonsterShop
+1
+9 0
+400 400
+400 400
+200 0
+40 40
+Hello, I'm Chris's mother.
+Welcome to my shops!
+script end.
+
+3
+Item
+Bread
+
+image end.
+Food
+6 6 2 0 0 0 4
+
+Item
+Armor Pants
+
+image end.
+Leggings
+0 0 0 0 8 20 32
+
+Item
+Bow and Arrow
+
+image end.
+Weapon
+0 0 0 10 4 20 30
+
+
+-1 -1 4 -1
+
+8
+0
+0 -5
+
+script end.
+
+0
+6 9 10 14
+
+9
+0
+0 -6
+
+script end.
+
+1
+NPC
+Chris's mother
+~_~
+image end.
+Shop
+1
+9 0
+400 400
+400 400
+200 0
+40 40
+Hello, I'm Chris's mother.
+Welcome to my shops!
+script end.
+
+3
+Item
+Armor Pants
+
+image end.
+Leggings
+0 0 0 0 8 20 32
+
+Item
+Chest Armor
+
+image end.
+Chestplate
+0 0 0 0 10 20 40
+
+Item
+Boots
+
+image end.
+Boots
+0 0 0 0 4 20 16
+
+
+8 11 -1 13
+
 10
-20 0
-1000 1000
-1000 1000
-600 0
-100 100
-
--1 -1 1 -1
-
 0
-0
-16777215 16777215
+-1 -5
 
 script end.
-
-0
--1 -1 -1 -1
-
-0
-0
-16777215 16777215
 
+1
+NPC
+Chris's mother
+~_~
+image end.
+Shop
+1
+9 0
+400 400
+400 400
+200 0
+40 40
+Hello, I'm Chris's mother.
+Welcome to my shops!
 script end.
-
-0
--1 -1 -1 -1
-
-0
-0
-16777215 16777215
 
-script end.
+3
+Item
+Wand
 
-0
--1 -1 -1 -1
+image end.
+Weapon
+0 0 6 14 6 30 50
 
-0
-0
-16777215 16777215
+Item
+Boots
 
-script end.
+image end.
+Boots
+0 0 0 0 4 20 16
 
-0
--1 -1 -1 -1
+Item
+Bread
 
-0
-0
-16777215 16777215
+image end.
+Food
+6 6 2 0 0 0 4
 
-script end.
 
-0
--1 -1 -1 -1
+-1 -1 -1 8
 
+11
 0
-0
-16777215 16777215
+0 -7
 
 script end.
 
 0
--1 -1 -1 -1
+9 -1 -1 12
 
+12
 0
-0
-16777215 16777215
+1 -7
 
 script end.
 
 0
--1 -1 -1 -1
+13 -1 11 -1
 
-0
+13
 0
-16777215 16777215
+1 -6
 
 script end.
 
 0
--1 -1 -1 -1
+14 12 9 -1
 
+14
 0
-0
-16777215 16777215
+1 -5
 
 script end.
 
 0
--1 -1 -1 -1
+-1 13 8 15
 
+15
 0
-0
-16777215 16777215
+2 -5
 
 script end.
-
-0
--1 -1 -1 -1
 
-0
-0
-16777215 16777215
+1
+Item
+chest
 
-script end.
+image end.
+Chest
+0 0 0 0 0 100 0
 
-0
--1 -1 -1 -1
+-1 -1 14 -1
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -289,7 +462,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -298,7 +471,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -307,7 +480,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -316,7 +489,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -325,7 +498,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -334,7 +507,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -343,7 +516,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -352,7 +525,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -361,7 +534,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -370,7 +543,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -379,7 +552,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -388,7 +561,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -397,7 +570,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -406,7 +579,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -415,7 +588,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -424,7 +597,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -433,7 +606,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -442,7 +615,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -451,7 +624,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -460,7 +633,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -469,7 +642,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -478,7 +651,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -487,7 +660,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -496,7 +669,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -505,7 +678,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -514,7 +687,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -523,7 +696,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -532,7 +705,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -541,7 +714,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -550,7 +723,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -559,7 +732,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -568,7 +741,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -577,7 +750,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -586,7 +759,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -595,7 +768,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -604,7 +777,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -613,7 +786,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -622,7 +795,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -631,7 +804,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -640,7 +813,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -649,7 +822,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -658,7 +831,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -667,7 +840,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -676,7 +849,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -685,7 +858,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -694,7 +867,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -703,7 +876,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -712,7 +885,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -721,7 +894,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -730,7 +903,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -739,7 +912,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -748,7 +921,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -757,7 +930,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -766,7 +939,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -775,7 +948,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -784,7 +957,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -793,7 +966,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -802,7 +975,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -811,7 +984,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -820,7 +993,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -829,7 +1002,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -838,7 +1011,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -847,7 +1020,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -856,7 +1029,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -865,7 +1038,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -874,7 +1047,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -883,7 +1056,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -892,7 +1065,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -901,7 +1074,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -910,7 +1083,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -919,7 +1092,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -928,7 +1101,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -937,7 +1110,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -946,7 +1119,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -955,7 +1128,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -964,7 +1137,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -973,7 +1146,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -982,7 +1155,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -991,7 +1164,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1000,7 +1173,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1009,7 +1182,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1018,7 +1191,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1027,7 +1200,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1036,7 +1209,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1045,7 +1218,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1054,7 +1227,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1063,7 +1236,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1072,7 +1245,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1081,7 +1254,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1090,7 +1263,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1099,7 +1272,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1108,7 +1281,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1117,7 +1290,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1126,7 +1299,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1135,7 +1308,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1144,7 +1317,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1153,7 +1326,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1162,7 +1335,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1171,7 +1344,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1180,7 +1353,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1189,7 +1362,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1198,7 +1371,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1207,7 +1380,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1216,7 +1389,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1225,7 +1398,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1234,7 +1407,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1243,7 +1416,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1252,7 +1425,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1261,7 +1434,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1270,7 +1443,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1279,7 +1452,7 @@ script end.
 
 0
 0
-16777215 16777215
+0 0
 
 script end.
 
@@ -1287,12 +1460,24 @@ script end.
 -1 -1 -1 -1
 
 128
-1 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-5
+1 1 0 1 1 0 1 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+16
+-1 -5 10
+-1 0 2
+0 -7 11
+0 -6 9
+0 -5 8
+0 -4 6
+0 -3 4
+0 -2 3
+0 -1 1
 0 0 0
-1 -1 3
-1 0 1
-1 1 2
-2 0 4
+1 -7 12
+1 -6 13
+1 -5 14
+1 -3 7
+1 -2 5
+2 -5 15
 
-4
+6
+5 5 5 1 3 2 15

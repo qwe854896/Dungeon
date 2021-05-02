@@ -1,8 +1,6 @@
 #ifndef PLAYER_H_INCLUDED
 #define PLAYER_H_INCLUDED
 
-#define OPS (unsigned int)(ops[0] - 'A')
-
 #include <iostream>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
