@@ -7,7 +7,7 @@
 #include "Object.h"
 using namespace std;
 
-class GameCharacter: public Object
+class GameCharacter : public Object
 {
 private:
     string type;
@@ -27,11 +27,12 @@ private:
     int FPNextLV();
     int attackNextLV();
     int defenseNextLV();
+
 public:
     GameCharacter();
-    GameCharacter(string,string,int,int); // name, tag, HP, LV
-    GameCharacter(string,string,string,string,int); // name, tag, image, type, LV
-    GameCharacter(string,string,string,string,int,int,int,int,int,int,int); // name, tag, image, type, LV, EXP, HP, MP, FP, attack, defense
+    GameCharacter(string, string, int, int);                                          // name, tag, HP, LV
+    GameCharacter(string, string, string, string, int);                               // name, tag, image, type, LV
+    GameCharacter(string, string, string, string, int, int, int, int, int, int, int); // name, tag, image, type, LV, EXP, HP, MP, FP, attack, defense
 
     /* Set & Get function*/
     void setLV(int);
@@ -58,8 +59,8 @@ public:
     int getDefense() const;
 
     /* Supplement */
-    void increaseStates(int,int,int,int,int);
-    void decreaseStates(int,int,int,int,int);
+    void increaseStates(int, int, int, int, int);
+    void decreaseStates(int, int, int, int, int);
     void increaseFP(int);
     void increaseEXP(int);
     void increaseLV();
@@ -68,7 +69,7 @@ public:
     int takeDamage(int);
     bool ultimateSkillAvailable();
 
-    void inputGameCharacter(ifstream&);
-    void outputGameCharacter(ofstream&) const;
+    void inputGameCharacter(ifstream &);
+    void outputGameCharacter(ofstream &) const;
 };
 #endif // GAMECHARACTER_H_INCLUDED

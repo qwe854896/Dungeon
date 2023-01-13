@@ -1,23 +1,27 @@
 #include "Item.h"
 Item::Item()
-: Object("empty", "Item", "")
+    : Object("empty", "Item", "")
 {
     kind = "NULL";
     HP = MP = FP = attack = defense = durability = price = 0;
 }
 Item::Item(string kind, int HP, int MP, int FP, int attack, int defense)
-: Object("", "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(0), price(0)
-{}
+    : Object("", "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(0), price(0)
+{
+}
 Item::Item(string name, string kind, int HP, int MP, int FP, int attack, int defense, int durability, int price)
-: Object(name, "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
-{}
+    : Object(name, "Item", ""), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
+{
+}
 Item::Item(string name, string kind, string image, int HP, int MP, int FP, int attack, int defense, int durability, int price)
-: Object(name, "Item", image), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
-{}
-namespace {
+    : Object(name, "Item", image), kind(kind), HP(HP), MP(MP), FP(FP), attack(attack), defense(defense), durability(durability), price(price)
+{
+}
+namespace
+{
     /* randomly pick a number by given probability */
     stringstream ss;
-    mt19937 engine( rand() );
+    mt19937 engine(rand());
     int getRand(vector<long double> p)
     {
         uniform_real_distribution<long double> distribution(0, p.back());
@@ -32,12 +36,14 @@ namespace {
 /* In Item, this function should deal with the   */
 /* pick up action. You should add status to the  */
 /* player.                                       */
-bool Item::triggerEvent(Object* object, RenderWindow* window) {
+bool Item::triggerEvent(Object *object, RenderWindow *window)
+{
     ss.clear();
     bool flag;
     string info = "", tmp;
-    if (object->getTag() == "Player") {
-        Player *player = dynamic_cast<Player*>(object);
+    if (object->getTag() == "Player")
+    {
+        Player *player = dynamic_cast<Player *>(object);
         if (kind == "Chest")
         {
             ss << "You open the chest\n";
@@ -45,74 +51,87 @@ bool Item::triggerEvent(Object* object, RenderWindow* window) {
             ss << "You obtain " << treasure.getName() << endl;
             player->addItem(treasure);
         }
-        else {
+        else
+        {
             ss << "You pick up " << getName() << endl;
             player->addItem(*this);
         }
         flag = true;
     }
 
-    while (getline(ss, tmp)) info += tmp + "\n";
-    if (info != "") info.pop_back();
+    while (getline(ss, tmp))
+        info += tmp + "\n";
+    if (info != "")
+        info.pop_back();
 
-    Font *font = new Font(); font->loadFromFile("../Fonts/Dosis-Light.ttf");
-    Button* button = new Button(350, 280, 1220, 520, 1, 60, font, info, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
+    Font *font = new Font();
+    font->loadFromFile("../Fonts/Dosis-Light.ttf");
+    Button *button = new Button(350, 280, 1220, 520, 1, 60, font, info, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
 
     bool gainedFocus = 1;
-	bool holdEnter = 1;
+    bool holdEnter = 1;
     Event sfEvent;
-    while (window->isOpen()) {
-        while (window->pollEvent(sfEvent)) {
-            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+    while (window->isOpen())
+    {
+        while (window->pollEvent(sfEvent))
+        {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape))
+            {
                 window->close();
             }
-            switch (sfEvent.type) {
-                case Event::Closed:
-                    window->close();
-                    break;
-                case Event::GainedFocus:
-                    gainedFocus = 1;
-                    break;
-                case Event::LostFocus:
-                    gainedFocus = 0;
-                    break;
-                default:
-                    break;
+            switch (sfEvent.type)
+            {
+            case Event::Closed:
+                window->close();
+                break;
+            case Event::GainedFocus:
+                gainedFocus = 1;
+                break;
+            case Event::LostFocus:
+                gainedFocus = 0;
+                break;
+            default:
+                break;
             }
         }
-        if (!gainedFocus) {
+        if (!gainedFocus)
+        {
             sleep(milliseconds(10));
             continue;
         }
-        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter))
+        {
             break;
         }
-        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter))
+        {
             holdEnter = 0;
         }
 
         window->clear();
-		
+
         button->render(window);
 
         window->display();
     }
     delete button;
 
-	return flag;
+    return flag;
 }
 
-void Item::input(ifstream& in)
+void Item::input(ifstream &in)
 {
     setTag("Item");
     inputObject(in);
 
-    kind = ""; while (kind == "") getline(in, kind);
+    kind = "";
+    while (kind == "")
+        getline(in, kind);
 
     in >> HP >> MP >> FP >> attack >> defense >> durability >> price;
 }
 
-void Item::output(ofstream& out) const
+void Item::output(ofstream &out) const
 {
     outputObject(out);
 
@@ -122,52 +141,68 @@ void Item::output(ofstream& out) const
 }
 
 /* Set & Get function*/
-int Item::getHP() const {
-	return HP;
+int Item::getHP() const
+{
+    return HP;
 }
-int Item::getMP() const {
-	return MP;
+int Item::getMP() const
+{
+    return MP;
 }
-int Item::getFP() const {
-	return FP;
+int Item::getFP() const
+{
+    return FP;
 }
-int Item::getAttack() const {
-	return attack;
+int Item::getAttack() const
+{
+    return attack;
 }
-int Item::getDefense() const {
-	return defense;
+int Item::getDefense() const
+{
+    return defense;
 }
-int Item::getDurability() const {
+int Item::getDurability() const
+{
     return durability;
 }
-int Item::getPrice() const {
+int Item::getPrice() const
+{
     return price;
 }
-string Item::getKind() const {
+string Item::getKind() const
+{
     return kind;
 }
-void Item::setHP(int HP) {
-	this->HP = HP;
+void Item::setHP(int HP)
+{
+    this->HP = HP;
 }
-void Item::setMP(int MP) {
-	this->MP = MP;
+void Item::setMP(int MP)
+{
+    this->MP = MP;
 }
-void Item::setFP(int FP) {
-	this->FP = FP;
+void Item::setFP(int FP)
+{
+    this->FP = FP;
 }
-void Item::setAttack(int attack) {
-	this->attack = attack;
+void Item::setAttack(int attack)
+{
+    this->attack = attack;
 }
-void Item::setDefense(int defense) {
-	this->defense = defense;
+void Item::setDefense(int defense)
+{
+    this->defense = defense;
 }
-void Item::setDurability(int durability) {
+void Item::setDurability(int durability)
+{
     this->durability = durability;
 }
-void Item::setPrice(int price) {
+void Item::setPrice(int price)
+{
     this->price = price;
 }
-void Item::setKind(string kind) {
+void Item::setKind(string kind)
+{
     this->kind = kind;
 }
 
@@ -184,38 +219,53 @@ bool Item::decreaseDurability(int delta)
     return durability <= 0;
 }
 
-string Item::genInfo() {
+string Item::genInfo()
+{
     ss.clear();
-    if (HP)      ss << "HP " << (HP < 0 ? "" : "+") << HP << endl;
-    if (MP)      ss << "MP " << (MP < 0 ? "" : "+") << MP << endl;
-    if (FP)      ss << "FP " << (FP < 0 ? "" : "+") << FP << endl;
-    if (attack)  ss << "Atk " << (attack < 0 ? "" : "+") << attack << endl;
-    if (defense) ss << "Def " << (defense < 0 ? "" : "+") << defense << endl;
+    if (HP)
+        ss << "HP " << (HP < 0 ? "" : "+") << HP << endl;
+    if (MP)
+        ss << "MP " << (MP < 0 ? "" : "+") << MP << endl;
+    if (FP)
+        ss << "FP " << (FP < 0 ? "" : "+") << FP << endl;
+    if (attack)
+        ss << "Atk " << (attack < 0 ? "" : "+") << attack << endl;
+    if (defense)
+        ss << "Def " << (defense < 0 ? "" : "+") << defense << endl;
 
     string info = "", tmp;
-    while (getline(ss, tmp)) info += tmp + "\n";
+    while (getline(ss, tmp))
+        info += tmp + "\n";
     return info;
 }
 
-ostream& operator<<(ostream& out, const Item& item) {
+ostream &operator<<(ostream &out, const Item &item)
+{
     out << item.getName() << endl;
     out << "> type: " << item.getKind() << endl;
-    if (item.getHP())         out << "> HP: " << item.getHP() << endl;
-    if (item.getMP())         out << "> MP: " << item.getMP() << endl;
-    if (item.getFP())         out << "> FP: " << item.getFP() << endl;
-    if (item.getAttack())     out << "> Attack: " << item.getAttack() << endl;
-    if (item.getDefense())    out << "> Defense: " << item.getDefense() << endl;
-    if (item.getDurability()) out << "> Durability: " << item.getDurability() << endl;
-    if (item.getPrice())      out << "> Price: " << item.getPrice() << endl;
+    if (item.getHP())
+        out << "> HP: " << item.getHP() << endl;
+    if (item.getMP())
+        out << "> MP: " << item.getMP() << endl;
+    if (item.getFP())
+        out << "> FP: " << item.getFP() << endl;
+    if (item.getAttack())
+        out << "> Attack: " << item.getAttack() << endl;
+    if (item.getDefense())
+        out << "> Defense: " << item.getDefense() << endl;
+    if (item.getDurability())
+        out << "> Durability: " << item.getDurability() << endl;
+    if (item.getPrice())
+        out << "> Price: " << item.getPrice() << endl;
     return out;
 }
 
-ifstream& operator>>(ifstream& in, Item& item)
+ifstream &operator>>(ifstream &in, Item &item)
 {
     item.input(in);
     return in;
 }
-ofstream& operator<<(ofstream& out, const Item& item)
+ofstream &operator<<(ofstream &out, const Item &item)
 {
     item.output(out);
     return out;
@@ -226,7 +276,7 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
     int LevelArg = LV * (LV + 1);
     // vector<Item> Booty //This is for items that monster drops.
     // {
-    //     Item("Orc's Chestplate", "Chestplate", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg), 
+    //     Item("Orc's Chestplate", "Chestplate", 0, 0, 0, 0, 10 * LevelArg, 100 * LevelArg, 50 * LevelArg),
     //     Item("Dwarf's diamond", "Treasure", 0, 0, 0, 0, 0, 0, 1000 * LevelArg),
     //     Item("Dragon's cloak", "cloak", 0, 0, 10*LevelArg, 0, 20 * LevelArg, 0, 0),
     //     Item("Elf's sword", "Weapon", 0, 0, 10*LevelArg, 20 * LevelArg, 0, 0, 0),
@@ -239,23 +289,22 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
     //     Item("Danny's cheese", "Food", 1000 * LevelArg, 0, 0, 0, 0, 0, 109 * LevelArg)
     // };
 
-    vector<Item> ItemsforSale //This is for npc to sell them.
-    {
-        Item("Sword", "Weapon", 0, 0, 0, 5 * LevelArg, 0, 10 * LevelArg, 10 * LevelArg),
-        Item("Shield", "Weapon", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 10 * LevelArg),
-        Item("Bow and Arrow", "Weapon", 0, 0, 0, 5 * LevelArg, 2 * LevelArg, 10 * LevelArg, 15 * LevelArg),
-        Item("Wand", "Weapon", 0, 0, 3 * LevelArg, 7 * LevelArg, 3 * LevelArg, 15 * LevelArg, 25 * LevelArg),
-        Item("HP potion", "Potion", 10 * LevelArg, 0, 0, 0, 0, 0, 5 * LevelArg),
-        Item("MP potion", "Potion", 0, 10 * LevelArg, 0, 0, 0, 0, 5 * LevelArg),
-        Item("FP potion", "Potion", 0, 0, 10 * LevelArg, 0, 0, 0, 5 * LevelArg),
-        Item("Attack potion", "Potion", 0, 0, 0, 3 * LevelArg, 0, 0, 10 * LevelArg),
-        Item("Defense potion", "Potion", 0, 0, 0, 0, 3 * LevelArg, 0, 10 * LevelArg),
-        Item("Helmet", "Helmet", 0, 0, 0, 0, 3 * LevelArg, 10 * LevelArg, 12 * LevelArg),
-        Item("Chest Armor", "Chestplate", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 20 * LevelArg),
-        Item("Armor Pants", "Leggings", 0, 0, 0, 0, 4 * LevelArg, 10 * LevelArg, 16 * LevelArg),
-        Item("Boots", "Boots", 0, 0, 0, 0, 2 * LevelArg, 10 * LevelArg, 8 * LevelArg),
-        Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg)
-    };
+    vector<Item> ItemsforSale // This is for npc to sell them.
+        {
+            Item("Sword", "Weapon", 0, 0, 0, 5 * LevelArg, 0, 10 * LevelArg, 10 * LevelArg),
+            Item("Shield", "Weapon", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 10 * LevelArg),
+            Item("Bow and Arrow", "Weapon", 0, 0, 0, 5 * LevelArg, 2 * LevelArg, 10 * LevelArg, 15 * LevelArg),
+            Item("Wand", "Weapon", 0, 0, 3 * LevelArg, 7 * LevelArg, 3 * LevelArg, 15 * LevelArg, 25 * LevelArg),
+            Item("HP potion", "Potion", 10 * LevelArg, 0, 0, 0, 0, 0, 5 * LevelArg),
+            Item("MP potion", "Potion", 0, 10 * LevelArg, 0, 0, 0, 0, 5 * LevelArg),
+            Item("FP potion", "Potion", 0, 0, 10 * LevelArg, 0, 0, 0, 5 * LevelArg),
+            Item("Attack potion", "Potion", 0, 0, 0, 3 * LevelArg, 0, 0, 10 * LevelArg),
+            Item("Defense potion", "Potion", 0, 0, 0, 0, 3 * LevelArg, 0, 10 * LevelArg),
+            Item("Helmet", "Helmet", 0, 0, 0, 0, 3 * LevelArg, 10 * LevelArg, 12 * LevelArg),
+            Item("Chest Armor", "Chestplate", 0, 0, 0, 0, 5 * LevelArg, 10 * LevelArg, 20 * LevelArg),
+            Item("Armor Pants", "Leggings", 0, 0, 0, 0, 4 * LevelArg, 10 * LevelArg, 16 * LevelArg),
+            Item("Boots", "Boots", 0, 0, 0, 0, 2 * LevelArg, 10 * LevelArg, 8 * LevelArg),
+            Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg)};
 
     Item item = Item();
     string kindList[] = {
@@ -270,78 +319,99 @@ Item Item::randomItemGenerator(int LV, string kind = "RANDOM")
     };
     if (kind == "RANDOM")
     {
-        kind = kindList[ getRand( vector<long double>({5, 10, 15, 20, 25, 35, 40, /*41*/}) ) ];
+        kind = kindList[getRand(vector<long double>({5, 10, 15, 20, 25, 35, 40, /*41*/}))];
     }
 
-    vector <Item> pool;
-    vector <long double> prob;
+    vector<Item> pool;
+    vector<long double> prob;
     int i = 0;
-    for (auto& item : ItemsforSale) {
-        if (item.getKind() == kind) {
+    for (auto &item : ItemsforSale)
+    {
+        if (item.getKind() == kind)
+        {
             pool.emplace_back(item);
             prob.emplace_back(++i);
         }
     }
-    if (prob.empty()) return Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg);
-    return pool[ getRand( prob ) ];
+    if (prob.empty())
+        return Item("Bread", "Food", 3 * LevelArg, 3 * LevelArg, 1 * LevelArg, 0, 0, 0, 2 * LevelArg);
+    return pool[getRand(prob)];
 }
 
-void Item::renderOnWindow(float x, float y, float width, float height, RenderWindow* window, Color color) {
-    stringstream ss; ss.clear();
+void Item::renderOnWindow(float x, float y, float width, float height, RenderWindow *window, Color color)
+{
+    stringstream ss;
+    ss.clear();
     ss << getName() << endl;
     ss << "> type: " << getKind() << endl;
-    if (getHP())         ss << "> HP: " << getHP() << endl;
-    if (getMP())         ss << "> MP: " << getMP() << endl;
-    if (getFP())         ss << "> FP: " << getFP() << endl;
-    if (getAttack())     ss << "> Attack: " << getAttack() << endl;
-    if (getDefense())    ss << "> Defense: " << getDefense() << endl;
-    if (getDurability()) ss << "> Durability: " << getDurability() << endl;
-    if (getPrice())      ss << "> Price: " << getPrice() << endl;
+    if (getHP())
+        ss << "> HP: " << getHP() << endl;
+    if (getMP())
+        ss << "> MP: " << getMP() << endl;
+    if (getFP())
+        ss << "> FP: " << getFP() << endl;
+    if (getAttack())
+        ss << "> Attack: " << getAttack() << endl;
+    if (getDefense())
+        ss << "> Defense: " << getDefense() << endl;
+    if (getDurability())
+        ss << "> Durability: " << getDurability() << endl;
+    if (getPrice())
+        ss << "> Price: " << getPrice() << endl;
 
     string info = "", tmp;
-    while (getline(ss, tmp)) {
+    while (getline(ss, tmp))
+    {
         info += tmp;
         info.push_back('\n');
     }
-    
-    Font *font = new Font(); font->loadFromFile("../Fonts/Dosis-Light.ttf");
-    Button* button = new Button(x, y, width, height, 1, 60, font, info, color, color, color);
+
+    Font *font = new Font();
+    font->loadFromFile("../Fonts/Dosis-Light.ttf");
+    Button *button = new Button(x, y, width, height, 1, 60, font, info, color, color, color);
 
     bool gainedFocus = 1;
-	bool holdEnter = 1;
+    bool holdEnter = 1;
     Event sfEvent;
-    while (window->isOpen()) {
-        while (window->pollEvent(sfEvent)) {
-            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape)) {
+    while (window->isOpen())
+    {
+        while (window->pollEvent(sfEvent))
+        {
+            if ((sfEvent.type == Event::KeyPressed) && (sfEvent.key.code == Keyboard::Escape))
+            {
                 window->close();
             }
-            switch (sfEvent.type) {
-                case Event::Closed:
-                    window->close();
-                    break;
-                case Event::GainedFocus:
-                    gainedFocus = 1;
-                    break;
-                case Event::LostFocus:
-                    gainedFocus = 0;
-                    break;
-                default:
-                    break;
+            switch (sfEvent.type)
+            {
+            case Event::Closed:
+                window->close();
+                break;
+            case Event::GainedFocus:
+                gainedFocus = 1;
+                break;
+            case Event::LostFocus:
+                gainedFocus = 0;
+                break;
+            default:
+                break;
             }
         }
-        if (!gainedFocus) {
+        if (!gainedFocus)
+        {
             sleep(milliseconds(10));
             continue;
         }
-        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter)) {
+        if (!holdEnter && Keyboard::isKeyPressed(Keyboard::Enter))
+        {
             break;
         }
-        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter)) {
+        if (holdEnter && !Keyboard::isKeyPressed(Keyboard::Enter))
+        {
             holdEnter = 0;
         }
 
         window->clear();
-		
+
         button->render(window);
 
         window->display();

@@ -37,19 +37,19 @@ class Record
 private:
     bool gainedFocus, holdEnter;
     int CRIndex, PRIndex, option;
-    vector < pair<pair<string, int>, string> > fileList;
+    vector<pair<pair<string, int>, string>> fileList;
 
-    void savePlayer(Player*, ofstream&);
-    void saveRooms(vector<Room>&, ofstream&);
-    void saveVis(vector<bool>&, ofstream&);
-    void saveCoord(map <coord, int>&, ofstream&);
-    void saveRoomCnt(vector<int>&, ofstream&);
+    void savePlayer(Player *, ofstream &);
+    void saveRooms(vector<Room> &, ofstream &);
+    void saveVis(vector<bool> &, ofstream &);
+    void saveCoord(map<coord, int> &, ofstream &);
+    void saveRoomCnt(vector<int> &, ofstream &);
 
-    void loadPlayer(Player*, ifstream&);
-    void loadRooms(vector<Room>&, ifstream&);
-    void loadVis(vector<bool>&, ifstream&);
-    void loadCoord(map <coord, int>&, ifstream&);
-    void loadRoomCnt(vector<int>&, ifstream&);
+    void loadPlayer(Player *, ifstream &);
+    void loadRooms(vector<Room> &, ifstream &);
+    void loadVis(vector<bool> &, ifstream &);
+    void loadCoord(map<coord, int> &, ifstream &);
+    void loadRoomCnt(vector<int> &, ifstream &);
 
     void saveFileNames();
     void loadFileNames();
@@ -61,12 +61,13 @@ private:
     Font *font;
     Button *button;
     Menu *menu;
+
 public:
     Record();
-    Record(int, RenderWindow* _window);
-    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&);
-    void saveToFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&, ofstream&);
-    bool loadFromFile(Player*, vector<Room>&, vector<bool>&, int&, map <coord, int>&, vector<int>&);
+    Record(int, RenderWindow *_window);
+    void saveToFile(Player *, vector<Room> &, vector<bool> &, int &, map<coord, int> &, vector<int> &);
+    void saveToFile(Player *, vector<Room> &, vector<bool> &, int &, map<coord, int> &, vector<int> &, ofstream &);
+    bool loadFromFile(Player *, vector<Room> &, vector<bool> &, int &, map<coord, int> &, vector<int> &);
 };
 
 #endif // RECORD_H_INCLUDED

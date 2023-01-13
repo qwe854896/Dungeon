@@ -20,11 +20,11 @@ using std::cout;
 
 class Item;
 
-class Player: public GameCharacter
+class Player : public GameCharacter
 {
 private:
-    Room* currentRoom;
-    Room* previousRoom;
+    Room *currentRoom;
+    Room *previousRoom;
 
     vector<Item> inventory;
     vector<Item> armors; // Helmet, Chestplate, Leggings, Boots, Weapon;
@@ -34,6 +34,7 @@ private:
     /* Supplement */
     static int getArmorIndex(string);
     static string getArmor(int);
+
 public:
     Player();
     Player(string, string, string, int);
@@ -42,27 +43,27 @@ public:
     /* Virtual function that you need to complete   */
     /* In Player, this function should show the     */
     /* status of player.                            */
-    bool triggerEvent(Object*, RenderWindow*) override;
-    void input(ifstream&) override;
-    void output(ofstream&) const override;
+    bool triggerEvent(Object *, RenderWindow *) override;
+    void input(ifstream &) override;
+    void output(ofstream &) const override;
 
     /* Set & Get function*/
-    void setCurrentRoom(Room*);
-    void setPreviousRoom(Room*);
+    void setCurrentRoom(Room *);
+    void setPreviousRoom(Room *);
     void setInventory(vector<Item>);
     void setGold(int);
-    Room* getCurrentRoom() const;
-    Room* getPreviousRoom() const;
+    Room *getCurrentRoom() const;
+    Room *getPreviousRoom() const;
     vector<Item> getInventory() const;
     int getGold() const;
 
     /* Supplement */
     void addItem(Item);
     void popItem(int);
-    void useItem(int, RenderWindow*);
+    void useItem(int, RenderWindow *);
     void sellItem(int);
 
-    void changeRoom(Room*);
+    void changeRoom(Room *);
 
     void increaseGold(int);
     void decreaseGold(int);
@@ -70,17 +71,16 @@ public:
     string decreaseArmorDurability(int);
     string decreaseWeaponDurability(int);
 
-    int listInventory(string, RenderWindow*);
+    int listInventory(string, RenderWindow *);
     string showStatusinFight();
-    
-    bool handleInventory(string, RenderWindow*);
-    bool handleAct(RenderWindow*);
-    Item handleAttack(RenderWindow*);
-    Item handleSkills(int, RenderWindow*);
+
+    bool handleInventory(string, RenderWindow *);
+    bool handleAct(RenderWindow *);
+    Item handleAttack(RenderWindow *);
+    Item handleSkills(int, RenderWindow *);
 };
 
-ifstream& operator>>(ifstream&, Player&);
-ofstream& operator<<(ofstream&, const Player&);
-
+ifstream &operator>>(ifstream &, Player &);
+ofstream &operator<<(ofstream &, const Player &);
 
 #endif // PLAYER_H_INCLUDED

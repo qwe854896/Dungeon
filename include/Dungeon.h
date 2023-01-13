@@ -30,8 +30,8 @@ using std::cout;
 
 using coord = pair<int, int>;
 
-
-class Dungeon{
+class Dungeon
+{
 private:
     Player player;
 
@@ -39,12 +39,12 @@ private:
     vector<Room> rooms;
     vector<bool> vis;
 
-    map <coord, int> coordToIndex;
+    map<coord, int> coordToIndex;
 
-    vector <int> roomCnt{1, 1, 1, 1, 1, 1};
+    vector<int> roomCnt{1, 1, 1, 1, 1, 1};
 
     /* SFML */
-    map <string, Texture> textures;
+    map<string, Texture> textures;
     Texture *monsterTexture, *npcTexture, *chestTexture, *backgroundTexture;
     Sprite background;
 
@@ -67,6 +67,7 @@ private:
     void updateSFMLEvents();
     void update();
     void render();
+
 public:
     Dungeon();
     ~Dungeon();
@@ -83,7 +84,7 @@ public:
     void handleMovement();
 
     /* Deal with player's interaction with objects in that room */
-    void handleEvent(Object*);
+    void handleEvent(Object *);
 
     /* Deal with player's interaction with inventory */
     void handleInventory();
@@ -96,7 +97,7 @@ public:
     /* including showing the action list */
     /* that player can do at that room   */
     /* and dealing with player's input   */
-    void chooseAction(const vector<Object*>&);
+    void chooseAction(const vector<Object *> &);
 
     /* Check whether the game should end or not */
     /* Including player victory, or he/she dead */
@@ -106,7 +107,7 @@ public:
     void runDungeon(int);
 
     /* Check there is a monster or not in the current room */
-    bool checkMonsterRoom(const vector<Object*>&);
+    bool checkMonsterRoom(const vector<Object *> &);
 
     /* If current Room is not visited, try to generate its neighbor */
     void createRoom(int);
@@ -119,6 +120,5 @@ public:
 
     void encounterDanny();
 };
-
 
 #endif // DUNGEON_H_INCLUDED

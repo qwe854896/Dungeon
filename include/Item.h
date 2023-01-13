@@ -18,11 +18,12 @@ using namespace std;
 
 class Player;
 
-class Item: public Object
+class Item : public Object
 {
 private:
     string kind;
     int HP, MP, FP, attack, defense, durability, price;
+
 public:
     Item();
     Item(string, int, int, int, int, int);
@@ -33,9 +34,9 @@ public:
     /* In Item, this function should deal with the   */
     /* pick up action. You should add status to the  */
     /* player.                                       */
-    bool triggerEvent(Object*, RenderWindow*) override;
-    void input(ifstream& in) override;
-    void output(ofstream& out) const override;
+    bool triggerEvent(Object *, RenderWindow *) override;
+    void input(ifstream &in) override;
+    void output(ofstream &out) const override;
 
     /* Set & Get function*/
     int getHP() const;
@@ -60,11 +61,11 @@ public:
     bool decreaseDurability(int);
     string genInfo();
     static Item randomItemGenerator(int, string);
-    void renderOnWindow(float x, float y, float width, float height, RenderWindow* window, Color color);
+    void renderOnWindow(float x, float y, float width, float height, RenderWindow *window, Color color);
 };
 
-ifstream& operator>>(ifstream&, Item&);
-ofstream& operator<<(ofstream&, const Item&);
-ostream& operator<<(ostream&, const Item&);
+ifstream &operator>>(ifstream &, Item &);
+ofstream &operator<<(ofstream &, const Item &);
+ostream &operator<<(ostream &, const Item &);
 
 #endif // ITEM_H_INCLUDED

@@ -10,7 +10,8 @@
 
 using namespace std;
 
-int main(){
+int main()
+{
     srand(123);
     Dungeon dungeon;
     dungeon.runDungeon(1);
