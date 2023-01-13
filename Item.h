@@ -13,7 +13,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Button.h"
-#include "menu.h"
+#include "Menu.h"
 using namespace std;
 
 class Player;
