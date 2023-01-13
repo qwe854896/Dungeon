@@ -22,7 +22,7 @@ namespace
 bool NPC::triggerEvent(Object *object, RenderWindow *window)
 {
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
 
     background.setTexture(*backgroundTexture);
     background.scale(Vector2f(window->getSize().x / backgroundTexture->getSize().x, window->getSize().y / backgroundTexture->getSize().y));
@@ -43,7 +43,7 @@ bool NPC::triggerEvent(Object *object, RenderWindow *window)
 
         Event sfEvent;
         Font font;
-        font.loadFromFile("../Fonts/Dosis-Light.ttf");
+        font.loadFromFile("assets/font/Dosis-Light.ttf");
 
         Button *button = new Button(
             10, 820, 1900, 100, 1,
@@ -222,7 +222,7 @@ int NPC::listCommodity(RenderWindow *window, int gold) /* print all the Item in 
     int ops;
     string info, tmp;
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
 
     bool isError = 0;
     Button *title = new Button(
@@ -354,7 +354,7 @@ bool NPC::handleBuy(Player *player, RenderWindow *window)
     bool holdEnter = 1;
     Event sfEvent;
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
     Button *button = new Button(
         10, 450, 1900, 100, 1, 60, &font,
         "You buy " + commodity[ops].getName(),
@@ -420,7 +420,7 @@ bool NPC::handleTalk(RenderWindow *window)
     bool holdEnter = 1;
     Event sfEvent;
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
     Button *button = new Button(
         10, 820, 1900, 100, 1, 60, &font,
         "I am shy!",

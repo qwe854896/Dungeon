@@ -44,8 +44,8 @@ void Button::initSoundBuffer()
 {
     click = new SoundBuffer();
     uClick = new SoundBuffer();
-    click->loadFromFile("../Sounds/click.ogg");
-    uClick->loadFromFile("../Sounds/u_click.ogg");
+    click->loadFromFile("assets/sound/click.ogg");
+    uClick->loadFromFile("assets/sound/u_click.ogg");
 }
 
 void Button::update(bool isSelected)

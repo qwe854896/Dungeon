@@ -65,7 +65,7 @@ bool Item::triggerEvent(Object *object, RenderWindow *window)
         info.pop_back();
 
     Font *font = new Font();
-    font->loadFromFile("../Fonts/Dosis-Light.ttf");
+    font->loadFromFile("assets/font/Dosis-Light.ttf");
     Button *button = new Button(350, 280, 1220, 520, 1, 60, font, info, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
 
     bool gainedFocus = 1;
@@ -367,7 +367,7 @@ void Item::renderOnWindow(float x, float y, float width, float height, RenderWin
     }
 
     Font *font = new Font();
-    font->loadFromFile("../Fonts/Dosis-Light.ttf");
+    font->loadFromFile("assets/font/Dosis-Light.ttf");
     Button *button = new Button(x, y, width, height, 1, 60, font, info, color, color, color);
 
     bool gainedFocus = 1;

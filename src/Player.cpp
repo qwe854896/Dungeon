@@ -37,7 +37,7 @@ bool Player::triggerEvent(Object *object, RenderWindow *window)
     vector<Button *> buttons;
     string info, tmp;
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
 
     /* player */
     if (object->getTag() == "Player")
@@ -57,7 +57,7 @@ bool Player::triggerEvent(Object *object, RenderWindow *window)
         while (getline(ss, tmp))
             info += tmp + "\n";
         info.pop_back();
-        font.loadFromFile("../Fonts/coolvetica condensed rg.ttf");
+        font.loadFromFile("assets/font/coolvetica condensed rg.ttf");
 
         Button *playerStatus = new Button(
             250, 150, 500, 800, 1, 60, &font,
@@ -404,7 +404,7 @@ int Player::listInventory(string operation, RenderWindow *window)
     int ops;
     string info, tmp;
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
 
     bool isEmpty = inventory.empty();
 
@@ -563,7 +563,7 @@ Item Player::handleAttack(RenderWindow *window)
     int ops;
 
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
     Button *button = new Button(
         10, 20, 1900, 100, 1, 60, &font,
         "Choose the method to attack:",

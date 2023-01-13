@@ -5,7 +5,7 @@ Dungeon::Dungeon()
     _window = new RenderWindow(VideoMode(1920, 1080), "Dungeon!", Style::Default | Style::Fullscreen);
 
     font = new Font();
-    font->loadFromFile("../fonts/Dosis-Light.ttf");
+    font->loadFromFile("assets/font/Dosis-Light.ttf");
 
     initTextures();
     monsterTexture = &textures["monster.png"];
@@ -16,7 +16,7 @@ Dungeon::Dungeon()
     background.setTexture(*backgroundTexture);
     background.scale(Vector2f(_window->getSize().x / backgroundTexture->getSize().x, _window->getSize().y / backgroundTexture->getSize().y));
 
-    backgroundMusic.openFromFile("../Audios/b1.ogg");
+    backgroundMusic.openFromFile("assets/audio/b1.ogg");
     backgroundMusic.setLoop(true);
     backgroundMusic.setVolume(10.0);
     backgroundMusic.play();
@@ -42,7 +42,7 @@ void Dungeon::initTextures()
         "chest.png",
         "Background.jpg"};
     for (auto &file : pool)
-        textures[file].loadFromFile("../Images/" + file);
+        textures[file].loadFromFile("assets/image/" + file);
 }
 
 namespace
@@ -490,7 +490,7 @@ void Dungeon::handleInventory()
 void Dungeon::startGame()
 {
     Font headerFont;
-    headerFont.loadFromFile("../Fonts/DUNGRG__.TTF");
+    headerFont.loadFromFile("assets/font/DUNGRG__.TTF");
     Button *button = new Button(160, 200, 1600, 200, 1, 300, &headerFont, "Dungeon", Color(0, 0, 0, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     Menu *menu = new Menu(435, 700, 500, 200, 1, 60, false, font, _window, Color(20, 20, 20, 200), Color(150, 150, 150, 200), Color(70, 70, 70, 255));
     menu->push_back("Load");
@@ -574,7 +574,7 @@ void Dungeon::startGame()
 void Dungeon::encounterDanny()
 {
     Font headerFont;
-    headerFont.loadFromFile("../Fonts/No Virus.ttf");
+    headerFont.loadFromFile("assets/font/No Virus.ttf");
     Button *button = new Button(
         60, 290, 1800, 500, 1, 60, &headerFont,
         "Worst Nightmare! You encounter Danny, Food King in this Dungeon!\nDanny : I am going to rob all of your food :D\nAll of your food has eaten by Danny!\n\nPress enter to continue...",
@@ -862,20 +862,20 @@ bool Dungeon::checkGameLogic()
     if (player.checkIsDead())
     {
         gameIsEnd = "Game Over!";
-        backgroundMusic.openFromFile("../Audios/JustDoIt.ogg");
+        backgroundMusic.openFromFile("assets/audio/JustDoIt.ogg");
         backgroundMusic.play();
     }
     if (player.getCurrentRoom()->getIsExit() && !checkMonsterRoom(player.getCurrentRoom()->getObjects()))
     {
         gameIsEnd = "Victory!";
-        backgroundMusic.openFromFile("../Audios/RickyRoll.ogg");
+        backgroundMusic.openFromFile("assets/audio/RickyRoll.ogg");
         backgroundMusic.play();
     }
     if (gameIsEnd == "")
         return false;
 
     Font headerFont;
-    headerFont.loadFromFile("../Fonts/DUNGRG__.TTF");
+    headerFont.loadFromFile("assets/font/DUNGRG__.TTF");
     Button *button = new Button(
         160, 200, 1600, 200,
         1, 300, &headerFont, gameIsEnd,
@@ -946,7 +946,7 @@ void Dungeon::runDungeon(int minimum_frame_per_seconds)
             startGame();
         }
         // debug
-        ofstream fout("../error");
+        ofstream fout("logs/error.log");
         Record agent(6, _window);
         agent.saveToFile(&player, rooms, vis, usedIndex, coordToIndex, roomCnt, fout);
         fout.close();

@@ -4,7 +4,7 @@ Monster::Monster() : GameCharacter() {}
 Monster::Monster(string name, string image, string type, int LV, Item drop)
     : GameCharacter(name, "Monster", image, type, LV), drop(drop)
 {
-    hit.loadFromFile("../Sounds/hit.ogg");
+    hit.loadFromFile("assets/sound/hit.ogg");
     sound.setBuffer(hit);
 }
 Monster::Monster(string name, string image, string type, int LV, Item drop, Texture *monsterTexture, Texture *backgroundTexture)
@@ -55,7 +55,7 @@ void Monster::setBackgroundTexture(Texture *backgroundTexture)
 bool Monster::triggerEvent(Object *object, RenderWindow *window)
 {
     Font font;
-    font.loadFromFile("../Fonts/Dosis-Light.ttf");
+    font.loadFromFile("assets/font/Dosis-Light.ttf");
 
     background.setTexture(*backgroundTexture);
     background.scale(Vector2f(window->getSize().x / backgroundTexture->getSize().x, window->getSize().y / backgroundTexture->getSize().y));

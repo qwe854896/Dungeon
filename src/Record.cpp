@@ -125,7 +125,7 @@ void Record::loadRoomCnt(vector<int> &roomCnt, ifstream &in)
 }
 namespace
 {
-    char filename[] = "../Record/file";
+    char filename[] = "record/file";
     stringstream ss;
 }
 
@@ -223,7 +223,7 @@ Record::Record(int number, RenderWindow *_window)
     : _window(_window)
 {
     font = new Font();
-    font->loadFromFile("../fonts/Dosis-Light.ttf");
+    font->loadFromFile("assets/font/Dosis-Light.ttf");
     if (!exists(filename))
         initFileNames(number);
     fileList.resize(number);

@@ -7,7 +7,7 @@ compile:
 
 link:
 	g++ -std=c++11 *.o -o main -L ${SFML_PATH}/lib -l sfml-graphics -l sfml-window -l sfml-system -l sfml-audio
+	rm *.o
 
 clean:
-	rm *.o
 	rm main
