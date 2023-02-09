@@ -1,13 +1,23 @@
-SFML_PATH=SFML
+CC := g++
+CFLAGS := -Wall -g -I include
+LFLAGS := -l sfml-graphics -l sfml-window -l sfml-system -l sfml-audio 
 
-all: compile link
+TARGET := main
+SRCS := $(wildcard src/*.cpp)
+OBJS := $(patsubst src/%.cpp,bin/%.o,$(SRCS))
 
-compile:
-	g++ -std=c++11 -I include -I ${SFML_PATH}/include -c src/*.cpp
+DIR_GUARD=@mkdir -p $(@D)
 
-link:
-	g++ -std=c++11 *.o -o main -L ${SFML_PATH}/lib -l sfml-graphics -l sfml-window -l sfml-system -l sfml-audio
-	rm *.o
+all: $(TARGET) 
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(LFLAGS) 
+
+bin/%.o: src/%.cpp
+	$(DIR_GUARD)
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	rm main
+	rm -rf $(TARGET) bin
+
+.PHONY: all clean
